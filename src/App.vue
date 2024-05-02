@@ -2,6 +2,17 @@
   <router-view />
 </template>
 
-<script setup>
-  //
+<script>
+import { useAppStore } from './store/app';
+
+export default {
+  data() {
+    return {
+      appStore: useAppStore()
+    }
+  },
+  mounted() {
+    this.appStore.mountFunction();
+  }
+}
 </script>
