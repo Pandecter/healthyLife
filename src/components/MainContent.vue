@@ -28,7 +28,7 @@
         <v-btn class="ml-2" @click="appStore.nextWeek()">Следующая</v-btn>
       </div>
       <p class="d-flex justify-center mt-4">
-        Результат: {{ appStore.giveAlternativeCurrentDate }}
+        {{ appStore.giveCurrentWeek }}
       </p>
     </div>
   </v-app>

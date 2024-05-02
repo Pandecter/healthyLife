@@ -12,7 +12,9 @@ export const useAppStore = defineStore('app', {
              "Пятница", "Суббота", "Воскресенье"],
       mealTime: ["Завтрак", "Обед", "Ужин"],
       currentDate: {day: "Воскресенье", month: "Январь"},
-      alternativeCurrentDate: null
+      alternativeCurrentDate: null,
+      start: null,
+      end: null
     }
   },
   actions: {
@@ -24,16 +26,16 @@ export const useAppStore = defineStore('app', {
     },
 
     nextWeek() {
-      let n = 7;
+      const WEEK = 7;
       let currentDate = this.alternativeCurrentDate;
-      currentDate = new Date(currentDate.getFullYear(),  currentDate.getMonth(), currentDate.getDate() + n);
+      currentDate = new Date(currentDate.getFullYear(),  currentDate.getMonth(), currentDate.getDate() + WEEK);
       this.alternativeCurrentDate = currentDate;
     },
 
     previousWeek() {
-      let n = 7;
+      const WEEK = 7;
       let currentDate = this.alternativeCurrentDate;
-      currentDate = new Date(currentDate.getFullYear(),  currentDate.getMonth(), currentDate.getDate() - n);
+      currentDate = new Date(currentDate.getFullYear(),  currentDate.getMonth(), currentDate.getDate() - WEEK);
       this.alternativeCurrentDate = currentDate;
     },
 
@@ -51,17 +53,27 @@ export const useAppStore = defineStore('app', {
     giveAlternativeCurrentDate() { // показывает текущую дату вида: "дд.мм.гггг"
       const CUR_MONTH = this.alternativeCurrentDate.getMonth() + 1; 
       const CUR_DAY = this.alternativeCurrentDate.getDate();
-      let arr = [];
-      arr = this.zeroAdder(CUR_DAY, CUR_MONTH);
-      return arr[0] + "." + arr[1] + "." + this.alternativeCurrentDate.getFullYear();
+      const ARR = this.zeroAdder(CUR_DAY, CUR_MONTH);
+      return ARR[0] + "." + ARR[1] + "." + this.alternativeCurrentDate.getFullYear();
     },
 
-    // giveCurrentWeek() {
-    //   const START = this.alternativeCurrentDate.getDate() - this.alternativeCurrentDate.getDay();
-    //   const END = this.alternativeCurrentDate.getDate() + this.alternativeCurrentDate.getDay();
-    //   // const ARR = [];
-    //   // ARR = this.zeroAdder(CUR_DAY, CUR_MONTH);
-    //   return  
-    // }
+    giveCurrentWeek() {
+      const NUMBER = this.alternativeCurrentDate.getDay();
+      let currentDate = this.alternativeCurrentDate;
+
+      let startV = new Date(currentDate.getFullYear(),  currentDate.getMonth(), currentDate.getDate() - NUMBER + 1);
+      let startDay = startV.getDate();
+      let startMonth = startV.getMonth() + 1;
+      const ARR_START = this.zeroAdder(startDay, startMonth);
+      const START_STRING = ARR_START[0] + "." + ARR_START[1] + "." + startV.getFullYear();
+
+      const endV = new Date(currentDate.getFullYear(),  currentDate.getMonth(), currentDate.getDate() + NUMBER - 1);
+      let endDay = endV.getDate();
+      let endMonth = endV.getMonth() + 1;
+      const ARR_END = this.zeroAdder(endDay, endMonth);
+      const END_STRING = ARR_END[0] + "." + ARR_END[1] + "." + endV.getFullYear();
+      
+      return "Текущая неделя: " + START_STRING + " - " + END_STRING;
+    }
   }
 })
