@@ -11,69 +11,80 @@ export const useAppStore = defineStore('app', {
              "Среда", "Четверг", 
              "Пятница", "Суббота", "Воскресенье"],
       mealTime: ["Завтрак", "Обед", "Ужин"],
-      currentDate: {day: "Воскресенье", month: "Январь"},
-      alternativeCurrentDate: null,
-      start: null,
-      end: null
+      currentDate: {day: null, month: null},
+      alternativeCurrentDate: null, //текущая дата
+      switchedCurrentDate: null, //дата, использующаяся при "смене" недели
     }
   },
   actions: {
     mountFunction() { //вызывается 1 раз при запуске приложения 
       const CURRENT_DATE = new Date();
       this.alternativeCurrentDate = CURRENT_DATE;
+      this.switchedCurrentDate = CURRENT_DATE;
       this.currentDate.day = this.days[CURRENT_DATE.getDay() - 1];
       this.currentDate.month = this.months[CURRENT_DATE.getMonth()];
     },
 
-    nextWeek() {
+    nextWeek() { // метод для переключения на следующую неделю относительно текущей даты пользователя
       const WEEK = 7;
-      let currentDate = this.alternativeCurrentDate;
+      let currentDate = this.switchedCurrentDate;
       currentDate = new Date(currentDate.getFullYear(),  currentDate.getMonth(), currentDate.getDate() + WEEK);
-      this.alternativeCurrentDate = currentDate;
+      this.switchedCurrentDate = currentDate;
     },
 
-    previousWeek() {
+    previousWeek() { // метод для переключения на предыдущую неделю относительно текущей даты пользователя
       const WEEK = 7;
-      let currentDate = this.alternativeCurrentDate;
+      let currentDate = this.switchedCurrentDate;
       currentDate = new Date(currentDate.getFullYear(),  currentDate.getMonth(), currentDate.getDate() - WEEK);
-      this.alternativeCurrentDate = currentDate;
+      this.switchedCurrentDate = currentDate;
     },
 
-    zeroAdder(day, month) {
+    dateFormer(date) { //создает строку с датой в привычном для отображения виде
+      let month = date.getMonth() + 1; 
+      let day = date.getDate();
+
       if (month < 10) {
         month = "0" + month;
       }
       if (day < 10) {
         day = "0" + day;
       }
-      return [day, month]
-    }
+      let result = day + "." + month + "." + this.alternativeCurrentDate.getFullYear();
+      return result;
+    },
   },
   getters: {
-    giveAlternativeCurrentDate() { // показывает текущую дату вида: "дд.мм.гггг"
-      const CUR_MONTH = this.alternativeCurrentDate.getMonth() + 1; 
-      const CUR_DAY = this.alternativeCurrentDate.getDate();
-      const ARR = this.zeroAdder(CUR_DAY, CUR_MONTH);
-      return ARR[0] + "." + ARR[1] + "." + this.alternativeCurrentDate.getFullYear();
+    giveAlternativeCurrentDate() { // показывает текущую дату 
+      const RESULT_DATA = this.dateFormer(this.alternativeCurrentDate);
+      return RESULT_DATA;
     },
 
-    giveCurrentWeek() {
-      const NUMBER = this.alternativeCurrentDate.getDay();
-      let currentDate = this.alternativeCurrentDate;
+    giveCurrentWeek() { //показывает текущую неделю 
+      const NUMBER = this.switchedCurrentDate.getDay();
+      const CURRENT_DATE = this.switchedCurrentDate;
 
-      let startV = new Date(currentDate.getFullYear(),  currentDate.getMonth(), currentDate.getDate() - NUMBER + 1);
-      let startDay = startV.getDate();
-      let startMonth = startV.getMonth() + 1;
-      const ARR_START = this.zeroAdder(startDay, startMonth);
-      const START_STRING = ARR_START[0] + "." + ARR_START[1] + "." + startV.getFullYear();
+      const START_VALUE = new Date(CURRENT_DATE.getFullYear(),  CURRENT_DATE.getMonth(), CURRENT_DATE.getDate() - NUMBER + 1);
+      const START_STRING = this.dateFormer(START_VALUE);
 
-      const endV = new Date(currentDate.getFullYear(),  currentDate.getMonth(), currentDate.getDate() + NUMBER - 1);
-      let endDay = endV.getDate();
-      let endMonth = endV.getMonth() + 1;
-      const ARR_END = this.zeroAdder(endDay, endMonth);
-      const END_STRING = ARR_END[0] + "." + ARR_END[1] + "." + endV.getFullYear();
+      const END_VALUE = new Date(CURRENT_DATE.getFullYear(),  CURRENT_DATE.getMonth(), CURRENT_DATE.getDate() + NUMBER - 1);
+      const END_STRING = this.dateFormer(END_VALUE);
       
       return "Текущая неделя: " + START_STRING + " - " + END_STRING;
+    },
+
+    giveCurrentDate() { //отображает даты для дней недели
+      const NUMBER = this.switchedCurrentDate.getDay();
+      const CURRENT_DATE = this.switchedCurrentDate;
+      let startValue;
+      let day = 0;
+      let arr = [];
+      while (day < 7) {
+        startValue = new Date(CURRENT_DATE.getFullYear(),  CURRENT_DATE.getMonth(), CURRENT_DATE.getDate() - NUMBER + 1 + day);
+        startValue = this.dateFormer(startValue);
+        arr[day] = startValue;
+        day++;
+      }
+      return arr;
     }
   }
 })
