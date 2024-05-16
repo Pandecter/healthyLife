@@ -33,19 +33,36 @@
           :key="day"
           variant="outlined"
           width="100%"
-          height="125"
+          class="border-thin rounded-shaped elevation-2"
         >
           <div class="d-flex justify-space-between">
             <v-card-title>
               {{ day }}
             </v-card-title>
-            <v-card-subtitle class="mt-3">
+            <v-card-subtitle class="mt-4">
               {{ appStore.giveCurrentDate[index] }}
             </v-card-subtitle>
           </div>
-          <v-card-text>
-            {{ appStore.arrayOfDates }}
-          </v-card-text>
+          <v-card-actions>
+            <v-btn
+              :icon="appStore.isExpandable[index] ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+              @click="appStore.isExpandable[index] = !appStore.isExpandable[index]"
+            />
+          </v-card-actions>
+          <v-expand-transition>
+            <div v-if="appStore.isExpandable[index]">
+              <v-expansion-panels 
+                v-for="time in appStore.mealTime"
+                :key="time"
+              >
+                <v-expansion-panel 
+                  :title="time"
+                  text="fffff"
+                  class="rounded-0"
+                />
+              </v-expansion-panels>
+            </div>  
+          </v-expand-transition>
         </v-card>
       </v-container>
     </div>
@@ -58,7 +75,7 @@ import { useAppStore } from '@/store/app'
 export default {
   data() {
     return {
-      appStore: useAppStore()
+      appStore: useAppStore(),
     }
   }
 }

@@ -10,6 +10,7 @@ export const useAppStore = defineStore('app', {
       days: ["Понедельник", "Вторник", 
              "Среда", "Четверг", 
              "Пятница", "Суббота", "Воскресенье"],
+      isExpandable: [false, false, false, false, false, false, false],
       mealTime: ["Завтрак", "Обед", "Ужин"],
       currentDate: {day: null, month: null},
       alternativeCurrentDate: null, //текущая дата
