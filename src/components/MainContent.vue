@@ -46,7 +46,7 @@
           <v-card-actions>
             <v-btn
               :icon="appStore.isExpandable[index] ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-              @click="appStore.isExpandable[index] = !appStore.isExpandable[index]"
+              @click="appStore.toggleDay(index, appStore.giveCurrentDate[index])"
             />
           </v-card-actions>
           <v-expand-transition>
@@ -55,11 +55,34 @@
                 v-for="time in appStore.mealTime"
                 :key="time"
               >
-                <v-expansion-panel 
+                <v-expansion-panel
                   :title="time"
-                  text="fffff"
                   class="rounded-0"
-                />
+                >
+                  <v-expansion-panel-text>
+                    <v-btn
+                      variant="text" 
+                    >
+                      <v-overlay 
+                        class="d-flex justify-center align-center"
+                        activator="parent"
+                      >
+                        <v-card 
+                          width="140vh"
+                          height="80vh"
+                        >
+                        </v-card>
+                      </v-overlay>
+                      Добавить продукт
+                      <v-icon 
+                        icon="mdi-plus-circle-outline" 
+                        class="ml-2"
+                        size="large"
+                        color="success"
+                      />
+                    </v-btn>
+                  </v-expansion-panel-text>
+                </v-expansion-panel> 
               </v-expansion-panels>
             </div>  
           </v-expand-transition>

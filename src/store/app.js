@@ -15,6 +15,9 @@ export const useAppStore = defineStore('app', {
       currentDate: {day: null, month: null},
       alternativeCurrentDate: null, //текущая дата
       switchedCurrentDate: null, //дата, использующаяся при "смене" недели
+      clickedDate: null, //дата дня, с которой работает пользователь
+      listsOfDaysMenu: [],
+      TEST_PROD: ["Карто", "Манго", "Баклажан", "Та"] // TEMP!
     }
   },
   actions: {
@@ -53,6 +56,37 @@ export const useAppStore = defineStore('app', {
       let result = day + "." + month + "." + this.alternativeCurrentDate.getFullYear();
       return result;
     },
+
+    toggleDay(index, date) { //открывает/закрывает меню дня
+      this.isExpandable[index] == false ? this.isExpandable[index] = true : this.isExpandable[index] = false; 
+      this.clickedDate = date; 
+    },
+
+    // addProductList(dayNumber, mealNumber) {
+    //   if (this.listsOfDaysMenu.findIndex((el) => el === dayNumber)) { //если текущий день уже есть в базе
+
+    //   }
+    //   else { //если текущего дня нет в базе
+    //     let object = { dayNumber: {"breakfast": [],"lunch": [], "dinner": []}};
+    //     this.listsOfDaysMenu.push(object);
+
+    //   }
+    // },
+
+    // addFoodToMealTime(dayNumber, mealNumber, foodName) {
+    //   const DAY_ID = this.listsOfDaysMenu.findIndex((el) => el === dayNumber)
+    //   switch(mealNumber) {
+    //     case "Завтрак":
+    //       this.listsOfDaysMenu[DAY_ID].breakfast.push(foodName);
+    //       break;
+    //     case "Обед":
+    //       this.listsOfDaysMenu[DAY_ID].lunch.push(foodName);
+    //       break;
+    //     case "Ужин":
+    //       this.listsOfDaysMenu[DAY_ID].dinner.push(foodName);
+    //       break;
+    //   }
+    // }
   },
   getters: {
     giveAlternativeCurrentDate() { // показывает текущую дату 
@@ -86,6 +120,10 @@ export const useAppStore = defineStore('app', {
         day++;
       }
       return arr;
+    },
+
+    showResultedProducts() {
+
     }
   }
 })
