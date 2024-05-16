@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import foodData from '../../datasets/food_base.json'
 
 export const useAppStore = defineStore('app', {
   state: () => {
@@ -17,7 +18,16 @@ export const useAppStore = defineStore('app', {
       switchedCurrentDate: null, //дата, использующаяся при "смене" недели
       clickedDate: null, //дата дня, с которой работает пользователь
       listsOfDaysMenu: [],
-      TEST_PROD: ["Карто", "Манго", "Баклажан", "Та"] // TEMP!
+      foodStorage: [],
+      inputCountRules: [
+        value => !!value || "Значение не должно быть пустым!",
+        value => { const REG_EXP = /^[0-9]+$/
+                   return REG_EXP.test(value) || "Сюда можно вводить только положительные цифры!"
+        },
+        value => (value || '').length <= 10 || "Нельзя вводить больше 10 цифр!",
+        value => { if (value.startsWith(0)) 
+          return false || "Значение не может начинаться с нуля!" }
+      ]
     }
   },
   actions: {
@@ -27,6 +37,8 @@ export const useAppStore = defineStore('app', {
       this.switchedCurrentDate = CURRENT_DATE;
       this.currentDate.day = this.days[CURRENT_DATE.getDay() - 1];
       this.currentDate.month = this.months[CURRENT_DATE.getMonth()];
+
+      this.foodStorage = [...foodData];
     },
 
     nextWeek() { // метод для переключения на следующую неделю относительно текущей даты пользователя
@@ -61,6 +73,12 @@ export const useAppStore = defineStore('app', {
       this.isExpandable[index] == false ? this.isExpandable[index] = true : this.isExpandable[index] = false; 
       this.clickedDate = date; 
     },
+
+    inputCount(value) {
+      if(value < 0) {
+        value = Math.abs(+value);
+      }
+    }
 
     // addProductList(dayNumber, mealNumber) {
     //   if (this.listsOfDaysMenu.findIndex((el) => el === dayNumber)) { //если текущий день уже есть в базе
@@ -122,8 +140,16 @@ export const useAppStore = defineStore('app', {
       return arr;
     },
 
-    showResultedProducts() {
-
+    returnProductNames() {
+      let arrOfNames = [];
+      for (let i = 0; i < this.foodStorage.length; i++) {
+        arrOfNames[i] = this.foodStorage[i].name;
+      }
+      return arrOfNames;
     }
+
+    // showResultedProducts() {
+
+    // }
   }
 })

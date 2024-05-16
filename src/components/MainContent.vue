@@ -68,9 +68,33 @@
                         activator="parent"
                       >
                         <v-card 
-                          width="140vh"
+                          width="130vh"
                           height="80vh"
                         >
+                          <div class="d-flex justify-space-between mt-12 ml-16 mr-16">
+                            <p class="text-h6 mt-2">
+                              Ваш продукт:
+                            </p>
+                            <div class="w-50">
+                              <v-autocomplete 
+                                label="Введите наименование продукта" 
+                                :items="appStore.returnProductNames"
+                                no-data-text="По данному запросу нет результатов"
+                              />
+                            </div>    
+                          </div> 
+                          <div class="d-flex justify-space-between mt-8 ml-16 mr-16">
+                            <p class="text-h6 mt-2">
+                              Количество продукта:
+                            </p>
+                            <div class="w-50">
+                              <v-text-field
+                                :rules="appStore.inputCountRules" 
+                                label="Введите количество в граммах"
+                                @input="appStore.inputCount($event)" 
+                              />
+                            </div>
+                          </div> 
                         </v-card>
                       </v-overlay>
                       Добавить продукт
