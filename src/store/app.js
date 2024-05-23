@@ -11,23 +11,28 @@ export const useAppStore = defineStore('app', {
       days: ["Понедельник", "Вторник", 
              "Среда", "Четверг", 
              "Пятница", "Суббота", "Воскресенье"],
-      isExpandable: [false, false, false, false, false, false, false],
+      isExpandable: [false, false, false, false, false, false, false], //переменная, которая отвечает за расширение вкладок
       mealTime: ["Завтрак", "Обед", "Ужин"],
       currentDate: {day: null, month: null},
       alternativeCurrentDate: null, //текущая дата
       switchedCurrentDate: null, //дата, использующаяся при "смене" недели
       clickedDate: null, //дата дня, с которой работает пользователь
       listsOfDaysMenu: [],
-      foodStorage: [],
-      inputCountRules: [
-        value => !!value || "Значение не должно быть пустым!",
+      foodStorage: [], //хранилище данных по продуктах
+      inputCountRules: [ //валидация для поля ввода массы продукта
+        value => !!value || "Значение не может быть пустым!",
         value => { const REG_EXP = /^[0-9]+$/
-                   return REG_EXP.test(value) || "Сюда можно вводить только положительные цифры!"
+                   return REG_EXP.test(value) || "Значение должно быть положительным числом!"
         },
-        value => (value || '').length <= 10 || "Нельзя вводить больше 10 цифр!",
-        value => { if (value.startsWith(0)) 
-          return false || "Значение не может начинаться с нуля!" }
-      ]
+        value => (value || '').length <= 10 || "Значение не должно превышать 10 цифр!",
+        value => {if (value.startsWith(0)) 
+                  return false || "Значение не может начинаться с нуля!"
+                  else 
+                  return true}
+      ],
+      currentCountValue: null, // количество продукта в граммах
+      currentProductName: null, //наименование продукта,
+      isFormValid: false // переменная, которая нужна для корректной блокировки кнопки
     }
   },
   actions: {
@@ -74,11 +79,12 @@ export const useAppStore = defineStore('app', {
       this.clickedDate = date; 
     },
 
-    inputCount(value) {
-      if(value < 0) {
-        value = Math.abs(+value);
-      }
+    selectProduct() {
+      alert("SELECTED");
     }
+    // inputCount(value) {
+      
+    // }
 
     // addProductList(dayNumber, mealNumber) {
     //   if (this.listsOfDaysMenu.findIndex((el) => el === dayNumber)) { //если текущий день уже есть в базе
@@ -146,6 +152,19 @@ export const useAppStore = defineStore('app', {
         arrOfNames[i] = this.foodStorage[i].name;
       }
       return arrOfNames;
+    },
+
+    isButtonAvailable() {
+      if(this.isFormValid && this.currentProductName != null) {
+        return false;
+      }
+      else {
+        return true;
+      }
+    },
+
+    showInfoAboutProduct() {
+      
     }
 
     // showResultedProducts() {

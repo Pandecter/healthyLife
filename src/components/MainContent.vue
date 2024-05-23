@@ -77,6 +77,7 @@
                             </p>
                             <div class="w-50">
                               <v-autocomplete 
+                                v-model="appStore.currentProductName"
                                 label="Введите наименование продукта" 
                                 :items="appStore.returnProductNames"
                                 no-data-text="По данному запросу нет результатов"
@@ -88,12 +89,21 @@
                               Количество продукта:
                             </p>
                             <div class="w-50">
-                              <v-text-field
-                                :rules="appStore.inputCountRules" 
-                                label="Введите количество в граммах"
-                                @input="appStore.inputCount($event)" 
-                              />
+                              <v-form v-model="appStore.isFormValid">
+                                <v-text-field
+                                  v-model="appStore.currentCountValue"
+                                  :rules="appStore.inputCountRules" 
+                                  label="Введите количество в граммах"
+                                />
+                              </v-form>
                             </div>
+                          </div>
+                          <div class="d-flex justify-center align-end h-50">
+                            <v-btn 
+                              :disabled="appStore.isButtonAvailable"
+                            > 
+                              Добавить продукт 
+                            </v-btn>
                           </div> 
                         </v-card>
                       </v-overlay>
