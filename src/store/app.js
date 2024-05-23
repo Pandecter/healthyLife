@@ -32,7 +32,7 @@ export const useAppStore = defineStore('app', {
       ],
       currentCountValue: null, // количество продукта в граммах
       currentProductName: null, //наименование продукта,
-      isFormValid: false // переменная, которая нужна для корректной блокировки кнопки
+      isFormValid: false, // переменная, которая нужна для корректной блокировки кнопки
     }
   },
   actions: {
@@ -79,9 +79,6 @@ export const useAppStore = defineStore('app', {
       this.clickedDate = date; 
     },
 
-    selectProduct() {
-      alert("SELECTED");
-    }
     // inputCount(value) {
       
     // }
@@ -146,7 +143,7 @@ export const useAppStore = defineStore('app', {
       return arr;
     },
 
-    returnProductNames() {
+    returnProductNames() { //выводит список продуктов в autocomplete
       let arrOfNames = [];
       for (let i = 0; i < this.foodStorage.length; i++) {
         arrOfNames[i] = this.foodStorage[i].name;
@@ -154,17 +151,36 @@ export const useAppStore = defineStore('app', {
       return arrOfNames;
     },
 
-    isButtonAvailable() {
-      if(this.isFormValid && this.currentProductName != null) {
+    isButtonAvailable() { //отвечает блокировку/разблокировку кнопки
+      if (this.isFormValid && this.currentProductName != null) {
+        this.showModalInfo = true;
         return false;
       }
       else {
+        this.showModalInfo = false;
         return true;
       }
     },
 
+    actualProductCounter() {
+      let stats = ["calories", "proteins", "fats", "carbs"];
+      let product = {...this.foodStorage.find((el) => el.name === this.currentProductName) };
+      for (let i = 0; i < stats.length; i++) {
+        let choice = stats[i];
+        product[choice] = product[choice].replace(/,/g, '.');
+        product[choice] = Number(product[choice].replace(/[^0-9.]+/g,""));
+        product[choice] = (product[choice] * (this.currentCountValue / 100)).toFixed(2);
+      } 
+      return product;
+    },
+    
     showInfoAboutProduct() {
-      
+      let info = this.actualProductCounter;
+      info.calories = info.calories + " Ккал";
+      info.proteins = info.proteins + " г";
+      info.fats = info.fats + " г";
+      info.carbs = info.carbs + " г";
+      return info;
     }
 
     // showResultedProducts() {

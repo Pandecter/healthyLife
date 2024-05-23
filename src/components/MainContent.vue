@@ -98,7 +98,59 @@
                               </v-form>
                             </div>
                           </div>
-                          <div class="d-flex justify-center align-end h-50">
+                          <div 
+                            v-if="appStore.isButtonAvailable"
+                            class="d-flex justify-center align-center h-50"
+                          >
+                            <p 
+                              class="text-h6 font-weight-light"
+                            > 
+                              Здесь будут отображены данные о продукте
+                            </p>
+                          </div>
+                          <div 
+                            v-else
+                            class="h-50 pt-16"
+                          >
+                            <div class="d-flex justify-center pb-8">
+                              <p class="text-h6">
+                                Информация о выбранном продукте 
+                              </p>
+                            </div>
+                            <hr>
+                            <v-table>
+                              <thead>
+                                <tr>
+                                  <th class="text-left">
+                                    Название продукта
+                                  </th>
+                                  <th class="text-left">
+                                    Калории
+                                  </th>
+                                  <th class="text-left">
+                                    Белки
+                                  </th>
+                                  <th class="text-left">
+                                    Жиры
+                                  </th>
+                                  <th class="text-left">
+                                    Углеводы
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td 
+                                    v-for="stat in appStore.showInfoAboutProduct"
+                                    :key="stat.name">
+                                    {{ stat }}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </v-table>
+                            <hr>
+                          </div>                         
+                          <div class="d-flex justify-center">
                             <v-btn 
                               :disabled="appStore.isButtonAvailable"
                             > 
