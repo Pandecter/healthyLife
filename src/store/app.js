@@ -17,7 +17,7 @@ export const useAppStore = defineStore('app', {
       alternativeCurrentDate: null, //текущая дата
       switchedCurrentDate: null, //дата, использующаяся при "смене" недели
       clickedDate: null, //дата дня, с которой работает пользователь
-      listsOfDaysMenu: [],
+      listsOfDaysMenu: [], //хранилище продуктов, выбранных пользователем
       foodStorage: [], //хранилище данных по продуктах
       inputCountRules: [ //валидация для поля ввода массы продукта
         value => !!value || "Значение не может быть пустым!",
@@ -79,35 +79,41 @@ export const useAppStore = defineStore('app', {
       this.clickedDate = date; 
     },
 
-    // inputCount(value) {
+
+    addToProductList(dayNumber, mealTime, food) {
+      const DAY_ID = this.days.findIndex((el) => el === dayNumber);
+      let currentDate = this.giveCurrentDate[DAY_ID];
+
+      if (!(this.listsOfDaysMenu.find((el) => el.date === currentDate))) { //если текущего дня нет в базе 
+        //console.log("НЕТ В БАЗЕ, сначала создадим, а потом вызовем аддфуд");
+        const OBJECT = { "date": currentDate, "breakfast": [],"lunch": [], "dinner": []};
+        this.listsOfDaysMenu.push(OBJECT);
+        this.addFoodToMealTime(currentDate, mealTime, food);    
+      }
+      else { //если текущий день уже есть в базе
+        if(this.listsOfDaysMenu.find((el) => el.date === currentDate)) {
+          //console.log("ЕСТЬ В БАЗЕ, просто вызовем аддфуд");
+          this.addFoodToMealTime(currentDate, mealTime, food);
+        }
+      }
       
-    // }
+    },
 
-    // addProductList(dayNumber, mealNumber) {
-    //   if (this.listsOfDaysMenu.findIndex((el) => el === dayNumber)) { //если текущий день уже есть в базе
-
-    //   }
-    //   else { //если текущего дня нет в базе
-    //     let object = { dayNumber: {"breakfast": [],"lunch": [], "dinner": []}};
-    //     this.listsOfDaysMenu.push(object);
-
-    //   }
-    // },
-
-    // addFoodToMealTime(dayNumber, mealNumber, foodName) {
-    //   const DAY_ID = this.listsOfDaysMenu.findIndex((el) => el === dayNumber)
-    //   switch(mealNumber) {
-    //     case "Завтрак":
-    //       this.listsOfDaysMenu[DAY_ID].breakfast.push(foodName);
-    //       break;
-    //     case "Обед":
-    //       this.listsOfDaysMenu[DAY_ID].lunch.push(foodName);
-    //       break;
-    //     case "Ужин":
-    //       this.listsOfDaysMenu[DAY_ID].dinner.push(foodName);
-    //       break;
-    //   }
-    // }
+    addFoodToMealTime(currentDate, mealTime, food) {
+      const DAY_ID = this.listsOfDaysMenu.findIndex((el) => el.date === currentDate);
+      //console.log(DAY_ID)
+      switch(mealTime) {
+        case "Завтрак":
+          this.listsOfDaysMenu[DAY_ID].breakfast.push(food);
+          break;
+        case "Обед":
+          this.listsOfDaysMenu[DAY_ID].lunch.push(food);
+          break;
+        case "Ужин":
+          this.listsOfDaysMenu[DAY_ID].dinner.push(food);
+          break;
+      }
+    }
   },
   getters: {
     giveAlternativeCurrentDate() { // показывает текущую дату 
@@ -162,7 +168,7 @@ export const useAppStore = defineStore('app', {
       }
     },
 
-    actualProductCounter() {
+    actualProductCounter() { //высчитывает количество "состава" с учетом количества продукта
       let stats = ["calories", "proteins", "fats", "carbs"];
       let product = {...this.foodStorage.find((el) => el.name === this.currentProductName) };
       for (let i = 0; i < stats.length; i++) {
@@ -174,7 +180,7 @@ export const useAppStore = defineStore('app', {
       return product;
     },
     
-    showInfoAboutProduct() {
+    showInfoAboutProduct() { //вывод информации о продукте
       let info = this.actualProductCounter;
       info.calories = info.calories + " Ккал";
       info.proteins = info.proteins + " г";

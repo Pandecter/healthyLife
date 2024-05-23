@@ -153,6 +153,7 @@
                           <div class="d-flex justify-center">
                             <v-btn 
                               :disabled="appStore.isButtonAvailable"
+                              @click="appStore.addToProductList(day, time, appStore.showInfoAboutProduct)"
                             > 
                               Добавить продукт 
                             </v-btn>
