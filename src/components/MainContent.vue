@@ -52,7 +52,7 @@
           <v-expand-transition>
             <div v-if="appStore.isExpandable[index]">
               <v-expansion-panels 
-                v-for="time in appStore.mealTime"
+                v-for="(time, indexOfTime) in appStore.mealTime"
                 :key="time"
               >
                 <v-expansion-panel
@@ -60,6 +60,7 @@
                   class="rounded-0"
                 >
                   <v-expansion-panel-text>
+                    <p> {{ appStore.showInfo[index, indexOfTime] }}</p>
                     <v-btn
                       variant="text" 
                     >
