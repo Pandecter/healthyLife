@@ -33,6 +33,7 @@ export const useAppStore = defineStore('app', {
       currentCountValue: null, // количество продукта в граммах
       currentProductName: null, //наименование продукта,
       isFormValid: false, // переменная, которая нужна для корректной блокировки кнопки
+      //isFoodTimeEmpty: false 
     }
   },
   actions: {
@@ -157,7 +158,7 @@ export const useAppStore = defineStore('app', {
       return arrOfNames;
     },
 
-    isButtonAvailable() { //отвечает блокировку/разблокировку кнопки
+    isButtonAvailable() { //отвечает за блокировку/разблокировку кнопки
       if (this.isFormValid && this.currentProductName != null) {
         this.showModalInfo = true;
         return false;
@@ -192,42 +193,45 @@ export const useAppStore = defineStore('app', {
     showInfo() {
       let shownArray = []; //возвращаемый массив
       let currentDate = this.giveCurrentDate; // получаем массив выбранных дат
-      console.log("CURRENT_DATE: " + currentDate);
+      //console.log("CURRENT_DATE: " + currentDate);
       for (let i = 0; i < currentDate.length; i++) { //проходимся по всему массиву дат
         let result = this.listsOfDaysMenu.find((el) => el.date === currentDate[i]) //присваиваем результат поиска даты в массиве меню
-        console.log("RESULT: " + result);
+        //console.log("RESULT: " + result);
         if (typeof(result) === "undefined") { //если полученный тип undefined, т.е. данных с такой датой найдено не было
-          console.log("ДАННЫХ С ДАТОЙ " + currentDate[i] + " НЕ БЫЛО!");
+          //console.log("ДАННЫХ С ДАТОЙ " + currentDate[i] + " НЕ БЫЛО!");
           let tempArr = [];
           for (let j = 0; j < this.mealTime.length; j++) { //проходимся 3 раза в соответствии с распорядком (завтрак/обед/ужин)
-            console.log("ИНИЦИИРУЕМ НЕТ ДАННЫХ ПЕРЕДАЧУ");
-            tempArr.push("Нет данных")
+            //console.log("ИНИЦИИРУЕМ НЕТ ДАННЫХ ПЕРЕДАЧУ")
+            //continue;
+            tempArr.push(null);
             //shownArray[i][j] = "Нет данных"; //заносим данные во все j-ые поля i-го дня т.к. такого дня в базе нет
           }
           shownArray.push(tempArr);
         }
         else { //если полученный тип (в result) не undefined (т.е найденный объект)
-          console.log("ДАННЫЕ С ДАТОЙ " + currentDate[i] + "БЫЛИ!");
+          //console.log("ДАННЫЕ С ДАТОЙ " + currentDate[i] + "БЫЛИ!");
           const SWITCH = ["breakfast", "lunch", "dinner"]; // массив, который пригодится для более компактной работы
           let tempArr = [];
-          for(let j = 0; j < SWITCH.length; j++) { //проходимся по всему массиву SWITCH
+          for (let j = 0; j < SWITCH.length; j++) { //проходимся по всему массиву SWITCH
             const CHOICE = SWITCH[j]; //выбираем j-ый элемент массива SWITCH
-            console.log("ТЕКУЩИЙ ВЫБОР: " + CHOICE);
-            if(result[CHOICE].length !== 0) { //если длина массива за прием пищи ненулевая (т.е там есть данные о еде)
-              console.log("ЗА ДАТУ " + currentDate[i] + "И ПРИЕМ ПИЩИ " + CHOICE +"ЕСТЬ ДАННЫЕ. ЭТО: " + result[CHOICE]);
+            //console.log("ТЕКУЩИЙ ВЫБОР: " + CHOICE);
+            if (result[CHOICE].length !== 0) { //если длина массива за прием пищи ненулевая (т.е там есть данные о еде)
+              //console.log("ЗА ДАТУ " + currentDate[i] + "И ПРИЕМ ПИЩИ " + CHOICE +"ЕСТЬ ДАННЫЕ. ЭТО: " + result[CHOICE]);
               tempArr.push(result[CHOICE]);
               //shownArray[i][j] = result[CHOICE]; //заносим данные в массив
             }
             else { //если длина массива нулевая (т. е. данные за прием пищи отсутствуют)
-              console.log("ЗА ДАТУ " + currentDate[i] + "И ПРИЕМ ПИЩИ " + CHOICE + "НЕТ ДАННЫХ")
-              tempArr.push("Нет данных");
+              //console.log("ЗА ДАТУ " + currentDate[i] + "И ПРИЕМ ПИЩИ " + CHOICE + "НЕТ ДАННЫХ")
+              //continue;
+              tempArr.push(null);
               //shownArray[i][j] = "Нет данных";
             }
           }
           shownArray.push(tempArr);
         }
+        
       }
       return shownArray;
-    }
+    },
   }
 })

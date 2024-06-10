@@ -29,7 +29,7 @@
       </div>
       <v-container class="d-flex justify-space-between flex-column mt-16 w-100 h-100">
         <v-card 
-          v-for="(day, index) in appStore.days"
+          v-for="(day, indexOfDay) in appStore.days"
           :key="day"
           variant="outlined"
           width="100%"
@@ -40,17 +40,17 @@
               {{ day }}
             </v-card-title>
             <v-card-subtitle class="mt-4">
-              {{ appStore.giveCurrentDate[index] }}
+              {{ appStore.giveCurrentDate[indexOfDay] }}
             </v-card-subtitle>
           </div>
           <v-card-actions>
             <v-btn
-              :icon="appStore.isExpandable[index] ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-              @click="appStore.toggleDay(index, appStore.giveCurrentDate[index])"
+              :icon="appStore.isExpandable[indexOfDay] ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+              @click="appStore.toggleDay(indexOfDay, appStore.giveCurrentDate[indexOfDay])"
             />
           </v-card-actions>
           <v-expand-transition>
-            <div v-if="appStore.isExpandable[index]">
+            <div v-if="appStore.isExpandable[indexOfDay]">
               <v-expansion-panels 
                 v-for="(time, indexOfTime) in appStore.mealTime"
                 :key="time"
@@ -60,9 +60,30 @@
                   class="rounded-0"
                 >
                   <v-expansion-panel-text>
-                    <p> {{ appStore.showInfo[index, indexOfTime] }}</p>
+                    <div 
+                      v-if="appStore.showInfo[indexOfDay][indexOfTime] === null"
+                    > 
+                      Вы еще не добавили продукты
+                    </div>
+                    <div v-else>
+                      <div 
+                        v-for="element in appStore.showInfo[indexOfDay][indexOfTime]"
+                        :key="element"
+                      >
+                        <hr class="mt-3 mb-3">
+                        <div class="d-flex justify-space-between w-50">
+                          <p>
+                            "{{ element.name }}"
+                          </p> 
+                          <p>
+                            {{ element.calories }}
+                          </p>         
+                        </div>
+                      </div>
+                    </div>
                     <v-btn
-                      variant="text" 
+                      variant="text"
+                      class="mt-4" 
                     >
                       <v-overlay 
                         class="d-flex justify-center align-center"
@@ -143,7 +164,8 @@
                                 <tr>
                                   <td 
                                     v-for="stat in appStore.showInfoAboutProduct"
-                                    :key="stat.name">
+                                    :key="stat.name"
+                                  >
                                     {{ stat }}
                                   </td>
                                 </tr>
