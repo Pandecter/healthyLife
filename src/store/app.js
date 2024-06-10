@@ -35,7 +35,7 @@ export const useAppStore = defineStore('app', {
       currentCountValue: null, // количество продукта в граммах
       currentProductName: null, //наименование продукта,
       isFormValid: false, // переменная, которая нужна для корректной блокировки кнопки
-      //isFoodTimeEmpty: false 
+      isOverlayActive: false
     }
   },
   actions: {
@@ -54,6 +54,7 @@ export const useAppStore = defineStore('app', {
       let currentDate = this.switchedCurrentDate;
       currentDate = new Date(currentDate.getFullYear(),  currentDate.getMonth(), currentDate.getDate() + WEEK);
       this.switchedCurrentDate = currentDate;
+      this.isExpandable.fill(false)
     },
 
     previousWeek() { // метод для переключения на предыдущую неделю относительно текущей даты пользователя
@@ -61,6 +62,7 @@ export const useAppStore = defineStore('app', {
       let currentDate = this.switchedCurrentDate;
       currentDate = new Date(currentDate.getFullYear(),  currentDate.getMonth(), currentDate.getDate() - WEEK);
       this.switchedCurrentDate = currentDate;
+      this.isExpandable.fill(false)
     },
 
     dateFormer(date) { //создает строку с датой в привычном для отображения виде
@@ -86,6 +88,7 @@ export const useAppStore = defineStore('app', {
     addToProductList(dayNumber, mealTime, food) { //добавляет продукт в общий массив выбранных продуктов
       const DAY_ID = this.days.findIndex((el) => el === dayNumber);
       let currentDate = this.giveCurrentDate[DAY_ID];
+      console.log(mealTime)
 
       if (!(this.listsOfDaysMenu.find((el) => el.date === currentDate))) { //если текущего дня нет в базе 
         //console.log("НЕТ В БАЗЕ, сначала создадим, а потом вызовем аддфуд");
@@ -99,27 +102,26 @@ export const useAppStore = defineStore('app', {
           this.addFoodToMealTime(currentDate, mealTime, food);
         }
       }
-      
+     this.isOverlayActive = false;
     },
 
     addFoodToMealTime(currentDate, mealTime, food) { //добавляет продукт в конкретный прием пищи
       const DAY_ID = this.listsOfDaysMenu.findIndex((el) => el.date === currentDate);
       //console.log(DAY_ID)
       switch(mealTime) {
-        case "Завтрак":
+        case 0:
           this.listsOfDaysMenu[DAY_ID].breakfast.push(food);
           break;
-        case "Обед":
+        case 1:
           this.listsOfDaysMenu[DAY_ID].lunch.push(food);
           break;
-        case "Ужин":
+        case 2:
           this.listsOfDaysMenu[DAY_ID].dinner.push(food);
           break;
       }
     },
 
     deleteFoodFromMealTime(mealTimeMenu, mealTime, date) {
-      //console.log(mealTimeMenu, mealTime, day);
       const DAY_ID = this.listsOfDaysMenu.findIndex((el) => el.date === date); //получаем индекс дня в массиве
       let nameOfMealTime;
       switch(mealTime) { //необходим для обращения к полю 

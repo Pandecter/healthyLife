@@ -1,10 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import PersonalPage from '../components/PersonInfo.vue'
 
 const routes = [
   {
     path: '/',
     component: () => import('@/views/MainView.vue')
   },
+  {
+    path: '/person_info',
+    component: PersonalPage
+  }
 ]
 
 const router = createRouter({

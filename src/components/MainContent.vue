@@ -8,6 +8,11 @@
       <v-app-bar-title>
         ЗЖ-У
       </v-app-bar-title>
+      <v-btn 
+        icon="mdi-account"
+        title="Ввести данные"
+        @click="goToPersonPage()"
+      />
     </v-app-bar> 
     <div class="mt-16">
       <p class="d-flex justify-center mt-16">
@@ -105,9 +110,10 @@
                     </div>
                     <v-btn
                       variant="text"
-                      class="mt-4" 
+                      class="mt-4"
                     >
-                      <v-overlay 
+                      <v-overlay
+                        ref="overlay"
                         class="d-flex justify-center align-center"
                         activator="parent"
                       >
@@ -198,7 +204,7 @@
                           <div class="d-flex justify-center">
                             <v-btn 
                               :disabled="appStore.isButtonAvailable"
-                              @click="appStore.addToProductList(day, time, appStore.showInfoAboutProduct)"
+                              @click="addToProductStore(day, indexOfTime, appStore.showInfoAboutProduct)"
                             > 
                               Добавить продукт 
                             </v-btn>
@@ -231,6 +237,17 @@ export default {
   data() {
     return {
       appStore: useAppStore(),
+    }
+  },
+
+  methods: {
+    addToProductStore(dayNum, timeNum, products) { //необходимо для корректной передачи данных и закр
+      this.appStore.addToProductList(dayNum, timeNum, products);
+      this.$refs.overlay.isActive = false;
+    },
+
+    goToPersonPage() {
+      this.$router.push('/person_info');
     }
   }
 }
