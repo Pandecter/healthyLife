@@ -62,24 +62,46 @@
                   <v-expansion-panel-text>
                     <div 
                       v-if="appStore.showInfo[indexOfDay][indexOfTime] === null"
+                      class="d-flex justify-center"
                     > 
                       Вы еще не добавили продукты
                     </div>
                     <div v-else>
-                      <div 
-                        v-for="element in appStore.showInfo[indexOfDay][indexOfTime]"
-                        :key="element"
-                      >
-                        <hr class="mt-3 mb-3">
-                        <div class="d-flex justify-space-between w-50">
-                          <p>
-                            "{{ element.name }}"
-                          </p> 
-                          <p>
-                            {{ element.calories }}
-                          </p>         
-                        </div>
-                      </div>
+                      <v-container>
+                        <v-row class="mb-2 font-weight-bold">
+                          <v-col 
+                            v-for="stat in appStore.listOfStats"
+                            :key="stat"
+                            class=""
+                          >
+                            {{ stat }}
+                          </v-col>
+                        </v-row>
+                        <hr class="mb-3">
+                        <v-row
+                          v-for="element in appStore.showInfo[indexOfDay][indexOfTime]"
+                          :key="element.name"
+                          class="pa-2"
+                        >
+                          <v-col 
+                            v-for="property in element"
+                            :key="property.name"
+                            class="d-flex align-center"
+                          >
+                            {{ property }}
+                          </v-col>
+                          <v-col class="d-flex align-center">
+                            <v-btn 
+                              title="Удалить продукт"
+                              variant="text"
+                              icon="mdi-delete-circle"
+                              color="red"
+                              @click="appStore.deleteFoodFromMealTime(element, indexOfTime, appStore.giveCurrentDate[indexOfDay])"
+                            />
+                          </v-col>
+                        </v-row>
+                        <hr class="mt-3">
+                      </v-container>
                     </div>
                     <v-btn
                       variant="text"

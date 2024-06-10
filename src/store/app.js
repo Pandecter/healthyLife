@@ -11,6 +11,8 @@ export const useAppStore = defineStore('app', {
       days: ["Понедельник", "Вторник", 
              "Среда", "Четверг", 
              "Пятница", "Суббота", "Воскресенье"],
+      listOfStats: ["Наименование", "Калорийность", "Белки",
+                    "Жиры", "Углеводы", "Удаление"],
       isExpandable: [false, false, false, false, false, false, false], //переменная, которая отвечает за расширение вкладок
       mealTime: ["Завтрак", "Обед", "Ужин"],
       currentDate: {day: null, month: null},
@@ -81,7 +83,7 @@ export const useAppStore = defineStore('app', {
     },
 
 
-    addToProductList(dayNumber, mealTime, food) {
+    addToProductList(dayNumber, mealTime, food) { //добавляет продукт в общий массив выбранных продуктов
       const DAY_ID = this.days.findIndex((el) => el === dayNumber);
       let currentDate = this.giveCurrentDate[DAY_ID];
 
@@ -100,7 +102,7 @@ export const useAppStore = defineStore('app', {
       
     },
 
-    addFoodToMealTime(currentDate, mealTime, food) {
+    addFoodToMealTime(currentDate, mealTime, food) { //добавляет продукт в конкретный прием пищи
       const DAY_ID = this.listsOfDaysMenu.findIndex((el) => el.date === currentDate);
       //console.log(DAY_ID)
       switch(mealTime) {
@@ -114,7 +116,25 @@ export const useAppStore = defineStore('app', {
           this.listsOfDaysMenu[DAY_ID].dinner.push(food);
           break;
       }
-    }
+    },
+
+    // deleteFoodFromMealTime(mealTimeMenu, mealTime, date) {
+    //   //console.log(mealTimeMenu, mealTime, day);
+    //   const DAY_ID = this.listsOfDaysMenu.findIndex((el) => el.date === date);
+    //   let nameOfMealTime;
+    //   switch(mealTime) {
+    //     case 0:
+    //       nameOfMealTime = "breakfast";
+    //       break;
+    //     case 1:
+    //       nameOfMealTime = "lunch";
+    //       break;
+    //     case 2:
+    //       nameOfMealTime = "dinner";
+    //       break; 
+    //   }
+    //   const MEAL_ID = this.listsOfDaysMenu[DAY_ID].findIndex((el) => el.date === date);
+    // }
   },
   getters: {
     giveAlternativeCurrentDate() { // показывает текущую дату 
