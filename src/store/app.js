@@ -118,23 +118,25 @@ export const useAppStore = defineStore('app', {
       }
     },
 
-    // deleteFoodFromMealTime(mealTimeMenu, mealTime, date) {
-    //   //console.log(mealTimeMenu, mealTime, day);
-    //   const DAY_ID = this.listsOfDaysMenu.findIndex((el) => el.date === date);
-    //   let nameOfMealTime;
-    //   switch(mealTime) {
-    //     case 0:
-    //       nameOfMealTime = "breakfast";
-    //       break;
-    //     case 1:
-    //       nameOfMealTime = "lunch";
-    //       break;
-    //     case 2:
-    //       nameOfMealTime = "dinner";
-    //       break; 
-    //   }
-    //   const MEAL_ID = this.listsOfDaysMenu[DAY_ID].findIndex((el) => el.date === date);
-    // }
+    deleteFoodFromMealTime(mealTimeMenu, mealTime, date) {
+      //console.log(mealTimeMenu, mealTime, day);
+      const DAY_ID = this.listsOfDaysMenu.findIndex((el) => el.date === date); //получаем индекс дня в массиве
+      let nameOfMealTime;
+      switch(mealTime) { //необходим для обращения к полю 
+        case 0:
+          nameOfMealTime = "breakfast";
+          break;
+        case 1:
+          nameOfMealTime = "lunch";
+          break;
+        case 2:
+          nameOfMealTime = "dinner";
+          break; 
+      }
+      let deletingArr = this.listsOfDaysMenu[DAY_ID][nameOfMealTime]; //получаем массив времени приемащ пищи конкретной даты
+      const MEAL_ID = deletingArr.findIndex((el) => el.name === mealTimeMenu.name); //находим ID конкретного продукта
+      deletingArr.splice(MEAL_ID, 1);
+    }
   },
   getters: {
     giveAlternativeCurrentDate() { // показывает текущую дату 
