@@ -3,16 +3,17 @@
 </template>
 
 <script>
-import { useAppStore } from './store/app';
+import { useProductStore } from './store/productStore';
 
 export default {
   data() {
     return {
-      appStore: useAppStore()
+      productStore: useProductStore()
     }
   },
   mounted() {
-    this.appStore.mountFunction();
+    this.productStore.mountFunction();
   }
 }
 </script>
+./store/productStore

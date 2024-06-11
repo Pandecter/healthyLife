@@ -16,25 +16,25 @@
     </v-app-bar> 
     <div class="mt-16">
       <p class="d-flex justify-center mt-16">
-        {{ appStore.giveCurrentWeek }}
+        {{ productStore.giveCurrentWeek }}
       </p>
       <div class="d-flex justify-center mt-8">
         <v-btn 
           class="mr-2" 
-          @click="appStore.previousWeek()"
+          @click="productStore.previousWeek()"
         >
           Предыдущая
         </v-btn>
         <v-btn 
           class="ml-2" 
-          @click="appStore.nextWeek()"
+          @click="productStore.nextWeek()"
         >
           Следующая
         </v-btn>
       </div>
       <v-container class="d-flex justify-space-between flex-column mt-16 w-100 h-100">
         <v-card 
-          v-for="(day, indexOfDay) in appStore.days"
+          v-for="(day, indexOfDay) in productStore.days"
           :key="day"
           variant="outlined"
           width="100%"
@@ -45,19 +45,19 @@
               {{ day }}
             </v-card-title>
             <v-card-subtitle class="mt-4">
-              {{ appStore.giveCurrentDate[indexOfDay] }}
+              {{ productStore.giveCurrentDate[indexOfDay] }}
             </v-card-subtitle>
           </div>
           <v-card-actions>
             <v-btn
-              :icon="appStore.isExpandable[indexOfDay] ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-              @click="appStore.toggleDay(indexOfDay, appStore.giveCurrentDate[indexOfDay])"
+              :icon="productStore.isExpandable[indexOfDay] ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+              @click="productStore.toggleDay(indexOfDay, productStore.giveCurrentDate[indexOfDay])"
             />
           </v-card-actions>
           <v-expand-transition>
-            <div v-if="appStore.isExpandable[indexOfDay]">
+            <div v-if="productStore.isExpandable[indexOfDay]">
               <v-expansion-panels 
-                v-for="(time, indexOfTime) in appStore.mealTime"
+                v-for="(time, indexOfTime) in productStore.mealTime"
                 :key="time"
               >
                 <v-expansion-panel
@@ -66,7 +66,7 @@
                 >
                   <v-expansion-panel-text>
                     <div 
-                      v-if="appStore.showInfo[indexOfDay][indexOfTime] === null"
+                      v-if="productStore.showInfo[indexOfDay][indexOfTime] === null"
                       class="d-flex justify-center"
                     > 
                       Вы еще не добавили продукты
@@ -75,7 +75,7 @@
                       <v-container>
                         <v-row class="mb-2 font-weight-bold">
                           <v-col 
-                            v-for="stat in appStore.listOfStats"
+                            v-for="stat in productStore.listOfStats"
                             :key="stat"
                             class=""
                           >
@@ -84,7 +84,7 @@
                         </v-row>
                         <hr class="mb-3">
                         <v-row
-                          v-for="element in appStore.showInfo[indexOfDay][indexOfTime]"
+                          v-for="element in productStore.showInfo[indexOfDay][indexOfTime]"
                           :key="element.name"
                           class="pa-2"
                         >
@@ -101,7 +101,7 @@
                               variant="text"
                               icon="mdi-delete-circle"
                               color="red"
-                              @click="appStore.deleteFoodFromMealTime(element, indexOfTime, appStore.giveCurrentDate[indexOfDay])"
+                              @click="productStore.deleteFoodFromMealTime(element, indexOfTime, productStore.giveCurrentDate[indexOfDay])"
                             />
                           </v-col>
                         </v-row>
@@ -115,7 +115,7 @@
                     >
                       <v-overlay
                         class="d-flex justify-center align-center"
-                        v-model="appStore.isOverlayActive"
+                        v-model="productStore.isOverlayActive"
                       >
                         <v-card 
                           width="130vh"
@@ -127,9 +127,9 @@
                             </p>
                             <div class="w-50">
                               <v-autocomplete 
-                                v-model="appStore.currentProductName"
+                                v-model="productStore.currentProductName"
                                 label="Введите наименование продукта" 
-                                :items="appStore.returnProductNames"
+                                :items="productStore.returnProductNames"
                                 no-data-text="По данному запросу нет результатов"
                               />
                             </div>    
@@ -139,17 +139,17 @@
                               Количество продукта:
                             </p>
                             <div class="w-50">
-                              <v-form v-model="appStore.isFormValid">
+                              <v-form v-model="productStore.isFormValid">
                                 <v-text-field
-                                  v-model="appStore.currentCountValue"
-                                  :rules="appStore.inputCountRules" 
+                                  v-model="productStore.currentCountValue"
+                                  :rules="productStore.inputCountRules" 
                                   label="Введите количество в граммах"
                                 />
                               </v-form>
                             </div>
                           </div>
                           <div 
-                            v-if="appStore.isButtonAvailable"
+                            v-if="productStore.isButtonAvailable"
                             class="d-flex justify-center align-center h-50"
                           >
                             <p 
@@ -191,7 +191,7 @@
                               <tbody>
                                 <tr>
                                   <td 
-                                    v-for="stat in appStore.showInfoAboutProduct"
+                                    v-for="stat in productStore.showInfoAboutProduct"
                                     :key="stat.name"
                                   >
                                     {{ stat }}
@@ -203,7 +203,7 @@
                           </div>                         
                           <div class="d-flex justify-center">
                             <v-btn 
-                              :disabled="appStore.isButtonAvailable"
+                              :disabled="productStore.isButtonAvailable"
                               @click="addToProductStore()"
                             > 
                               Добавить продукт 
@@ -231,12 +231,12 @@
 </template>
 
 <script>
-import { useAppStore } from '@/store/app' 
+import { useProductStore } from '@/store/productStore' 
 
 export default {
   data() {
     return {
-      appStore: useAppStore(),
+      productStore: useProductStore(),
       currentDay: null,
       currentMealTime: null
     }
@@ -246,12 +246,12 @@ export default {
     showOverlay(day, mealTime) { //необходимо для корректного добавления продуктов и открытия оверлея
       this.currentDay = day;
       this.currentMealTime = mealTime;
-      this.appStore.isOverlayActive = true;
+      this.productStore.isOverlayActive = true;
     },
 
     addToProductStore() {//необходимо для корректного добавления продуктов и закрытия оверлея
-      this.appStore.addToProductList(this.currentDay, this.currentMealTime, this.appStore.showInfoAboutProduct);
-      this.appStore.isOverlayActive = false;
+      this.productStore.addToProductList(this.currentDay, this.currentMealTime, this.productStore.showInfoAboutProduct);
+      this.productStore.isOverlayActive = false;
     },
 
     goToPersonPage() {
@@ -259,4 +259,4 @@ export default {
     }
   }
 }
-</script>
+</script>@/store/productStore

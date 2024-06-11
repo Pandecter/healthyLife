@@ -58,12 +58,12 @@
 </template>
 
 <script>
-import { useAppStore } from '@/store/app' 
+import { useProductStore } from '@/store/productStore' 
 
 export default {
   data() {
     return {
-      appStore: useAppStore(),
+      productStore: useProductStore(),
     }
   },
 
@@ -74,3 +74,4 @@ export default {
   }
 }
 </script>
+@/store/productStore

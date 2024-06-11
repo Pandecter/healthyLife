@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import foodData from '../../datasets/food_base.json'
 
-export const useAppStore = defineStore('app', {
+export const useProductStore = defineStore('app', {
   state: () => {
     return {
       months: ["Январь", "Февраль", "Март",
@@ -16,7 +16,7 @@ export const useAppStore = defineStore('app', {
       isExpandable: [false, false, false, false, false, false, false], //переменная, которая отвечает за расширение вкладок
       mealTime: ["Завтрак", "Обед", "Ужин"],
       currentDate: {day: null, month: null},
-      alternativeCurrentDate: null, //текущая дата
+      alternativeCurrentDate: null, //текущая дата в более "удобном" виде 
       switchedCurrentDate: null, //дата, использующаяся при "смене" недели
       clickedDate: null, //дата дня, с которой работает пользователь
       listsOfDaysMenu: [], //хранилище продуктов, выбранных пользователем
