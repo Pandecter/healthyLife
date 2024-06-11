@@ -75,8 +75,8 @@ export const useAppStore = defineStore('app', {
       if (day < 10) {
         day = "0" + day;
       }
-      let result = day + "." + month + "." + this.alternativeCurrentDate.getFullYear();
-      return result;
+      const RESULT = day + "." + month + "." + this.alternativeCurrentDate.getFullYear();
+      return RESULT;
     },
 
     toggleDay(index, date) { //открывает/закрывает меню дня
@@ -84,30 +84,21 @@ export const useAppStore = defineStore('app', {
       this.clickedDate = date; 
     },
 
-
     addToProductList(dayNumber, mealTime, food) { //добавляет продукт в общий массив выбранных продуктов
       const DAY_ID = this.days.findIndex((el) => el === dayNumber);
-      let currentDate = this.giveCurrentDate[DAY_ID];
-      console.log(mealTime)
-
-      if (!(this.listsOfDaysMenu.find((el) => el.date === currentDate))) { //если текущего дня нет в базе 
-        //console.log("НЕТ В БАЗЕ, сначала создадим, а потом вызовем аддфуд");
-        const OBJECT = { "dayNumber": DAY_ID, "date": currentDate, "breakfast": [],"lunch": [], "dinner": []};
+      const CURRENT_DATE = this.giveCurrentDate[DAY_ID];
+      if (!(this.listsOfDaysMenu.find((el) => el.date === CURRENT_DATE))) { //если текущего дня нет в базе 
+        const OBJECT = { "dayNumber": DAY_ID, "date": CURRENT_DATE, "breakfast": [],"lunch": [], "dinner": []};
         this.listsOfDaysMenu.push(OBJECT);
-        this.addFoodToMealTime(currentDate, mealTime, food);    
+        this.addFoodToMealTime(CURRENT_DATE, mealTime, food);    
       }
       else { //если текущий день уже есть в базе
-        if(this.listsOfDaysMenu.find((el) => el.date === currentDate)) {
-          //console.log("ЕСТЬ В БАЗЕ, просто вызовем аддфуд");
-          this.addFoodToMealTime(currentDate, mealTime, food);
-        }
+        this.addFoodToMealTime(CURRENT_DATE, mealTime, food);
       }
-    //  this.isOverlayActive = false;
     },
 
     addFoodToMealTime(currentDate, mealTime, food) { //добавляет продукт в конкретный прием пищи
       const DAY_ID = this.listsOfDaysMenu.findIndex((el) => el.date === currentDate);
-      //console.log(DAY_ID)
       switch(mealTime) {
         case 0:
           this.listsOfDaysMenu[DAY_ID].breakfast.push(food);
@@ -135,9 +126,9 @@ export const useAppStore = defineStore('app', {
           nameOfMealTime = "dinner";
           break; 
       }
-      let deletingArr = this.listsOfDaysMenu[DAY_ID][nameOfMealTime]; //получаем массив времени приемащ пищи конкретной даты
-      const MEAL_ID = deletingArr.findIndex((el) => el.name === mealTimeMenu.name); //находим ID конкретного продукта
-      deletingArr.splice(MEAL_ID, 1);
+      const DELETING_ARR = this.listsOfDaysMenu[DAY_ID][nameOfMealTime]; //получаем массив времени приемащ пищи конкретной даты
+      const MEAL_ID = DELETING_ARR.findIndex((el) => el.name === mealTimeMenu.name); //находим ID конкретного продукта
+      DELETING_ARR.splice(MEAL_ID, 1);
     }
   },
   getters: {
@@ -164,22 +155,22 @@ export const useAppStore = defineStore('app', {
       const CURRENT_DATE = this.switchedCurrentDate;
       let startValue;
       let day = 0;
-      let arr = [];
+      const ARR = [];
       while (day < 7) {
         startValue = new Date(CURRENT_DATE.getFullYear(),  CURRENT_DATE.getMonth(), CURRENT_DATE.getDate() - NUMBER + 1 + day);
         startValue = this.dateFormer(startValue);
-        arr[day] = startValue;
+        ARR[day] = startValue;
         day++;
       }
-      return arr;
+      return ARR;
     },
 
     returnProductNames() { //выводит список продуктов в autocomplete
-      let arrOfNames = [];
+      const ARR_OF_NAMES = [];
       for (let i = 0; i < this.foodStorage.length; i++) {
-        arrOfNames[i] = this.foodStorage[i].name;
+        ARR_OF_NAMES[i] = this.foodStorage[i].name;
       }
-      return arrOfNames;
+      return ARR_OF_NAMES;
     },
 
     isButtonAvailable() { //отвечает за блокировку/разблокировку кнопки
@@ -194,15 +185,15 @@ export const useAppStore = defineStore('app', {
     },
 
     actualProductCounter() { //высчитывает количество "состава" с учетом количества продукта
-      let stats = ["calories", "proteins", "fats", "carbs"];
-      let product = {...this.foodStorage.find((el) => el.name === this.currentProductName) };
-      for (let i = 0; i < stats.length; i++) {
-        let choice = stats[i];
-        product[choice] = product[choice].replace(/,/g, '.');
-        product[choice] = Number(product[choice].replace(/[^0-9.]+/g,""));
-        product[choice] = (product[choice] * (this.currentCountValue / 100)).toFixed(2);
+      const STATS = ["calories", "proteins", "fats", "carbs"];
+      const PRODUCT = {...this.foodStorage.find((el) => el.name === this.currentProductName) };
+      for (let i = 0; i < STATS.length; i++) {
+        let choice = STATS[i];
+        PRODUCT[choice] = PRODUCT[choice].replace(/,/g, '.');
+        PRODUCT[choice] = Number(PRODUCT[choice].replace(/[^0-9.]+/g,""));
+        PRODUCT[choice] = (PRODUCT[choice] * (this.currentCountValue / 100)).toFixed(2);
       } 
-      return product;
+      return PRODUCT;
     },
     
     showInfoAboutProduct() { //вывод информации о продукте
@@ -215,47 +206,33 @@ export const useAppStore = defineStore('app', {
     },
 
     showInfo() {
-      let shownArray = []; //возвращаемый массив
-      let currentDate = this.giveCurrentDate; // получаем массив выбранных дат
-      //console.log("CURRENT_DATE: " + currentDate);
-      for (let i = 0; i < currentDate.length; i++) { //проходимся по всему массиву дат
-        let result = this.listsOfDaysMenu.find((el) => el.date === currentDate[i]) //присваиваем результат поиска даты в массиве меню
-        //console.log("RESULT: " + result);
-        if (typeof(result) === "undefined") { //если полученный тип undefined, т.е. данных с такой датой найдено не было
-          //console.log("ДАННЫХ С ДАТОЙ " + currentDate[i] + " НЕ БЫЛО!");
+      const SHOWN_ARRAY = []; 
+      const CURRENT_DATE = this.giveCurrentDate; 
+      for (let i = 0; i < CURRENT_DATE.length; i++) { 
+        const RESULT = this.listsOfDaysMenu.find((el) => el.date === CURRENT_DATE[i]) 
+        if (typeof(RESULT) === "undefined") { //если полученный тип undefined, т.е. данных с такой датой найдено не было
           let tempArr = [];
-          for (let j = 0; j < this.mealTime.length; j++) { //проходимся 3 раза в соответствии с распорядком (завтрак/обед/ужин)
-            //console.log("ИНИЦИИРУЕМ НЕТ ДАННЫХ ПЕРЕДАЧУ")
-            //continue;
+          for (let j = 0; j < this.mealTime.length; j++) { 
             tempArr.push(null);
-            //shownArray[i][j] = "Нет данных"; //заносим данные во все j-ые поля i-го дня т.к. такого дня в базе нет
           }
-          shownArray.push(tempArr);
+          SHOWN_ARRAY.push(tempArr);
         }
-        else { //если полученный тип (в result) не undefined (т.е найденный объект)
-          //console.log("ДАННЫЕ С ДАТОЙ " + currentDate[i] + "БЫЛИ!");
+        else { //если полученный тип (в RESULT) не undefined (т.е найденный объект)
           const SWITCH = ["breakfast", "lunch", "dinner"]; // массив, который пригодится для более компактной работы
-          let tempArr = [];
-          for (let j = 0; j < SWITCH.length; j++) { //проходимся по всему массиву SWITCH
-            const CHOICE = SWITCH[j]; //выбираем j-ый элемент массива SWITCH
-            //console.log("ТЕКУЩИЙ ВЫБОР: " + CHOICE);
-            if (result[CHOICE].length !== 0) { //если длина массива за прием пищи ненулевая (т.е там есть данные о еде)
-              //console.log("ЗА ДАТУ " + currentDate[i] + "И ПРИЕМ ПИЩИ " + CHOICE +"ЕСТЬ ДАННЫЕ. ЭТО: " + result[CHOICE]);
-              tempArr.push(result[CHOICE]);
-              //shownArray[i][j] = result[CHOICE]; //заносим данные в массив
+          const TEMP_ARR = [];
+          for (let j = 0; j < SWITCH.length; j++) { 
+            const CHOICE = SWITCH[j]; 
+            if (RESULT[CHOICE].length !== 0) { //если длина массива за прием пищи ненулевая (т.е. там есть данные о еде)
+              TEMP_ARR.push(RESULT[CHOICE]);
             }
-            else { //если длина массива нулевая (т. е. данные за прием пищи отсутствуют)
-              //console.log("ЗА ДАТУ " + currentDate[i] + "И ПРИЕМ ПИЩИ " + CHOICE + "НЕТ ДАННЫХ")
-              //continue;
-              tempArr.push(null);
-              //shownArray[i][j] = "Нет данных";
+            else { //если длина массива нулевая (т.е. данные за прием пищи отсутствуют)
+              TEMP_ARR.push(null);
             }
           }
-          shownArray.push(tempArr);
+          SHOWN_ARRAY.push(TEMP_ARR);
         }
-        
       }
-      return shownArray;
+      return SHOWN_ARRAY;
     },
   }
 })
