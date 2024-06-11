@@ -240,5 +240,12 @@ export const useProductStore = defineStore('products', {
       }
       return SHOWN_ARRAY;
     },
+
+    findMinMaxCalories() {
+      const RESULT_ARR = []
+      RESULT_ARR[0] = Math.max(...this.foodStorage.map(obj => obj.calories));
+      RESULT_ARR[1] = Math.min(...this.foodStorage.map(obj => obj.calories));
+      return RESULT_ARR;
+    }
   }
 })

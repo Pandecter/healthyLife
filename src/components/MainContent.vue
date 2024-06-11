@@ -41,6 +41,7 @@
             <v-btn 
               variant="text"
               width="150"
+              @click="goToBasePage()"
             >
               База данных
             </v-btn>
@@ -298,6 +299,10 @@ export default {
       this.$router.push('/stats');
       this.statsStore.startingDate = this.productStore.giveCurrentDate[0];
       this.statsStore.endingDate = this.productStore.giveCurrentDate[6];
+    },
+
+    goToBasePage() {
+      this.$router.push('/base');
     }
   }
 }
