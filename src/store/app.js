@@ -102,7 +102,7 @@ export const useAppStore = defineStore('app', {
           this.addFoodToMealTime(currentDate, mealTime, food);
         }
       }
-     this.isOverlayActive = false;
+    //  this.isOverlayActive = false;
     },
 
     addFoodToMealTime(currentDate, mealTime, food) { //добавляет продукт в конкретный прием пищи

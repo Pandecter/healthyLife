@@ -111,11 +111,11 @@
                     <v-btn
                       variant="text"
                       class="mt-4"
+                      @click="showOverlay(day, indexOfTime)"
                     >
                       <v-overlay
-                        ref="overlay"
                         class="d-flex justify-center align-center"
-                        activator="parent"
+                        v-model="appStore.isOverlayActive"
                       >
                         <v-card 
                           width="130vh"
@@ -204,7 +204,7 @@
                           <div class="d-flex justify-center">
                             <v-btn 
                               :disabled="appStore.isButtonAvailable"
-                              @click="addToProductStore(day, indexOfTime, appStore.showInfoAboutProduct)"
+                              @click="addToProductStore()"
                             > 
                               Добавить продукт 
                             </v-btn>
@@ -237,13 +237,21 @@ export default {
   data() {
     return {
       appStore: useAppStore(),
+      currentDay: null,
+      currentMealTime: null
     }
   },
 
   methods: {
-    addToProductStore(dayNum, timeNum, products) { //необходимо для корректной передачи данных и закр
-      this.appStore.addToProductList(dayNum, timeNum, products);
-      this.$refs.overlay.isActive = false;
+    showOverlay(day, mealTime) { //необходимо для корректного добавления продуктов и открытия оверлея
+      this.currentDay = day;
+      this.currentMealTime = mealTime;
+      this.appStore.isOverlayActive = true;
+    },
+
+    addToProductStore() {//необходимо для корректного добавления продуктов и закрытия оверлея
+      this.appStore.addToProductList(this.currentDay, this.currentMealTime, this.appStore.showInfoAboutProduct);
+      this.appStore.isOverlayActive = false;
     },
 
     goToPersonPage() {
