@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import foodData from '../../datasets/food_base.json'
 
-export const useProductStore = defineStore('app', {
+export const useProductStore = defineStore('products', {
   state: () => {
     return {
       months: ["Январь", "Февраль", "Март",
@@ -26,7 +26,7 @@ export const useProductStore = defineStore('app', {
         value => { const REG_EXP = /^[0-9]+$/
                    return REG_EXP.test(value) || "Значение должно быть положительным числом!"
         },
-        value => (value || '').length <= 10 || "Значение не должно превышать 10 цифр!",
+        value => (value || '').length <= 5 || "Значение не должно превышать 5 цифр!",
         value => {if (value.startsWith(0)) 
                   return false || "Значение не может начинаться с нуля!"
                   else 
@@ -126,9 +126,13 @@ export const useProductStore = defineStore('app', {
           nameOfMealTime = "dinner";
           break; 
       }
-      const DELETING_ARR = this.listsOfDaysMenu[DAY_ID][nameOfMealTime]; //получаем массив времени приемащ пищи конкретной даты
+      const DELETING_ARR = this.listsOfDaysMenu[DAY_ID][nameOfMealTime]; //получаем массив времени приема пищи конкретной даты
       const MEAL_ID = DELETING_ARR.findIndex((el) => el.name === mealTimeMenu.name); //находим ID конкретного продукта
       DELETING_ARR.splice(MEAL_ID, 1);
+      const MEAL_CHECK = this.listsOfDaysMenu[DAY_ID];
+      if((MEAL_CHECK.breakfast.length === 0) && (MEAL_CHECK.lunch.length === 0) && (MEAL_CHECK.dinner.length === 0)) { //если нет данных
+        this.listsOfDaysMenu.splice(DAY_ID, 1);
+      }
     }
   },
   getters: {
@@ -141,10 +145,10 @@ export const useProductStore = defineStore('app', {
       const NUMBER = this.switchedCurrentDate.getDay();
       const CURRENT_DATE = this.switchedCurrentDate;
 
-      const START_VALUE = new Date(CURRENT_DATE.getFullYear(),  CURRENT_DATE.getMonth(), CURRENT_DATE.getDate() - NUMBER + 1);
+      const START_VALUE = new Date(CURRENT_DATE.getFullYear(),  CURRENT_DATE.getMonth(), CURRENT_DATE.getDate() - (NUMBER === 0 ? 6 : NUMBER - 1));
       const START_STRING = this.dateFormer(START_VALUE);
 
-      const END_VALUE = new Date(CURRENT_DATE.getFullYear(),  CURRENT_DATE.getMonth(), CURRENT_DATE.getDate() + NUMBER - 1);
+      const END_VALUE = new Date(CURRENT_DATE.getFullYear(),  CURRENT_DATE.getMonth(), CURRENT_DATE.getDate() + (NUMBER === 0 ? 0 : 7 - NUMBER));
       const END_STRING = this.dateFormer(END_VALUE);
       
       return "Текущая неделя: " + START_STRING + " - " + END_STRING;

@@ -67,9 +67,9 @@
                   <v-expansion-panel-text>
                     <div 
                       v-if="productStore.showInfo[indexOfDay][indexOfTime] === null"
-                      class="d-flex justify-center"
+                      class="d-flex justify-center font-weight-light"
                     > 
-                      Вы еще не добавили продукты
+                      Нет продуктов
                     </div>
                     <div v-else>
                       <v-container>
@@ -109,13 +109,13 @@
                       </v-container>
                     </div>
                     <v-btn
-                      variant="text"
+                      variant="outlined"
                       class="mt-4"
                       @click="showOverlay(day, indexOfTime)"
                     >
                       <v-overlay
-                        class="d-flex justify-center align-center"
                         v-model="productStore.isOverlayActive"
+                        class="d-flex justify-center align-center"
                       >
                         <v-card 
                           width="130vh"
