@@ -59,12 +59,16 @@
             v-model="personStore.choosedActivity"
             label="Уровень вашей активности"
             :items="personStore.levelOfActivity"
+            item-title="name"
           />
         </div>
-        <div class="d-flex justify-center">
-          <v-btn :disabled="personStore.blockButton">
-            Подтвердить
-          </v-btn>
+        <div 
+          v-if="personStore.showInfo"
+          class="d-flex justify-center"
+        >
+          <p>
+            Ваша суточная норма калорий: {{ personStore.requiredCalories }}
+          </p>
         </div>
       </v-form>
     </div>

@@ -8,9 +8,11 @@ export const usePersonStore = defineStore('person', {
       height: null,
       weigth: null,
       choosedActivity: null,
-      levelOfActivity: ["Минимальная активность", "Слабый уровень активности",
-                        "Умеренный уровень активности", "Тяжелая активность",
-                        "Экстремальный уровень активности"],
+      levelOfActivity: [{ name: "Минимальная активность", value: 1.2 }, 
+                        { name: "Слабый уровень активности", value: 1.375 },
+                        { name: "Умеренный уровень активности", value: 1.55 }, 
+                        { name: "Тяжелая активность", value: 1.7 },
+                        { name: "Экстремальный уровень активности", value: 1.9}],
       commonRules: [
         value => !!value || "Значение не может быть пустым!",
         value => {if (value.startsWith(0)) 
@@ -30,24 +32,44 @@ export const usePersonStore = defineStore('person', {
         }
       ],
       formIsValid: false,
-      //buttonIsBlocked: true,
     }
   },
+
+  actions: {
+    // generateInfo() {
+    //   if (this.gender === "male") {
+    //     this.requiredCalores = (10 * this.weigth + 6.25 * this.height - 5 * this.age + 5) * this.choosedActivity; 
+    //   }
+    //   else {
+    //     this.requiredCalores = (10 * this.weigth + 6.25 * this.height - 5 * this.age + 5) * this.choosedActivity; 
+    //   }
+    // }
+  },
+
   getters: {
-    returnAgeHeightRule() {
+    returnAgeHeightRule() { //совмещает общие правила и правила для роста/возраста
       return [...this.commonRules, ...this.ageHeightRules]
     },
 
-    returnWeigthRule() {
+    returnWeigthRule() { //совмещает общие правила и правила для веса
       return [...this.commonRules, ...this.weightRules]
     },
 
-    blockButton() {
+    showInfo() { //отвечает за блокировку кнопки
       if (this.formIsValid && (this.gender !== null && this.choosedActivity !== null)) {
-        return false;
+        return true;
       }
       else {
-        return true;
+        return false;
+      }
+    },
+
+    requiredCalories() { //формула Миффлина-Сан Жеора
+      if (this.gender === "male") {
+        return Number((10 * this.weigth + 6.25 * this.height - 5 * this.age + 5) * this.choosedActivity).toFixed(2); 
+      }
+      else {
+        return Number((10 * this.weigth + 6.25 * this.height - 5 * this.age - 161) * this.choosedActivity).toFixed(2); 
       }
     }
   }
