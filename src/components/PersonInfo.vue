@@ -14,10 +14,13 @@
       </v-app-bar-title>
     </v-app-bar>
     <div class="mt-16 d-flex align-center h-100 justify-center">
-      <v-form class="w-25">
+      <v-form
+        v-model="personStore.formIsValid" 
+        class="w-25"
+      >
         <div>
           <p> Выберите ваш пол </p>
-          <v-radio-group>
+          <v-radio-group v-model="personStore.gender">
             <v-radio 
               label="Мужской" 
               value="male"
@@ -53,11 +56,17 @@
         </div>
         <div>
           <v-select
+            v-model="personStore.choosedActivity"
             label="Уровень вашей активности"
             :items="personStore.levelOfActivity"
-          ></v-select>
+          />
         </div>
-      </v-form> 
+        <div class="d-flex justify-center">
+          <v-btn :disabled="personStore.blockButton">
+            Подтвердить
+          </v-btn>
+        </div>
+      </v-form>
     </div>
   </v-app>
 </template>
