@@ -30,27 +30,32 @@
         </div>
         <div>
           <p> Введите ваш возраст </p>
-          <v-text-field>
-
-          </v-text-field>
+          <v-text-field
+            v-model="personStore.age"
+            :rules="personStore.returnAgeHeightRule"
+          />
         </div>
         <div>
           <p> Введите ваш рост </p>
-          <v-text-field>
-
-          </v-text-field>
+          <v-text-field
+            v-model="personStore.height" 
+            :rules="personStore.returnAgeHeightRule"
+            label="в см"
+          />
         </div>
         <div>
           <p> Введите ваш вес </p>
-          <v-text-field>
-
-          </v-text-field>          
+          <v-text-field 
+            v-model="personStore.weigth" 
+            :rules="personStore.returnWeigthRule"
+            label="в кг"
+          />      
         </div>
         <div>
           <v-select
             label="Уровень вашей активности"
-            :items="['Минимальная активность', 'Слабый уровень активности', 'умеренный уровень активности', 'Тяжелая аткивность', 'Экстремальный уровень']"
-          />
+            :items="personStore.levelOfActivity"
+          ></v-select>
         </div>
       </v-form> 
     </div>
@@ -58,12 +63,14 @@
 </template>
 
 <script>
-import { useProductStore } from '@/store/productStore' 
+import { useProductStore } from '@/store/productStore'
+import { usePersonStore } from '@/store/personStore' 
 
 export default {
   data() {
     return {
       productStore: useProductStore(),
+      personStore: usePersonStore(),
     }
   },
 
@@ -74,4 +81,3 @@ export default {
   }
 }
 </script>
-@/store/productStore
