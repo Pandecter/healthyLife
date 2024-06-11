@@ -35,7 +35,9 @@ export const useProductStore = defineStore('products', {
       currentCountValue: null, // количество продукта в граммах
       currentProductName: null, //наименование продукта,
       isFormValid: false, // переменная, которая нужна для корректной блокировки кнопки
-      isOverlayActive: false
+      isOverlayActive: false,
+      drawer: false,
+      //listOfLinks: ["Статистика", "База данных"]
     }
   },
   actions: {

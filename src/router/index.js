@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import PersonalPage from '../components/PersonInfo.vue'
+import StatsPage from '../components/PersonStats.vue'
 
 const routes = [
   {
@@ -9,6 +10,10 @@ const routes = [
   {
     path: '/person_info',
     component: PersonalPage
+  },
+  {
+    path: '/stats',
+    component: StatsPage
   }
 ]
 
