@@ -27,19 +27,25 @@
         width="150"
         location="left"
       >
-        <v-btn 
-          variant="text"
-          width="150"
-          @click="goToStatsPage()"
-        >
-          Статистика
-        </v-btn>
-        <v-btn 
-          variant="text"
-          width="150"
-        >
-          База данных
-        </v-btn>
+        <v-list>
+          <v-list-item>
+            <v-btn 
+              variant="text"
+              width="150"
+              @click="goToStatsPage()"
+            >
+              Статистика
+            </v-btn>
+          </v-list-item>
+          <v-list-item>
+            <v-btn 
+              variant="text"
+              width="150"
+            >
+              База данных
+            </v-btn>
+          </v-list-item>
+        </v-list>
       </v-navigation-drawer> 
       <div>
         <p class="d-flex justify-center mt-16">
@@ -65,7 +71,7 @@
             :key="day"
             variant="outlined"
             width="100%"
-            class="border-thin rounded-shaped elevation-2"
+            class="border-thin rounded-shaped elevation-2 mb-8"
           >
             <div class="d-flex justify-space-between">
               <v-card-title>
@@ -260,11 +266,13 @@
 
 <script>
 import { useProductStore } from '@/store/productStore' 
+import { useStatsStore } from '@/store/statsStore'
 
 export default {
   data() {
     return {
       productStore: useProductStore(),
+      statsStore: useStatsStore(),
       currentDay: null,
       currentMealTime: null
     }
@@ -288,6 +296,8 @@ export default {
 
     goToStatsPage() {
       this.$router.push('/stats');
+      this.statsStore.startingDate = this.productStore.giveCurrentDate[0];
+      this.statsStore.endingDate = this.productStore.giveCurrentDate[6];
     }
   }
 }
