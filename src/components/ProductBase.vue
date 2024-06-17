@@ -49,10 +49,15 @@
           <p>Углеводы</p>
         </div>
         <div class="d-flex justify-space-around">
-          <v-range-slider max-width="300px"></v-range-slider>
-          <v-range-slider max-width="300px"></v-range-slider>
-          <v-range-slider max-width="300px"></v-range-slider>
-          <v-range-slider max-width="300px"></v-range-slider>
+          <v-range-slider 
+
+            max-width="300px"
+
+            thumb-label="always"
+          />
+          <v-range-slider max-width="300px"/>
+          <v-range-slider max-width="300px"/>
+          <v-range-slider max-width="300px"/>
         </div>
       </v-card>
       <hr>

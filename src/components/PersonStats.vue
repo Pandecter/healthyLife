@@ -18,7 +18,9 @@
     </v-app-bar>
     <v-main>
       <div class="d-flex justify-center mt-8">
-        <p class="text-h5">Выберите даты для отображения статистики</p>
+        <p class="text-h5">
+          Выберите даты для отображения статистики
+        </p>
       </div>
       <div class="d-flex justify-center mt-6">
         <div class="mr-16">
@@ -30,6 +32,7 @@
             width="130px"
             variant="outlined"
             label="ДД.ММ.ГГГГ"
+            type="date"
           />
         </div>
         <div class="ml-16">
@@ -41,6 +44,7 @@
             width="130px"
             variant="outlined"
             label="ДД.ММ.ГГГГ"
+            type="date"
           />
         </div>
       </div>
