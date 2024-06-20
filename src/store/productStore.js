@@ -40,7 +40,9 @@ export const useProductStore = defineStore('products', {
       caloriesRange: null,
       proteinsRange: null,
       fatsRange: null,
-      carbsRange: null
+      carbsRange: null,
+      searchedProduct: null,
+      shownArrayOfProducts: null //массив для отображения продуктов в базе с учетом фильтрации
     }
   },
   actions: {
@@ -52,6 +54,7 @@ export const useProductStore = defineStore('products', {
       this.currentDate.month = this.months[CURRENT_DATE.getMonth()];
 
       this.foodStorage = [...foodData];
+      this.shownArrayOfProducts = [...foodData];
     },
 
     nextWeek() { // метод для переключения на следующую неделю относительно текущей даты пользователя
@@ -138,6 +141,26 @@ export const useProductStore = defineStore('products', {
       if((MEAL_CHECK.breakfast.length === 0) && (MEAL_CHECK.lunch.length === 0) && (MEAL_CHECK.dinner.length === 0)) { //если нет данных
         this.listsOfDaysMenu.splice(DAY_ID, 1);
       }
+    },
+
+    applyFilters() { //вызов фильтрации
+      this.shownArrayOfProducts = [...this.foodStorage];
+      this.shownArrayOfProducts = this.shownArrayOfProducts.filter(this.filterFunc);
+    },
+
+    filterFunc(value) { //функция фильтрации
+      const STATS = ["calories", "proteins", "fats", "carbs"];
+      let changedValue = {...value};
+      for (let i = 0; i < STATS.length; i++) {
+        const CHOICE = STATS[i];
+        changedValue[CHOICE] = changedValue[CHOICE].replace(/,/g, '.');
+        changedValue[CHOICE] = parseFloat(changedValue[CHOICE]);
+      }
+      const CALORIES_CONDITION = (changedValue.calories >= this.caloriesRange[0]) && (changedValue.calories <= this.caloriesRange[1]);
+      const PROTEINS_CONDITION = (changedValue.proteins >= this.proteinsRange[0]) && (changedValue.proteins <= this.proteinsRange[1]);
+      const FATS_CONDITION = (changedValue.fats >= this.fatsRange[0]) && (changedValue.fats <= this.fatsRange[1]);
+      const CARBS_CONDITION = (changedValue.carbs >= this.carbsRange[0]) && (changedValue.carbs <= this.carbsRange[1]);
+      return (CALORIES_CONDITION && PROTEINS_CONDITION && FATS_CONDITION && CARBS_CONDITION);
     }
   },
   getters: {
@@ -197,10 +220,10 @@ export const useProductStore = defineStore('products', {
       const STATS = ["calories", "proteins", "fats", "carbs"];
       const PRODUCT = {...this.foodStorage.find((el) => el.name === this.currentProductName) };
       for (let i = 0; i < STATS.length; i++) {
-        let choice = STATS[i];
-        PRODUCT[choice] = PRODUCT[choice].replace(/,/g, '.');
-        PRODUCT[choice] = Number(PRODUCT[choice].replace(/[^0-9.]+/g,""));
-        PRODUCT[choice] = (PRODUCT[choice] * (this.currentCountValue / 100)).toFixed(2);
+        const CHOICE = STATS[i];
+        PRODUCT[CHOICE] = PRODUCT[CHOICE].replace(/,/g, '.');
+        PRODUCT[CHOICE] = Number(PRODUCT[CHOICE].replace(/[^0-9.]+/g,""));
+        PRODUCT[CHOICE] = (PRODUCT[CHOICE] * (this.currentCountValue / 100)).toFixed(2);
       } 
       return PRODUCT;
     },
@@ -265,6 +288,11 @@ export const useProductStore = defineStore('products', {
       this.fatsRange = RESULT_ARR[2];
       this.carbsRange = RESULT_ARR[3];
       return RESULT_ARR;
+    },
+    
+    returnShowedArray() { //вывод списка с учетом фильтров
+      return this.shownArrayOfProducts;
     }
+    
   }
 })

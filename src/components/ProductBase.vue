@@ -36,7 +36,7 @@
       >
         <v-card-text>
           <v-autocomplete 
-            v-model="productStore.currentProductName"
+            v-model="productStore.searchedProduct"
             label="Введите наименование продукта" 
             :items="productStore.returnProductNames"
             no-data-text="По данному запросу нет результатов"
@@ -78,6 +78,11 @@
             thumb-label="always"
           />
         </div>
+        <div class="d-flex justify-center mb-6 mt-6">
+          <v-btn @click="productStore.applyFilters()">
+            Применить
+          </v-btn>
+        </div>
       </v-card>
       <hr>
       <div class="mt-8">
@@ -103,7 +108,7 @@
           </thead>
           <tbody>
             <tr 
-              v-for="product in productStore.foodStorage"
+              v-for="product in productStore.returnShowedArray"
               :key="product"
             >
               <td 
@@ -136,6 +141,7 @@ export default {
     return {
       //statsStore: useStatsStore(),
       productStore: useProductStore(),
+      isDataFiltered: false
       // personStore: usePersonStore(),
       // chartData: {
       //   labels: [ 'January', 'February', 'March' ],
@@ -147,11 +153,19 @@ export default {
     }
   },
 
+  
+  computed: {
+    currentDate() {
+      return this.isDataFiltered ? this.productStore.filterData : this.productStore.foodStorage;
+    }
+  },
+
   methods: {
     goToMainPage() {
       this.productStore.drawer = false;
       this.$router.push('/');
     }
-  }
+  },
+
 }
 </script>
