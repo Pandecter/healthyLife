@@ -46,39 +46,35 @@
                 </p>
                 <v-text-field
                   v-model="name" 
-                  :rules="productStore.rulesForAddingProduct" 
+                  :rules="productStore.ruleForProductName" 
                 />
                 <p class="text-h6">
                   Введите количество ккал на 100 гр. продукта
                 </p>
                 <v-text-field
                   v-model="calories" 
-                  type="number" 
-                  :rules="productStore.rulesForAddingProduct"
+                  :rules="productStore.rulesForCalories"
                 />
                 <p class="text-h6">
                   Введите количество белков на 100 гр. продукта
                 </p>
                 <v-text-field
                   v-model="proteins" 
-                  type="number" 
-                  :rules="productStore.rulesForAddingProduct"
+                  :rules="productStore.rulesForProductStats"
                 />
                 <p class="text-h6">
                   Введите количество жиров на 100 гр. продукта
                 </p>
                 <v-text-field
                   v-model="fats"
-                  type="number" 
-                  :rules="productStore.rulesForAddingProduct"
+                  :rules="productStore.rulesForProductStats"
                 />
                 <p class="text-h6">
                   Введите количество углеводов на 100 гр. продукта
                 </p>
                 <v-text-field
                   v-model="carbs"
-                  type="number" 
-                  :rules="productStore.rulesForAddingProduct"
+                  :rules="productStore.rulesForProductStats"
                 />
               </v-form> 
               

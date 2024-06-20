@@ -44,8 +44,28 @@ export const useProductStore = defineStore('products', {
       searchedProduct: null, //продукт в поисковой строке базы 
       shownArrayOfProducts: null, //массив для отображения продуктов в базе с учетом фильтрации
       slidersDisabled: false,
-      rulesForAddingProduct: [
+      ruleForProductName: [
+        value => !!value || "Название продукта не может быть пустым!",
+        value => (value || '').length <= 40 || "Название продукта не должно превышать 40 символов!",
+      ],
+      rulesForCalories: [
         value => !!value || "Значение не может быть пустым!",
+        value => {if (value.startsWith(0)) 
+          return false || "Значение не может начинаться с нуля!"
+          else 
+          return true},
+        value => !/^-.*/.test(value) || "Значение не должно быть отрицательным!",
+        value => (value || '').length <= 4 || "Значение не должно превышать 4 цифр!",
+      ],
+      rulesForProductStats: [
+        value => !!value || "Значение не может быть пустым!",
+        value => {if (value.startsWith(0)) 
+          return false || "Значение не может начинаться с нуля!"
+          else 
+          return true},
+        value => !/^-.*/.test(value) || "Значение не должно быть отрицательным!",
+        value => /^(\d+|\d+,\d{1})$/.test(value) || "Значение разделяйте запятой, после запятой может быть только 1 символ!",
+        value => (value || '').length <= 5 || "Значение не должно превышать 5 символов!",
       ],
       addingFormIsValid: false
     }
@@ -168,7 +188,7 @@ export const useProductStore = defineStore('products', {
       return (CALORIES_CONDITION && PROTEINS_CONDITION && FATS_CONDITION && CARBS_CONDITION);
     },
 
-    addProductToList(nameValue, caloriesValue, proteinsValue, fatsValue, carbsValue) {
+    addProductToList(nameValue, caloriesValue, proteinsValue, fatsValue, carbsValue) { //добавление продукта в базу
       let OBJECT = {
         name: nameValue, 
         calories: caloriesValue + " Ккал", 
