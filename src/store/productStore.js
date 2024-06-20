@@ -37,7 +37,10 @@ export const useProductStore = defineStore('products', {
       isFormValid: false, // переменная, которая нужна для корректной блокировки кнопки
       isOverlayActive: false,
       drawer: false,
-      caloriesRange: null
+      caloriesRange: null,
+      proteinsRange: null,
+      fatsRange: null,
+      carbsRange: null
     }
   },
   actions: {
@@ -245,7 +248,6 @@ export const useProductStore = defineStore('products', {
       const SWITCH = ["calories", "proteins", "fats", "carbs"];
       const MIN_MAX_ARR = [];
       const RESULT_ARR = [];
-      //const ARR_OF_ARRS = [];
       for (let i = 0; i < SWITCH.length; i++) {
         const CHOICE = SWITCH[i];
         const ARR = [...(this.foodStorage.map(obj => obj[CHOICE]))];
@@ -253,21 +255,15 @@ export const useProductStore = defineStore('products', {
           ARR[j] = ARR[j].replace(/,/g, '.'); //заменяем запятые на точки, т.к. parseFloat не воспринимает запятые
           ARR[j] = parseFloat(ARR[j]); //"удаляем" лишние слова, нам нужны только цифры
         }
-        // MIN_MAX_ARR.push(Math.min(...ARR));
-        // MIN_MAX_ARR.push(Math.max(...ARR));
         MIN_MAX_ARR[0] = Math.min(...ARR);
         MIN_MAX_ARR[1] = Math.max(...ARR);
-        RESULT_ARR.push(...MIN_MAX_ARR);
+        RESULT_ARR[i] = [...MIN_MAX_ARR];
         MIN_MAX_ARR.length = 0;
       }
-
-      //const ARR = [...(this.foodStorage.map(obj => obj.calories))];
-      // for ( let i = 0; i < ARR.length; i++) {
-      //   ARR[i] = parseFloat(ARR[i]);
-      // }
-      // RESULT_ARR[1] = Math.max(...ARR);
-      // RESULT_ARR[0] = Math.min(...ARR);
-      // this.caloriesRange = [...RESULT_ARR];
+      this.caloriesRange = RESULT_ARR[0];
+      this.proteinsRange = RESULT_ARR[1];
+      this.fatsRange = RESULT_ARR[2];
+      this.carbsRange = RESULT_ARR[3];
       return RESULT_ARR;
     }
   }

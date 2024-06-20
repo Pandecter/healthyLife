@@ -13,7 +13,7 @@ export default {
   },
   mounted() {
     this.productStore.mountFunction();
+    this.$router.push('/');
   }
 }
 </script>
-./store/productStore

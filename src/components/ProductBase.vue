@@ -50,14 +50,33 @@
         </div>
         <div class="d-flex justify-space-around">
           <v-range-slider 
-
+            v-model="productStore.caloriesRange"
+            :min="productStore.findMinMaxRange[0][0]"
+            :max="productStore.findMinMaxRange[0][1]"
             max-width="300px"
-
             thumb-label="always"
           />
-          <v-range-slider max-width="300px"/>
-          <v-range-slider max-width="300px"/>
-          <v-range-slider max-width="300px"/>
+          <v-range-slider
+            v-model="productStore.proteinsRange"
+            :min="productStore.findMinMaxRange[1][0]"
+            :max="productStore.findMinMaxRange[1][1]"
+            max-width="300px"
+            thumb-label="always"
+          />
+          <v-range-slider
+            v-model="productStore.fatsRange"
+            :min="productStore.findMinMaxRange[2][0]"
+            :max="productStore.findMinMaxRange[2][1]" 
+            max-width="300px"
+            thumb-label="always"
+          />
+          <v-range-slider
+            v-model="productStore.carbsRange"
+            :min="productStore.findMinMaxRange[3][0]"
+            :max="productStore.findMinMaxRange[3][1]" 
+            max-width="300px"
+            thumb-label="always"
+          />
         </div>
       </v-card>
       <hr>
