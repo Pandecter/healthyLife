@@ -26,9 +26,71 @@
     </v-app-bar>
     <v-main>
       <div class="d-flex justify-center mt-8">
-        <v-btn>
+        <v-btn
+          @click="showOverlay"
+        >
           Добавить свой продукт в базу данных
         </v-btn>
+        <v-overlay
+          v-model="productStore.isOverlayActive"
+          class="d-flex justify-center align-center"
+        >
+          <v-card
+            width="130vh"
+            height="80vh"
+          >
+            <div class="d-flex flex-column align-center mt-8">
+              <v-form v-model="productStore.addingFormIsValid">
+                <p class="text-h6">
+                  Введите наименование продукта
+                </p>
+                <v-text-field
+                  v-model="name" 
+                  :rules="productStore.rulesForAddingProduct" 
+                />
+                <p class="text-h6">
+                  Введите количество ккал на 100 гр. продукта
+                </p>
+                <v-text-field
+                  v-model="calories" 
+                  type="number" 
+                  :rules="productStore.rulesForAddingProduct"
+                />
+                <p class="text-h6">
+                  Введите количество белков на 100 гр. продукта
+                </p>
+                <v-text-field
+                  v-model="proteins" 
+                  type="number" 
+                  :rules="productStore.rulesForAddingProduct"
+                />
+                <p class="text-h6">
+                  Введите количество жиров на 100 гр. продукта
+                </p>
+                <v-text-field
+                  v-model="fats"
+                  type="number" 
+                  :rules="productStore.rulesForAddingProduct"
+                />
+                <p class="text-h6">
+                  Введите количество углеводов на 100 гр. продукта
+                </p>
+                <v-text-field
+                  v-model="carbs"
+                  type="number" 
+                  :rules="productStore.rulesForAddingProduct"
+                />
+              </v-form> 
+              
+              <v-btn 
+                :disabled="!productStore.addingFormIsValid"
+                @click="productStore.addProductToList(name, calories, proteins, fats, carbs)"
+              >
+                Подтвердить
+              </v-btn>
+            </div>
+          </v-card>
+        </v-overlay>
       </div>
       <v-card 
         class="mt-8 mb-8" 
@@ -38,7 +100,7 @@
           <v-autocomplete 
             v-model="productStore.searchedProduct"
             label="Введите наименование продукта" 
-            :items="productStore.returnProductNames"
+            :items="productStore.returnProductNamesInBase"
             no-data-text="По данному запросу нет результатов"
           />
         </v-card-text>
@@ -53,6 +115,7 @@
             v-model="productStore.caloriesRange"
             :min="productStore.findMinMaxRange[0][0]"
             :max="productStore.findMinMaxRange[0][1]"
+            :disabled="productStore.slidersDisabled"
             max-width="300px"
             thumb-label="always"
           />
@@ -60,28 +123,37 @@
             v-model="productStore.proteinsRange"
             :min="productStore.findMinMaxRange[1][0]"
             :max="productStore.findMinMaxRange[1][1]"
+            :disabled="productStore.slidersDisabled"
             max-width="300px"
             thumb-label="always"
           />
           <v-range-slider
             v-model="productStore.fatsRange"
             :min="productStore.findMinMaxRange[2][0]"
-            :max="productStore.findMinMaxRange[2][1]" 
+            :max="productStore.findMinMaxRange[2][1]"
+            :disabled="productStore.slidersDisabled" 
             max-width="300px"
             thumb-label="always"
           />
           <v-range-slider
             v-model="productStore.carbsRange"
             :min="productStore.findMinMaxRange[3][0]"
-            :max="productStore.findMinMaxRange[3][1]" 
+            :max="productStore.findMinMaxRange[3][1]"
+            :disabled="productStore.slidersDisabled" 
             max-width="300px"
             thumb-label="always"
           />
         </div>
         <div class="d-flex justify-center mb-6 mt-6">
-          <v-btn @click="productStore.applyFilters()">
+          <v-btn
+            :disabled="productStore.slidersDisabled" 
+            @click="productStore.applyFilters()"
+          >
             Применить
           </v-btn>
+        </div>
+        <div class="d-flex justify-center mb-4 text-h6">
+          Найдено продуктов: {{ productStore.shownArrayOfProducts.length }}
         </div>
       </v-card>
       <hr>
@@ -141,7 +213,12 @@ export default {
     return {
       //statsStore: useStatsStore(),
       productStore: useProductStore(),
-      isDataFiltered: false
+      isDataFiltered: false,
+      name: null,
+      calories: null,
+      proteins: null,
+      fats: null,
+      carbs: null
       // personStore: usePersonStore(),
       // chartData: {
       //   labels: [ 'January', 'February', 'March' ],
@@ -164,7 +241,11 @@ export default {
     goToMainPage() {
       this.productStore.drawer = false;
       this.$router.push('/');
-    }
+    },
+
+    showOverlay() { //необходимо для корректного добавления продуктов и открытия оверлея
+      this.productStore.isOverlayActive = true;
+    },
   },
 
 }

@@ -40,9 +40,14 @@ export const useProductStore = defineStore('products', {
       caloriesRange: null,
       proteinsRange: null,
       fatsRange: null,
-      carbsRange: null,
-      searchedProduct: null,
-      shownArrayOfProducts: null //массив для отображения продуктов в базе с учетом фильтрации
+      carbsRange: null, 
+      searchedProduct: null, //продукт в поисковой строке базы 
+      shownArrayOfProducts: null, //массив для отображения продуктов в базе с учетом фильтрации
+      slidersDisabled: false,
+      rulesForAddingProduct: [
+        value => !!value || "Значение не может быть пустым!",
+      ],
+      addingFormIsValid: false
     }
   },
   actions: {
@@ -161,7 +166,26 @@ export const useProductStore = defineStore('products', {
       const FATS_CONDITION = (changedValue.fats >= this.fatsRange[0]) && (changedValue.fats <= this.fatsRange[1]);
       const CARBS_CONDITION = (changedValue.carbs >= this.carbsRange[0]) && (changedValue.carbs <= this.carbsRange[1]);
       return (CALORIES_CONDITION && PROTEINS_CONDITION && FATS_CONDITION && CARBS_CONDITION);
+    },
+
+    addProductToList(nameValue, caloriesValue, proteinsValue, fatsValue, carbsValue) {
+      let OBJECT = {
+        name: nameValue, 
+        calories: caloriesValue + " Ккал", 
+        proteins: proteinsValue + " г",
+        fats: fatsValue + " г",
+        carbs: carbsValue + " г"
+      }
+      if (this.foodStorage.find((el) => el.name === nameValue)) {
+        alert("Такой продукт уже есть в базе!")
+      }
+      else {
+        this.foodStorage.push(OBJECT);
+        this.isOverlayActive = false;
+        this.shownArrayOfProducts = [...this.foodStorage]
+      }
     }
+
   },
   getters: {
     giveAlternativeCurrentDate() { // показывает текущую дату 
@@ -201,6 +225,14 @@ export const useProductStore = defineStore('products', {
       const ARR_OF_NAMES = [];
       for (let i = 0; i < this.foodStorage.length; i++) {
         ARR_OF_NAMES[i] = this.foodStorage[i].name;
+      }
+      return ARR_OF_NAMES;
+    },
+
+    returnProductNamesInBase() { //выводит список продуктов в autocomplete с учетом фильтров
+      const ARR_OF_NAMES = [];
+      for (let i = 0; i < this.shownArrayOfProducts.length; i++) {
+        ARR_OF_NAMES[i] = this.shownArrayOfProducts[i].name;
       }
       return ARR_OF_NAMES;
     },
@@ -291,7 +323,17 @@ export const useProductStore = defineStore('products', {
     },
     
     returnShowedArray() { //вывод списка с учетом фильтров
-      return this.shownArrayOfProducts;
+      if (this.searchedProduct !== null) {
+        const RESULT = this.shownArrayOfProducts.find((el) => el.name === this.searchedProduct);
+        const ARR = [];
+        ARR.push(RESULT)
+        this.slidersDisabled = true;
+        return ARR;
+      }
+      else {
+        this.slidersDisabled = false;
+        return this.shownArrayOfProducts;
+      }
     }
     
   }
