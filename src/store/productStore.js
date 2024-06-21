@@ -55,6 +55,9 @@ export const useProductStore = defineStore('products', {
           else 
           return true},
         value => !/^-.*/.test(value) || "Значение не должно быть отрицательным!",
+        value => { const REG_EXP = /^[0-9]+$/
+          return REG_EXP.test(value) || "Значение должно быть положительным числом и не содержать знаков!"
+        },
         value => (value || '').length <= 4 || "Значение не должно превышать 4 цифр!",
       ],
       rulesForProductStats: [

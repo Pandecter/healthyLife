@@ -49,24 +49,34 @@
         </v-list>
       </v-navigation-drawer> 
       <div>
-        <p class="d-flex justify-center mt-16">
-          {{ productStore.giveCurrentWeek }}
-        </p>
-        <div class="d-flex justify-center mt-8">
-          <v-btn 
-            class="mr-2" 
-            @click="productStore.previousWeek()"
+        <div class="d-flex justify-center">
+          <v-card 
+            variant="elevated" 
+            class="mt-10 pb-6 pl-6 pr-6 elevation-4"
           >
-            Предыдущая
-          </v-btn>
-          <v-btn 
-            class="ml-2" 
-            @click="productStore.nextWeek()"
-          >
-            Следующая
-          </v-btn>
+            <p class="d-flex justify-center mt-16 text-h6">
+              {{ productStore.giveCurrentWeek }}
+            </p>
+            <div class="d-flex justify-center mt-8">
+              <v-btn 
+                class="mr-2" 
+                @click="productStore.previousWeek()"
+              >
+                Предыдущая
+              </v-btn>
+              <v-btn 
+                class="ml-2" 
+                @click="productStore.nextWeek()"
+              >
+                Следующая
+              </v-btn>
+            </div>
+          </v-card>
         </div>
-        <v-container class="d-flex justify-space-between flex-column mt-16 w-100 h-100">
+        <v-container 
+          class="d-flex justify-space-between flex-column mt-6 w-100 h-100"
+          transition="slide-x-transition"
+        >
           <v-card 
             v-for="(day, indexOfDay) in productStore.days"
             :key="day"

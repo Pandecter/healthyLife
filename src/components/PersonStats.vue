@@ -34,6 +34,9 @@
             label="ДД.ММ.ГГГГ"
             type="date"
           />
+          <!-- <v-date-picker title="Выберите дату" >
+
+          </v-date-picker> -->
         </div>
         <div class="ml-16">
           <p>
@@ -68,6 +71,7 @@ export default {
     return {
       statsStore: useStatsStore(),
       productStore: useProductStore(),
+      menu: null
       // personStore: usePersonStore(),
       // chartData: {
       //   labels: [ 'January', 'February', 'March' ],

@@ -5,7 +5,11 @@ export const useStatsStore = defineStore('stats', {
     return {
       startingDate: null,
       endingDate: null,
-      fieldRules: []
+      fieldRules: [
+        // value => {
+
+        // }
+      ]
     }
   },
 

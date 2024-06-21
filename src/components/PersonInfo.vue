@@ -16,66 +16,68 @@
         ЗЖ-У
       </v-app-bar-title>
     </v-app-bar>
-    <v-main>
-      <div class="d-flex align-center h-100 justify-center">
-        <v-form
-          v-model="personStore.formIsValid" 
-          class="w-25"
-        >
-          <div>
-            <p> Выберите ваш пол </p>
-            <v-radio-group v-model="personStore.gender">
-              <v-radio 
-                label="Мужской" 
-                value="male"
-              />
-              <v-radio 
-                label="Женский" 
-                value="female"
-              />
-            </v-radio-group>
-          </div>
-          <div>
-            <p> Введите ваш возраст </p>
-            <v-text-field
-              v-model="personStore.age"
-              :rules="personStore.returnAgeHeightRule"
-            />
-          </div>
-          <div>
-            <p> Введите ваш рост </p>
-            <v-text-field
-              v-model="personStore.height" 
-              :rules="personStore.returnAgeHeightRule"
-              label="в см"
-            />
-          </div>
-          <div>
-            <p> Введите ваш вес </p>
-            <v-text-field 
-              v-model="personStore.weigth" 
-              :rules="personStore.returnWeigthRule"
-              label="в кг"
-            />      
-          </div>
-          <div>
-            <v-select
-              v-model="personStore.choosedActivity"
-              label="Уровень вашей активности"
-              :items="personStore.levelOfActivity"
-              item-title="name"
-            />
-          </div>
-          <div 
-            v-if="personStore.showInfo"
-            class="d-flex justify-center"
+    <v-main class="d-flex justify-center">
+      <v-card class="mt-16 mb-8 elevation-8" variant="elevated" width="90vh">
+        <div class="d-flex align-center justify-center">
+          <v-form
+            v-model="personStore.formIsValid" 
+            class="w-50 mt-8"
           >
-            <p>
-              Ваша суточная норма калорий: {{ personStore.requiredCalories }}
-            </p>
-          </div>
-        </v-form>
-      </div>
+            <div>
+              <p> Выберите ваш пол </p>
+              <v-radio-group v-model="personStore.gender">
+                <v-radio 
+                  label="Мужской" 
+                  value="male"
+                />
+                <v-radio 
+                  label="Женский" 
+                  value="female"
+                />
+              </v-radio-group>
+            </div>
+            <div>
+              <p> Введите ваш возраст </p>
+              <v-text-field
+                v-model="personStore.age"
+                :rules="personStore.returnAgeHeightRule"
+              />
+            </div>
+            <div>
+              <p> Введите ваш рост </p>
+              <v-text-field
+                v-model="personStore.height" 
+                :rules="personStore.returnAgeHeightRule"
+                label="в см"
+              />
+            </div>
+            <div>
+              <p> Введите ваш вес </p>
+              <v-text-field 
+                v-model="personStore.weigth" 
+                :rules="personStore.returnWeigthRule"
+                label="в кг"
+              />      
+            </div>
+            <div>
+              <v-select
+                v-model="personStore.choosedActivity"
+                label="Уровень вашей активности"
+                :items="personStore.levelOfActivity"
+                item-title="name"
+              />
+            </div>
+            <div 
+              v-if="personStore.showInfo"
+              class="d-flex justify-center"
+            >
+              <p class="text-h6">
+                Ваша суточная норма калорий: {{ personStore.requiredCalories }} Ккал
+              </p>
+            </div>
+          </v-form>
+        </div>
+      </v-card>
     </v-main>
   </v-app>
 </template>
