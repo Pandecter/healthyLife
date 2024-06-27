@@ -31,7 +31,6 @@
             v-model="statsStore.startingDate"
             width="130px"
             variant="outlined"
-            label="ДД.ММ.ГГГГ"
             type="date"
           />
           <!-- <v-date-picker title="Выберите дату" >
@@ -46,10 +45,46 @@
             v-model="statsStore.endingDate" 
             width="130px"
             variant="outlined"
-            label="ДД.ММ.ГГГГ"
             type="date"
           />
         </div>
+      </div>
+      <div class="d-flex justify-center mt-4">
+        <v-btn
+          @click="statsStore.showStatistics()"
+        >
+          Вывести статистику
+        </v-btn>
+      </div>
+      <div>
+        <div>
+          {{ statsStore.startingDate }}
+        </div>
+        <div>
+          {{ statsStore.endingDate }}
+        </div>
+      </div>
+      <div class="d-flex justify-center mt-16">
+        <v-card 
+          v-if="statsStore.showErrorCard"
+          color="error"
+          class="d-flex justify-center"
+          width="80vh"
+        >
+          <v-card-title>
+            {{ statsStore.message }}
+          </v-card-title>
+        </v-card>
+        <v-card 
+          v-if="statsStore.showSuccessCard"
+          color="success"
+          class="d-flex justify-center"
+          width="80vh"
+        >
+          <v-card-title>
+            {{ statsStore.message }}
+          </v-card-title>
+        </v-card>
       </div>
     </v-main>
   </v-app>
