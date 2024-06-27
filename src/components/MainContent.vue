@@ -305,22 +305,22 @@ export default {
 
     goToStatsPage() {
       this.$router.push('/stats');
-      let start = this.productStore.giveCurrentDate[0];
-      let end = this.productStore.giveCurrentDate[6];
-      end = this.dateMaker(end);
-      start = this.dateMaker(start);
+      // let start = this.productStore.giveCurrentDate[0];
+      // let end = this.productStore.giveCurrentDate[6];
+      let end = this.productStore.giveDateInDateType[0];
+      let start = this.productStore.giveDateInDateType[6];
       this.statsStore.startingDate = start;
       this.statsStore.endingDate = end;
     },
 
-    dateMaker(value) { //метод для адекватной "привязки" к полю с типом date
-      value = value.split(""); //необходимо для преобразования string в array
-      let year = value.splice(6, 4).join(''); //выбираем нужную часть даты и преобразуем ее в нужный формат 
-      let month = value.splice(3, 2).join('');
-      let day = value.splice(0, 2).join('');
-      let result = year + "-" + month + "-" + day;
-      return result;
-    },
+    // dateMaker(value) { //метод для адекватной "привязки" к полю с типом date
+    //   value = value.split(""); //необходимо для преобразования string в array
+    //   let year = value.splice(6, 4).join(''); //выбираем нужную часть даты и преобразуем ее в нужный формат 
+    //   let month = value.splice(3, 2).join('');
+    //   let day = value.splice(0, 2).join('');
+    //   let result = year + "-" + month + "-" + day;
+    //   return result;
+    // },
 
     goToBasePage() {
       this.$router.push('/base');

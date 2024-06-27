@@ -115,6 +115,16 @@ export const useProductStore = defineStore('products', {
       return RESULT;
     },
 
+    dateTypeFormer(date){
+      date = this.dateFormer(date); //переведем в привичный вид
+      date = date.split(""); //необходимо для преобразования string в array
+      let year = date.splice(6, 4).join(''); //выбираем нужную часть даты и преобразуем ее в нужный формат 
+      let month = date.splice(3, 2).join('');
+      let day = date.splice(0, 2).join('');
+      let result = year + "-" + month + "-" + day;
+      return result;
+    },
+
     toggleDay(index, date) { //открывает/закрывает меню дня
       this.isExpandable[index] == false ? this.isExpandable[index] = true : this.isExpandable[index] = false; 
       this.clickedDate = date; 
@@ -238,6 +248,21 @@ export const useProductStore = defineStore('products', {
       while (day < 7) {
         startValue = new Date(CURRENT_DATE.getFullYear(),  CURRENT_DATE.getMonth(), CURRENT_DATE.getDate() - NUMBER + 1 + day);
         startValue = this.dateFormer(startValue);
+        ARR[day] = startValue;
+        day++;
+      }
+      return ARR;
+    },
+
+    giveDateInDateType() { //выводит дату в том виде, в котором она хранится в text-field для типа date
+      const NUMBER = this.switchedCurrentDate.getDay();
+      const CURRENT_DATE = this.switchedCurrentDate;
+      let startValue;
+      let day = 0;
+      const ARR = [];
+      while (day < 7) {
+        startValue = new Date(CURRENT_DATE.getFullYear(),  CURRENT_DATE.getMonth(), CURRENT_DATE.getDate() - NUMBER + 1 + day);
+        startValue = this.dateTypeFormer(startValue);
         ARR[day] = startValue;
         day++;
       }
