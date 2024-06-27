@@ -55,10 +55,10 @@
       </div>
       <div>
         <div>
-          {{ statsStore.chartData.labels }}
+          Labels: {{ statsStore.chartData.labels }}
         </div>
         <div>
-          {{ statsStore.chartData.datasets[0].data }}
+          Data: {{ statsStore.chartData.datasets[0].data }}
         </div>
       </div>
       <div class="d-flex justify-center mt-16">
@@ -72,16 +72,20 @@
             {{ statsStore.message }}
           </v-card-title>
         </v-card>
-        <v-card 
-          v-if="statsStore.showSuccessCard"
-          color="success"
-          class="d-flex justify-center"
-          width="80vh"
-        >
-          <v-card-title>
-            {{ statsStore.message }}
-          </v-card-title>
-        </v-card>
+        <div v-if="statsStore.showSuccessCard">
+          <v-card 
+            color="success"
+            class="d-flex justify-center"
+            width="80vh"
+          >
+            <v-card-title>
+              {{ statsStore.message }}
+            </v-card-title>
+          </v-card>
+          <div>
+            <LineChart :data="statsStore.chartData" :options="statsStore.options"></LineChart>
+          </div>
+        </div>
       </div>
     </v-main>
   </v-app>
@@ -89,29 +93,19 @@
 
 <script>
 import { useProductStore } from '@/store/productStore'
-// import { usePersonStore } from '@/store/personStore'
 import { useStatsStore } from '@/store/statsStore'
-//import { Bar } from 'vue-chartjs'
-//import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
+import { Line } from 'vue-chartjs'
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend} from 'chart.js'
 
-//ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
 export default {
-  //components: { Bar },
-
+  components: { LineChart: Line },
   data() {
     return {
       statsStore: useStatsStore(),
       productStore: useProductStore(),
-      menu: null
-      // personStore: usePersonStore(),
-      // chartData: {
-      //   labels: [ 'January', 'February', 'March' ],
-      //   datasets: [ { data: [40, 20, 12] } ]
-      // },
-      // chartOptions: {
-      //   responsive: true
-      // }
+      menu: null,
     }
   },
 
@@ -119,6 +113,7 @@ export default {
     goToMainPage() {
       this.productStore.drawer = false;
       this.$router.push('/');
+      this.statsStore.showSuccessCard = false;
     }
   }
 }

@@ -17,7 +17,19 @@ export const useStatsStore = defineStore('stats', {
           backgroundColor: '#f87979',
           data: []
         }]
-      }
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      },
+      // testData: {
+      //   labels: ["2024-06-31", "2024-07-01", "2024-07-02"], 
+      //   datasets: [{
+      //     label: 'Данные за период',
+      //     backgroundColor: '#f87979',
+      //     data: [553.1, 42, 441]
+      //   }]
+      // }
     }
   },
 
