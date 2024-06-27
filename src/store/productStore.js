@@ -141,6 +141,16 @@ export const useProductStore = defineStore('products', {
       else { //если текущий день уже есть в базе
         this.addFoodToMealTime(CURRENT_DATE, mealTime, food);
       }
+      this.listsOfDaysMenu.sort(this.compareFunction);
+    },
+
+    compareFunction(a, b) {
+      if (a.date < b.date) {
+        return -1;
+      }
+      else {
+        return  1;
+      }
     },
 
     addFoodToMealTime(currentDate, mealTime, food) { //добавляет продукт в конкретный прием пищи

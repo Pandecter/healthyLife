@@ -44,6 +44,8 @@ export const useStatsStore = defineStore('stats', {
         else { //все правила соблюдены
           this.showErrorCard = false;
           this.showSuccessCard = true;
+          this.chartData.datasets[0].data.length = 0; //обнуляем данные на каждый клик
+          this.chartData.labels.length = 0;
           const ARR_OF_MEAL_TIME = ["breakfast", "lunch", "dinner"];
           this.message = `Были выбраны данные с ${this.startingDate} по ${this.endingDate}!`;
           for (let i = 0; i < this.productStore.listsOfDaysMenu.length; i++) { //проходимся по всему массиву с добавленной едой

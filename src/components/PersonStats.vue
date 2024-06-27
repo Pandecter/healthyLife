@@ -55,10 +55,10 @@
       </div>
       <div>
         <div>
-          {{ statsStore.startingDate }}
+          {{ statsStore.chartData.labels }}
         </div>
         <div>
-          {{ statsStore.endingDate }}
+          {{ statsStore.chartData.datasets[0].data }}
         </div>
       </div>
       <div class="d-flex justify-center mt-16">
