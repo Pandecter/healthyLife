@@ -307,8 +307,8 @@ export default {
       this.$router.push('/stats');
       // let start = this.productStore.giveCurrentDate[0];
       // let end = this.productStore.giveCurrentDate[6];
-      let end = this.productStore.giveDateInDateType[0];
-      let start = this.productStore.giveDateInDateType[6];
+      let end = this.productStore.giveDateInDateType[6];
+      let start = this.productStore.giveDateInDateType[0];
       this.statsStore.startingDate = start;
       this.statsStore.endingDate = end;
     },

@@ -98,7 +98,7 @@ export const useProductStore = defineStore('products', {
       let currentDate = this.switchedCurrentDate;
       currentDate = new Date(currentDate.getFullYear(),  currentDate.getMonth(), currentDate.getDate() - WEEK);
       this.switchedCurrentDate = currentDate;
-      this.isExpandable.fill(false)
+      this.isExpandable.fill(false);
     },
 
     dateFormer(date) { //создает строку с датой в привычном для отображения виде

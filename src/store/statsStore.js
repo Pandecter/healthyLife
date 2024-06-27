@@ -1,13 +1,23 @@
 import { defineStore } from 'pinia'
+import { useProductStore } from './productStore'
 
 export const useStatsStore = defineStore('stats', {
   state: () => {
     return {
+      productStore: useProductStore(),
       startingDate: null, 
       endingDate: null,
       message: null, //переменная для уведомления пользователя
       showErrorCard: false, //переменная, которая отвечает за показ карточки с ошибками
-      showSuccessCard: false
+      showSuccessCard: false,
+      chartData: {
+        labels: [], 
+        datasets: [{
+          label: 'Данные за период',
+          backgroundColor: '#f87979',
+          data: []
+        }]
+      }
     }
   },
 
@@ -34,7 +44,22 @@ export const useStatsStore = defineStore('stats', {
         else { //все правила соблюдены
           this.showErrorCard = false;
           this.showSuccessCard = true;
+          const ARR_OF_MEAL_TIME = ["breakfast", "lunch", "dinner"];
           this.message = `Были выбраны данные с ${this.startingDate} по ${this.endingDate}!`;
+          for (let i = 0; i < this.productStore.listsOfDaysMenu.length; i++) { //проходимся по всему массиву с добавленной едой
+            if ((this.startingDate <= this.productStore.listsOfDaysMenu[i].date) &&
+                (this.endingDate >= this.productStore.listsOfDaysMenu[i].date)) { //выбираем все подходящие под даты дни
+              let calories = 0;
+              for (let j = 0; j < ARR_OF_MEAL_TIME.length; j++) { //проходимся по всем приемам пищи
+                const CHOICE = ARR_OF_MEAL_TIME[j];
+                for (let k = 0; k < this.productStore.listsOfDaysMenu[i][CHOICE].length; k++) { //проходимся по всем продуктам в приеме
+                  calories = calories + parseFloat(this.productStore.listsOfDaysMenu[i][CHOICE][k].calories);
+                }
+              }
+              this.chartData.datasets[0].data.push(calories);
+              this.chartData.labels.push(this.productStore.listsOfDaysMenu[i].date);
+            }
+          }
         }
       }
     }

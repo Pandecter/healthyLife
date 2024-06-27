@@ -33,9 +33,6 @@
             variant="outlined"
             type="date"
           />
-          <!-- <v-date-picker title="Выберите дату" >
-
-          </v-date-picker> -->
         </div>
         <div class="ml-16">
           <p>
