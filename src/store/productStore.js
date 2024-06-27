@@ -132,7 +132,7 @@ export const useProductStore = defineStore('products', {
 
     addToProductList(dayNumber, mealTime, food) { //добавляет продукт в общий массив выбранных продуктов
       const DAY_ID = this.days.findIndex((el) => el === dayNumber);
-      const CURRENT_DATE = this.giveCurrentDate[DAY_ID];
+      const CURRENT_DATE = this.giveDateInDateType[DAY_ID];
       if (!(this.listsOfDaysMenu.find((el) => el.date === CURRENT_DATE))) { //если текущего дня нет в базе 
         const OBJECT = { "dayNumber": DAY_ID, "date": CURRENT_DATE, "breakfast": [],"lunch": [], "dinner": []};
         this.listsOfDaysMenu.push(OBJECT);
@@ -319,7 +319,7 @@ export const useProductStore = defineStore('products', {
 
     showInfo() {
       const SHOWN_ARRAY = []; 
-      const CURRENT_DATE = this.giveCurrentDate; 
+      const CURRENT_DATE = this.giveDateInDateType; 
       for (let i = 0; i < CURRENT_DATE.length; i++) { 
         const RESULT = this.listsOfDaysMenu.find((el) => el.date === CURRENT_DATE[i]) 
         if (typeof(RESULT) === "undefined") { //если полученный тип undefined, т.е. данных с такой датой найдено не было
