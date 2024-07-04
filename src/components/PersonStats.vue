@@ -68,7 +68,7 @@
           <v-card 
             color="success"
             class="d-flex justify-center"
-            width="80vh"
+            width="160vh"
           >
             <v-card-title>
               {{ statsStore.message }}
@@ -79,6 +79,13 @@
               :data="statsStore.chartData" 
               :options="statsStore.chartOptions" 
             />
+          </div>
+          <div class="ma-8 text-h5 d-flex justify-center">
+            <p>
+              Введите <RouterLink to="/person_info">
+                свои данные 
+              </RouterLink> и получите расширенную статистику!
+            </p>
           </div>
         </div>
       </div>
@@ -108,7 +115,6 @@ export default {
     goToMainPage() {
       this.productStore.drawer = false;
       this.$router.push('/');
-      this.statsStore.showSuccessCard = false;
     }
   }
 }

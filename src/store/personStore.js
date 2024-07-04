@@ -76,7 +76,8 @@ export const usePersonStore = defineStore('person', {
       if (this.statsStore.chartData.datasets.length !== 2) {
         const DATASET = {
           label: 'Норма калорий',
-          backgroundColor: '#64affa',
+          backgroundColor: '#ff000d',
+          borderColor: '#ff000d',
           data: []
         }
         this.statsStore.chartData.datasets.push(DATASET);

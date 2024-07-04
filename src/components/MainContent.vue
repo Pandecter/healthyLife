@@ -300,6 +300,7 @@ export default {
     },
 
     goToPersonPage() {
+      this.productStore.isExpandable.fill(false);
       this.$router.push('/person_info');
     },
 
@@ -309,6 +310,9 @@ export default {
       let start = this.productStore.giveDateInDateType[0];
       this.statsStore.startingDate = start;
       this.statsStore.endingDate = end;
+      this.statsStore.showSuccessCard = false;
+      this.statsStore.showErrorCard = false;
+      this.productStore.isExpandable.fill(false);
     },
 
     // dateMaker(value) { //метод для адекватной "привязки" к полю с типом date
@@ -321,6 +325,7 @@ export default {
     // },
 
     goToBasePage() {
+      this.productStore.isExpandable.fill(false);
       this.$router.push('/base');
     }
   }
