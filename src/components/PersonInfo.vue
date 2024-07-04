@@ -22,7 +22,10 @@
         variant="elevated" 
         width="90vh"
       >
-        <div class="d-flex align-center justify-center">
+        <div 
+          v-if="!personStore.buttonIsClicked"
+          class="d-flex align-center justify-center"
+        >
           <v-form
             v-model="personStore.formIsValid" 
             class="w-50 mt-8"
@@ -32,11 +35,11 @@
               <v-radio-group v-model="personStore.gender">
                 <v-radio 
                   label="Мужской" 
-                  value="male"
+                  value="Мужчина"
                 />
                 <v-radio 
                   label="Женский" 
-                  value="female"
+                  value="Женщина"
                 />
               </v-radio-group>
             </div>
@@ -58,12 +61,13 @@
             <div>
               <p> Введите ваш вес </p>
               <v-text-field 
-                v-model="personStore.weigth" 
-                :rules="personStore.returnWeigthRule"
+                v-model="personStore.weight" 
+                :rules="personStore.returnWeightRule"
                 label="в кг"
               />      
             </div>
             <div>
+              <p> Выберите уровень вашей активности </p>
               <v-select
                 v-model="personStore.choosedActivity"
                 label="Уровень вашей активности"
@@ -71,15 +75,66 @@
                 item-title="name"
               />
             </div>
-            <div 
-              v-if="personStore.showInfo"
-              class="d-flex justify-center"
-            >
-              <p class="text-h6">
-                Ваша суточная норма калорий: {{ personStore.requiredCalories }} Ккал
-              </p>
+            <div class="d-flex justify-center mt-4">
+              <v-btn
+                :disabled="!personStore.showInfo"
+                @click="personStore.calculateRecomendedCalories()"
+              >
+                Подтвердить
+              </v-btn>
             </div>
           </v-form>
+        </div>
+        <div 
+          v-else
+          class="d-flex flex-column align-center "
+        > 
+          <div>
+            <p class="text-h4 ma-10"> 
+              Ваши данные 
+            </p>
+          </div>
+          <v-table class="ma-6" density="compact">
+            <thead>
+              <th class="text-left">
+                Параметр
+              </th>
+              <th class="text-left">
+                Значение
+              </th>
+            </thead>
+            <tbody>
+              <tr 
+                v-for="(param, index) in personStore.arrOfParams"
+                :key="param">
+                <td>
+                  {{ param }}
+                </td>
+                <td>
+                  {{ personStore.arrOfValues[index] }}
+                </td>
+              </tr>
+            </tbody>
+          </v-table>
+          <p class="text-h6 mt-6">
+            Ваша суточная норма калорий: {{ personStore.recomendedCalories }} ккал
+          </p>
+          <div class="mt-16">
+            <v-btn 
+              class="ma-4"
+              color="error"
+              @click="personStore.deletePersonInfo()"
+            >
+              Удалить
+            </v-btn>
+            <v-btn 
+              class="ma-4"
+              color="warning"
+              @click="personStore.buttonIsClicked = false"
+            >
+              Изменить
+            </v-btn>
+          </div>
         </div>
       </v-card>
     </v-main>

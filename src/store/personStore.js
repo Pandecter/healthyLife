@@ -6,7 +6,7 @@ export const usePersonStore = defineStore('person', {
       gender: null,
       age: null,
       height: null,
-      weigth: null,
+      weight: null,
       choosedActivity: null,
       levelOfActivity: [{ name: "Минимальная активность", value: 1.2 }, 
                         { name: "Слабый уровень активности", value: 1.375 },
@@ -31,19 +31,40 @@ export const usePersonStore = defineStore('person', {
           return REG_EXP.test(value) || "Значение должно быть положительным, корректным и, при необходимости, разделяться точкой!"
         }
       ],
+      recomendedCalories: null,
       formIsValid: false,
+      buttonIsClicked: false,
+      arrOfParams: ["Пол", "Возраст", "Рост", "Вес", "Ур. активности"],
+      arrOfValues: []
     }
   },
 
   actions: {
-    // generateInfo() {
-    //   if (this.gender === "male") {
-    //     this.requiredCalores = (10 * this.weigth + 6.25 * this.height - 5 * this.age + 5) * this.choosedActivity; 
-    //   }
-    //   else {
-    //     this.requiredCalores = (10 * this.weigth + 6.25 * this.height - 5 * this.age + 5) * this.choosedActivity; 
-    //   }
-    // }
+    deletePersonInfo() {
+      this.gender = null;
+      this.age = null;
+      this.height = null;
+      this.weight = null;
+      this.choosedActivity = null;
+      this.buttonIsClicked = false;
+    },
+    
+    calculateRecomendedCalories() {
+      this.buttonIsClicked = true;
+      if (this.gender === "Мужчина") {
+        this.recomendedCalories = Number((10 * this.weight + 6.25 * this.height - 5 * this.age + 5) * this.choosedActivity).toFixed(2); 
+      }
+      else {
+        this.recomendedCalories = Number((10 * this.weight + 6.25 * this.height - 5 * this.age - 161) * this.choosedActivity).toFixed(2); 
+      }
+      const ARR_OF_PARAMS = ["gender", "age", "height", "weight", "choosedActivity"];
+      for (let i = 0; i < ARR_OF_PARAMS.length; i++) {
+        const CHOICE = ARR_OF_PARAMS[i];
+        this.arrOfValues.push(this[CHOICE]);
+      }
+      const ACTIVITY_ID = this.levelOfActivity.findIndex((el) => el.value === this.arrOfValues[4]); //получаем не значение, а название
+      this.arrOfValues[4] = this.levelOfActivity[ACTIVITY_ID].name;
+    }
   },
 
   getters: {
@@ -51,7 +72,7 @@ export const usePersonStore = defineStore('person', {
       return [...this.commonRules, ...this.ageHeightRules]
     },
 
-    returnWeigthRule() { //совмещает общие правила и правила для веса
+    returnWeightRule() { //совмещает общие правила и правила для веса
       return [...this.commonRules, ...this.weightRules]
     },
 
@@ -64,13 +85,13 @@ export const usePersonStore = defineStore('person', {
       }
     },
 
-    requiredCalories() { //формула Миффлина-Сан Жеора
-      if (this.gender === "male") {
-        return Number((10 * this.weigth + 6.25 * this.height - 5 * this.age + 5) * this.choosedActivity).toFixed(2); 
-      }
-      else {
-        return Number((10 * this.weigth + 6.25 * this.height - 5 * this.age - 161) * this.choosedActivity).toFixed(2); 
-      }
-    }
+    // requiredCalories() { //формула Миффлина-Сан Жеора
+    //   if (this.gender === "male") {
+    //     return Number((10 * this.weigth + 6.25 * this.height - 5 * this.age + 5) * this.choosedActivity).toFixed(2); 
+    //   }
+    //   else {
+    //     return Number((10 * this.weigth + 6.25 * this.height - 5 * this.age - 161) * this.choosedActivity).toFixed(2); 
+    //   }
+    // }
   }
 })
