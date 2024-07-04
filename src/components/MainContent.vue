@@ -12,7 +12,7 @@
         @click.stop="productStore.drawer = !productStore.drawer"
       />
       <v-app-bar-title>
-        ЗЖ-У
+        ЗОЖ-Учёт
       </v-app-bar-title>
       <v-btn 
         icon="mdi-account"

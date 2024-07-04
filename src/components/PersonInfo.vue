@@ -13,7 +13,7 @@
         @click="goToMainPage()"
       />
       <v-app-bar-title>
-        ЗЖ-У
+        ЗОЖ-Учёт
       </v-app-bar-title>
     </v-app-bar>
     <v-main class="d-flex justify-center">
@@ -94,7 +94,10 @@
               Ваши данные 
             </p>
           </div>
-          <v-table class="ma-6" density="compact">
+          <v-table 
+            class="ma-6" 
+            density="compact"
+          >
             <thead>
               <th class="text-left">
                 Параметр
@@ -106,7 +109,8 @@
             <tbody>
               <tr 
                 v-for="(param, index) in personStore.arrOfParams"
-                :key="param">
+                :key="param"
+              >
                 <td>
                   {{ param }}
                 </td>
@@ -116,11 +120,12 @@
               </tr>
             </tbody>
           </v-table>
-          <p class="text-h6 mt-6">
+          <p class="text-h5 mt-12">
             Ваша суточная норма калорий: {{ personStore.recomendedCalories }} ккал
           </p>
           <div class="mt-16">
             <v-btn 
+              title="Удалить данные о себе"
               class="ma-4"
               color="error"
               @click="personStore.deletePersonInfo()"
@@ -128,6 +133,7 @@
               Удалить
             </v-btn>
             <v-btn 
+              title="Изменить введенные данные"
               class="ma-4"
               color="warning"
               @click="personStore.buttonIsClicked = false"

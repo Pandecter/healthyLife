@@ -1,9 +1,11 @@
 import { defineStore } from 'pinia'
 import { useProductStore } from './productStore'
+import { usePersonStore } from './personStore'
 
 export const useStatsStore = defineStore('stats', {
   state: () => {
     return {
+      personStore: usePersonStore(),
       productStore: useProductStore(),
       startingDate: null, 
       endingDate: null,
@@ -58,7 +60,7 @@ export const useStatsStore = defineStore('stats', {
           }
         }
         else { //все правила соблюдены
-          console.log("ВСЕ ПРАВИЛА СОБЛЮДЕНЫ")
+          //console.log("ВСЕ ПРАВИЛА СОБЛЮДЕНЫ")
           this.showErrorCard = false;
           this.showSuccessCard = true;
           this.chartData.datasets[0].data = []; //обнуляем данные на каждый клик
@@ -75,15 +77,26 @@ export const useStatsStore = defineStore('stats', {
                   calories = calories + parseFloat(this.productStore.listsOfDaysMenu[i][CHOICE][k].calories);
                 }
               }
-              console.log("ПОЧТИ ОПТРАВИЛИ!")
+              //console.log("ПОЧТИ ОПТРАВИЛИ!")
               this.chartData.datasets[0].data.push(calories);
-              console.log("Отправили данные по калориям!")
+             // console.log("Отправили данные по калориям!")
               this.chartData.labels.push(this.productStore.listsOfDaysMenu[i].date);
-              console.log("END")
+              //console.log("END")
+            }
+          }
+          if (this.chartData.datasets.length > 1) {
+            const DATA = this.personStore.recomendedCalories;
+            for (let i = 0; i < this.chartData.labels.length; i++) {
+              this.chartData.datasets[1].data[i] = DATA; //копируем значение для отображения линии
             }
           }
         }
       }
     }
-  }
+  },
+  // getters: {
+  //   countLabels() {
+  //     return this.chartData.labels.length;
+  //   }
+  // }
 })

@@ -1,8 +1,10 @@
 import { defineStore } from 'pinia'
+import { useStatsStore } from './statsStore'
 
 export const usePersonStore = defineStore('person', {
   state: () => {
     return {
+      statsStore: useStatsStore(),
       gender: null,
       age: null,
       height: null,
@@ -46,10 +48,15 @@ export const usePersonStore = defineStore('person', {
       this.height = null;
       this.weight = null;
       this.choosedActivity = null;
+      this.recomendedCalories = null;
+      this.statsStore.chartData.datasets.pop();
+
       this.buttonIsClicked = false;
     },
     
     calculateRecomendedCalories() {
+      //this.statsStore.chartData.datasets.pop();
+      this.arrOfValues = [];
       this.buttonIsClicked = true;
       if (this.gender === "Мужчина") {
         this.recomendedCalories = Number((10 * this.weight + 6.25 * this.height - 5 * this.age + 5) * this.choosedActivity).toFixed(2); 
@@ -62,8 +69,21 @@ export const usePersonStore = defineStore('person', {
         const CHOICE = ARR_OF_PARAMS[i];
         this.arrOfValues.push(this[CHOICE]);
       }
-      const ACTIVITY_ID = this.levelOfActivity.findIndex((el) => el.value === this.arrOfValues[4]); //получаем не значение, а название
+      const ACTIVITY_ID = this.levelOfActivity.findIndex((el) => el.value === this.arrOfValues[4]);
+      console.log(ACTIVITY_ID) //получаем не значение, а название
       this.arrOfValues[4] = this.levelOfActivity[ACTIVITY_ID].name;
+
+      if (this.statsStore.chartData.datasets.length !== 2) {
+        const DATASET = {
+          label: 'Норма калорий',
+          backgroundColor: '#64affa',
+          data: []
+        }
+        this.statsStore.chartData.datasets.push(DATASET);
+      }
+      // else {
+      //   this.statsStore.chartData.datasets[1].data = this.recomendedCalories;
+      // }
     }
   },
 
