@@ -18,7 +18,7 @@ export const useStatsStore = defineStore('stats', {
           data: []
         }]
       },
-      options: {
+      chartOptions: {
         responsive: true,
         maintainAspectRatio: false
       },
@@ -35,6 +35,10 @@ export const useStatsStore = defineStore('stats', {
 
   actions: {
     showStatistics() {
+      // this.chartData.datasets[0].data.length = 0;
+      // this.chartData.labels.length = 0;
+      // console.log(this.chartData.datasets[0].data);
+      // console.log(this.chartData.labels);
       if ((this.startingDate === "") || (this.endingDate === "")) { //если данных нет, либо веденной даты не существует
         this.showErrorCard = true;
         this.showSuccessCard = false;
@@ -54,10 +58,11 @@ export const useStatsStore = defineStore('stats', {
           }
         }
         else { //все правила соблюдены
+          console.log("ВСЕ ПРАВИЛА СОБЛЮДЕНЫ")
           this.showErrorCard = false;
           this.showSuccessCard = true;
-          this.chartData.datasets[0].data.length = 0; //обнуляем данные на каждый клик
-          this.chartData.labels.length = 0;
+          this.chartData.datasets[0].data = []; //обнуляем данные на каждый клик
+          this.chartData.labels = [];
           const ARR_OF_MEAL_TIME = ["breakfast", "lunch", "dinner"];
           this.message = `Были выбраны данные с ${this.startingDate} по ${this.endingDate}!`;
           for (let i = 0; i < this.productStore.listsOfDaysMenu.length; i++) { //проходимся по всему массиву с добавленной едой
@@ -70,8 +75,11 @@ export const useStatsStore = defineStore('stats', {
                   calories = calories + parseFloat(this.productStore.listsOfDaysMenu[i][CHOICE][k].calories);
                 }
               }
+              console.log("ПОЧТИ ОПТРАВИЛИ!")
               this.chartData.datasets[0].data.push(calories);
+              console.log("Отправили данные по калориям!")
               this.chartData.labels.push(this.productStore.listsOfDaysMenu[i].date);
+              console.log("END")
             }
           }
         }

@@ -53,14 +53,6 @@
           Вывести статистику
         </v-btn>
       </div>
-      <div>
-        <div>
-          Labels: {{ statsStore.chartData.labels }}
-        </div>
-        <div>
-          Data: {{ statsStore.chartData.datasets[0].data }}
-        </div>
-      </div>
       <div class="d-flex justify-center mt-16">
         <v-card 
           v-if="statsStore.showErrorCard"
@@ -83,7 +75,10 @@
             </v-card-title>
           </v-card>
           <div>
-            <LineChart :data="statsStore.chartData" :options="statsStore.options"></LineChart>
+            <LineChart 
+              :data="statsStore.chartData" 
+              :options="statsStore.chartOptions" 
+            />
           </div>
         </div>
       </div>

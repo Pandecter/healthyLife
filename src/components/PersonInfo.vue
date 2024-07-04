@@ -17,7 +17,11 @@
       </v-app-bar-title>
     </v-app-bar>
     <v-main class="d-flex justify-center">
-      <v-card class="mt-16 mb-8 elevation-8" variant="elevated" width="90vh">
+      <v-card 
+        class="mt-16 mb-8 elevation-8" 
+        variant="elevated" 
+        width="90vh"
+      >
         <div class="d-flex align-center justify-center">
           <v-form
             v-model="personStore.formIsValid" 

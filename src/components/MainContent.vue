@@ -143,7 +143,7 @@
                                 variant="text"
                                 icon="mdi-delete-circle"
                                 color="red"
-                                @click="productStore.deleteFoodFromMealTime(element, indexOfTime, productStore.giveCurrentDate[indexOfDay])"
+                                @click="productStore.deleteFoodFromMealTime(element, indexOfTime, productStore.giveDateInDateType[indexOfDay])"
                               />
                             </v-col>
                           </v-row>
@@ -155,104 +155,6 @@
                         class="mt-4"
                         @click="showOverlay(day, indexOfTime)"
                       >
-                        <v-overlay
-                          v-model="productStore.isOverlayActive"
-                          class="d-flex justify-center align-center"
-                        >
-                          <v-card 
-                            width="130vh"
-                            height="80vh"
-                          >
-                            <div class="d-flex justify-space-between mt-12 ml-16 mr-16">
-                              <p class="text-h6 mt-2">
-                                Ваш продукт:
-                              </p>
-                              <div class="w-50">
-                                <v-autocomplete 
-                                  v-model="productStore.currentProductName"
-                                  label="Введите наименование продукта" 
-                                  :items="productStore.returnProductNames"
-                                  no-data-text="По данному запросу нет результатов"
-                                />
-                              </div>    
-                            </div> 
-                            <div class="d-flex justify-space-between mt-8 ml-16 mr-16">
-                              <p class="text-h6 mt-2">
-                                Количество продукта:
-                              </p>
-                              <div class="w-50">
-                                <v-form v-model="productStore.isFormValid">
-                                  <v-text-field
-                                    v-model="productStore.currentCountValue"
-                                    :rules="productStore.inputCountRules" 
-                                    label="Введите количество в граммах"
-                                  />
-                                </v-form>
-                              </div>
-                            </div>
-                            <div 
-                              v-if="productStore.isButtonAvailable"
-                              class="d-flex justify-center align-center h-50"
-                            >
-                              <p 
-                                class="text-h6 font-weight-light"
-                              > 
-                                Здесь будут отображены данные о продукте
-                              </p>
-                            </div>
-                            <div 
-                              v-else
-                              class="h-50 pt-16"
-                            >
-                              <div class="d-flex justify-center pb-8">
-                                <p class="text-h6">
-                                  Информация о выбранном продукте 
-                                </p>
-                              </div>
-                              <hr>
-                              <v-table>
-                                <thead>
-                                  <tr>
-                                    <th class="text-left">
-                                      Название продукта
-                                    </th>
-                                    <th class="text-left">
-                                      Калории
-                                    </th>
-                                    <th class="text-left">
-                                      Белки
-                                    </th>
-                                    <th class="text-left">
-                                      Жиры
-                                    </th>
-                                    <th class="text-left">
-                                      Углеводы
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  <tr>
-                                    <td 
-                                      v-for="stat in productStore.showInfoAboutProduct"
-                                      :key="stat.name"
-                                    >
-                                      {{ stat }}
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </v-table>
-                              <hr>
-                            </div>                         
-                            <div class="d-flex justify-center">
-                              <v-btn 
-                                :disabled="productStore.isButtonAvailable"
-                                @click="addToProductStore()"
-                              > 
-                                Добавить продукт 
-                              </v-btn>
-                            </div> 
-                          </v-card>
-                        </v-overlay>
                         Добавить продукт
                         <v-icon 
                           icon="mdi-plus-circle-outline" 
@@ -264,6 +166,104 @@
                     </v-expansion-panel-text>
                   </v-expansion-panel> 
                 </v-expansion-panels>
+                <v-overlay
+                  v-model="productStore.isOverlayActive"
+                  class="d-flex justify-center align-center"
+                >
+                  <v-card 
+                    width="130vh"
+                    height="80vh"
+                  >
+                    <div class="d-flex justify-space-between mt-12 ml-16 mr-16">
+                      <p class="text-h6 mt-2">
+                        Ваш продукт:
+                      </p>
+                      <div class="w-50">
+                        <v-autocomplete 
+                          v-model="productStore.currentProductName"
+                          label="Введите наименование продукта" 
+                          :items="productStore.returnProductNames"
+                          no-data-text="По данному запросу нет результатов"
+                        />
+                      </div>    
+                    </div> 
+                    <div class="d-flex justify-space-between mt-8 ml-16 mr-16">
+                      <p class="text-h6 mt-2">
+                        Количество продукта:
+                      </p>
+                      <div class="w-50">
+                        <v-form v-model="productStore.isFormValid">
+                          <v-text-field
+                            v-model="productStore.currentCountValue"
+                            :rules="productStore.inputCountRules" 
+                            label="Введите количество в граммах"
+                          />
+                        </v-form>
+                      </div>
+                    </div>
+                    <div 
+                      v-if="productStore.isButtonAvailable"
+                      class="d-flex justify-center align-center h-50"
+                    >
+                      <p 
+                        class="text-h6 font-weight-light"
+                      > 
+                        Здесь будут отображены данные о продукте
+                      </p>
+                    </div>
+                    <div 
+                      v-else
+                      class="h-50 pt-16"
+                    >
+                      <div class="d-flex justify-center pb-8">
+                        <p class="text-h6">
+                          Информация о выбранном продукте 
+                        </p>
+                      </div>
+                      <hr>
+                      <v-table>
+                        <thead>
+                          <tr>
+                            <th class="text-left">
+                              Название продукта
+                            </th>
+                            <th class="text-left">
+                              Калории
+                            </th>
+                            <th class="text-left">
+                              Белки
+                            </th>
+                            <th class="text-left">
+                              Жиры
+                            </th>
+                            <th class="text-left">
+                              Углеводы
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td 
+                              v-for="stat in productStore.showInfoAboutProduct"
+                              :key="stat.name"
+                            >
+                              {{ stat }}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </v-table>
+                      <hr>
+                    </div>                         
+                    <div class="d-flex justify-center">
+                      <v-btn 
+                        :disabled="productStore.isButtonAvailable"
+                        @click="addToProductStore()"
+                      > 
+                        Добавить продукт 
+                      </v-btn>
+                    </div> 
+                  </v-card>
+                </v-overlay>
               </div>  
             </v-expand-transition>
           </v-card>
@@ -305,8 +305,6 @@ export default {
 
     goToStatsPage() {
       this.$router.push('/stats');
-      // let start = this.productStore.giveCurrentDate[0];
-      // let end = this.productStore.giveCurrentDate[6];
       let end = this.productStore.giveDateInDateType[6];
       let start = this.productStore.giveDateInDateType[0];
       this.statsStore.startingDate = start;

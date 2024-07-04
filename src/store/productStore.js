@@ -169,6 +169,7 @@ export const useProductStore = defineStore('products', {
     },
 
     deleteFoodFromMealTime(mealTimeMenu, mealTime, date) {
+      console.log(date)
       const DAY_ID = this.listsOfDaysMenu.findIndex((el) => el.date === date); //получаем индекс дня в массиве
       let nameOfMealTime;
       switch(mealTime) { //необходим для обращения к полю 
@@ -182,6 +183,10 @@ export const useProductStore = defineStore('products', {
           nameOfMealTime = "dinner";
           break; 
       }
+      // console.log(DAY_ID)
+      // console.log("TEST", this.listsOfDaysMenu)
+      // console.log("TEST", this.listsOfDaysMenu[DAY_ID])
+      // console.log("TEST", this.listsOfDaysMenu[DAY_ID][nameOfMealTime])
       const DELETING_ARR = this.listsOfDaysMenu[DAY_ID][nameOfMealTime]; //получаем массив времени приема пищи конкретной даты
       const MEAL_ID = DELETING_ARR.findIndex((el) => el.name === mealTimeMenu.name); //находим ID конкретного продукта
       DELETING_ARR.splice(MEAL_ID, 1);
@@ -314,12 +319,14 @@ export const useProductStore = defineStore('products', {
         PRODUCT[CHOICE] = PRODUCT[CHOICE].replace(/,/g, '.');
         PRODUCT[CHOICE] = Number(PRODUCT[CHOICE].replace(/[^0-9.]+/g,""));
         PRODUCT[CHOICE] = (PRODUCT[CHOICE] * (this.currentCountValue / 100)).toFixed(2);
-      } 
+      }
+      //console.log(PRODUCT) 
       return PRODUCT;
     },
     
     showInfoAboutProduct() { //вывод информации о продукте
       let info = this.actualProductCounter;
+      //console.log(info)
       info.calories = info.calories + " Ккал";
       info.proteins = info.proteins + " г";
       info.fats = info.fats + " г";
