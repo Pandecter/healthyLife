@@ -7,8 +7,9 @@
       <template #image>
         <v-img gradient="to top right, rgba(81, 217, 61,.9), rgba(141,216,125,.5)" />
       </template>
-      <v-btn 
-        icon="mdi-arrow-left-thick"
+      <v-btn
+        variant="plain"
+        icon="mdi-keyboard-backspace"
         title="Вернуться на главную"
         @click="goToMainPage()"
       />
@@ -18,7 +19,7 @@
           <template #activator="{ props }">
             <v-icon 
               v-bind="props" 
-              icon="mdi-information-outline" 
+              icon="mdi-information-variant" 
             />
           </template>
         </v-tooltip>
