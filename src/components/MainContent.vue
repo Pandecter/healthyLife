@@ -85,6 +85,13 @@
             <div class="d-flex justify-space-between">
               <v-card-title>
                 {{ day }}
+                <v-icon 
+                  v-if="productStore.isDayFilled[indexOfDay]"
+                  icon="mdi-food-fork-drink"
+                  color="success"
+                  class="ml-2"
+                  title="Вы внесли данные за этот день!"
+                />
               </v-card-title>
               <v-card-subtitle class="mt-4">
                 {{ productStore.giveCurrentDate[indexOfDay] }}
@@ -105,7 +112,15 @@
                   <v-expansion-panel
                     :title="time"
                     class="rounded-0"
+                    :color="productStore.isMealTimeFilled[indexOfDay][indexOfTime]"
                   >
+                    <!-- <v-icon
+                      v-if="productStore.isMealTimeFilled[indexOfDay][indexOfTime]"
+                      icon="mdi-food-fork-drink"
+                      color="success"
+                      class="ml-2"
+                      title="Вы внесли данные за этот прием пищи!"
+                    /> -->
                     <v-expansion-panel-text>
                       <div 
                         v-if="productStore.showInfo[indexOfDay][indexOfTime] === null"

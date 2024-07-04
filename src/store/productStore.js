@@ -70,7 +70,8 @@ export const useProductStore = defineStore('products', {
         value => /^(\d+|\d+,\d{1})$/.test(value) || "Значение разделяйте запятой, после запятой может быть только 1 символ!",
         value => (value || '').length <= 5 || "Значение не должно превышать 5 символов!",
       ],
-      addingFormIsValid: false
+      addingFormIsValid: false,
+      //isFilled: [false, false, false, false, false, false, false]
     }
   },
   actions: {
@@ -126,7 +127,7 @@ export const useProductStore = defineStore('products', {
     },
 
     toggleDay(index, date) { //открывает/закрывает меню дня
-      this.isExpandable[index] == false ? this.isExpandable[index] = true : this.isExpandable[index] = false; 
+      this.isExpandable[index] == false ? this.isExpandable[index] = true : this.isExpandable[index] = false;
       this.clickedDate = date; 
     },
 
@@ -136,7 +137,8 @@ export const useProductStore = defineStore('products', {
       if (!(this.listsOfDaysMenu.find((el) => el.date === CURRENT_DATE))) { //если текущего дня нет в базе 
         const OBJECT = { "dayNumber": DAY_ID, "date": CURRENT_DATE, "breakfast": [],"lunch": [], "dinner": []};
         this.listsOfDaysMenu.push(OBJECT);
-        this.addFoodToMealTime(CURRENT_DATE, mealTime, food);    
+        this.addFoodToMealTime(CURRENT_DATE, mealTime, food);
+
       }
       else { //если текущий день уже есть в базе
         this.addFoodToMealTime(CURRENT_DATE, mealTime, food);
@@ -399,7 +401,47 @@ export const useProductStore = defineStore('products', {
         this.slidersDisabled = false;
         return this.shownArrayOfProducts;
       }
-    }
+    },
     
+    isDayFilled() { //отображает "отмеченные" дни
+      const RESULT_ARR = []; 
+      for (let i = 0; i < this.giveDateInDateType.length; i++) {
+        if (this.listsOfDaysMenu.find((el) => el.date === this.giveDateInDateType[i])) {
+          RESULT_ARR[i] = true;
+        }
+        else {
+          RESULT_ARR[i] = false;
+        }
+      }
+      return RESULT_ARR;
+    },
+
+    isMealTimeFilled() {
+      const RESULT_ARR = []; 
+      for (let i = 0; i < this.giveDateInDateType.length; i++) {
+        const FOUND_DATE_ID = this.listsOfDaysMenu.findIndex((el) => el.date === this.giveDateInDateType[i]);
+        const SUB_ARRAY = [];
+        if (FOUND_DATE_ID !== -1) {
+          const SWITCH = ["breakfast", "lunch", "dinner"];
+          for (let j = 0; j < SWITCH.length; j++) {
+            const CHOICE = SWITCH[j];
+            if (this.listsOfDaysMenu[FOUND_DATE_ID][CHOICE].length !== 0) {
+              SUB_ARRAY[j] = "success";
+            }
+            else {
+              SUB_ARRAY[j] = false;
+            }
+          }
+          RESULT_ARR.push(SUB_ARRAY);
+        }
+        else {
+          for (let j = 0; j < this.mealTime.length; j++) {
+            SUB_ARRAY[j] = false;
+          }
+          RESULT_ARR.push(SUB_ARRAY);
+        }
+      }
+      return RESULT_ARR;
+    }
   }
 })
