@@ -110,17 +110,19 @@
                   :key="time"
                 >
                   <v-expansion-panel
-                    :title="time"
                     class="rounded-0"
-                    :color="productStore.isMealTimeFilled[indexOfDay][indexOfTime]"
                   >
-                    <!-- <v-icon
-                      v-if="productStore.isMealTimeFilled[indexOfDay][indexOfTime]"
-                      icon="mdi-food-fork-drink"
-                      color="success"
-                      class="ml-2"
-                      title="Вы внесли данные за этот прием пищи!"
-                    /> -->
+                    <v-expansion-panel-title>
+                      {{ time }}
+                      <v-icon
+                        v-if="productStore.isMealTimeFilled[indexOfDay][indexOfTime]"
+                        icon="mdi-check-outline"
+                        color="success"
+                        class="ml-2"
+                        title="Вы внесли данные за этот прием пищи!"
+                      />
+                    </v-expansion-panel-title>
+
                     <v-expansion-panel-text>
                       <div 
                         v-if="productStore.showInfo[indexOfDay][indexOfTime] === null"
@@ -155,29 +157,32 @@
                             <v-col class="d-flex align-center">
                               <v-btn 
                                 title="Удалить продукт"
-                                variant="text"
-                                icon="mdi-delete-circle"
                                 color="red"
+                                variant="tonal"
                                 @click="productStore.deleteFoodFromMealTime(element, indexOfTime, productStore.giveDateInDateType[indexOfDay])"
-                              />
+                              >
+                                Удалить 
+                              </v-btn>
                             </v-col>
                           </v-row>
                           <hr class="mt-3">
                         </v-container>
                       </div>
-                      <v-btn
-                        variant="outlined"
-                        class="mt-4"
-                        @click="showOverlay(day, indexOfTime)"
-                      >
-                        Добавить продукт
-                        <v-icon 
-                          icon="mdi-plus-circle-outline" 
-                          class="ml-2"
-                          size="large"
-                          color="success"
-                        />
-                      </v-btn>
+                      <div class="d-flex justify-center">
+                        <v-btn
+                          variant="outlined"
+                          class="mt-4"
+                          @click="showOverlay(day, indexOfTime)"
+                        >
+                          Добавить продукт
+                          <v-icon 
+                            icon="mdi-plus-circle-outline" 
+                            class="ml-2"
+                            size="large"
+                            color="success"
+                          />
+                        </v-btn>
+                      </div>
                     </v-expansion-panel-text>
                   </v-expansion-panel> 
                 </v-expansion-panels>
