@@ -109,7 +109,7 @@
         </div>
         <div class="d-flex justify-space-around">
           <v-range-slider 
-            v-model="productStore.caloriesRange"
+            v-model="productStore.BaseFilterRanges.caloriesRange"
             :min="productStore.findMinMaxRange[0][0]"
             :max="productStore.findMinMaxRange[0][1]"
             :disabled="productStore.slidersDisabled"
@@ -117,7 +117,7 @@
             thumb-label="always"
           />
           <v-range-slider
-            v-model="productStore.proteinsRange"
+            v-model="productStore.BaseFilterRanges.proteinsRange"
             :min="productStore.findMinMaxRange[1][0]"
             :max="productStore.findMinMaxRange[1][1]"
             :disabled="productStore.slidersDisabled"
@@ -125,7 +125,7 @@
             thumb-label="always"
           />
           <v-range-slider
-            v-model="productStore.fatsRange"
+            v-model="productStore.BaseFilterRanges.fatsRange"
             :min="productStore.findMinMaxRange[2][0]"
             :max="productStore.findMinMaxRange[2][1]"
             :disabled="productStore.slidersDisabled" 
@@ -133,7 +133,7 @@
             thumb-label="always"
           />
           <v-range-slider
-            v-model="productStore.carbsRange"
+            v-model="productStore.BaseFilterRanges.carbsRange"
             :min="productStore.findMinMaxRange[3][0]"
             :max="productStore.findMinMaxRange[3][1]"
             :disabled="productStore.slidersDisabled" 
@@ -161,7 +161,8 @@
               <th class="text-left">
                 Название продукта
                 <v-btn
-                  :icon="productStore.sortIcons.name" 
+                  :icon="productStore.sortIcons.name"
+                  :disabled="productStore.slidersDisabled"  
                   variant="plain" 
                   :ripple="false" 
                   class=" mb-1 pr-6" 
@@ -173,6 +174,7 @@
                 Калории
                 <v-btn 
                   :icon="productStore.sortIcons.calories" 
+                  :disabled="productStore.slidersDisabled" 
                   variant="plain" 
                   :ripple="false" 
                   class="mb-1 pr-6"
@@ -184,6 +186,7 @@
                 Белки
                 <v-btn
                   :icon="productStore.sortIcons.proteins" 
+                  :disabled="productStore.slidersDisabled" 
                   variant="plain" 
                   :ripple="false" 
                   class="mb-1 pr-6"
@@ -195,6 +198,7 @@
                 Жиры
                 <v-btn 
                   :icon="productStore.sortIcons.fats" 
+                  :disabled="productStore.slidersDisabled" 
                   variant="plain" 
                   :ripple="false" 
                   class="mb-1 pr-6"
@@ -206,6 +210,7 @@
                 Углеводы
                 <v-btn 
                   :icon="productStore.sortIcons.carbs" 
+                  :disabled="productStore.slidersDisabled" 
                   variant="plain" 
                   :ripple="false" 
                   class="mb-1 pr-6"

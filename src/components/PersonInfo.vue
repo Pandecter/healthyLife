@@ -8,12 +8,12 @@
         <v-img gradient="to top right, rgba(81, 217, 61,.9), rgba(141,216,125,.5)" />
       </template>
       <v-btn 
-        icon="mdi-arrow-left-thick"
+        icon="mdi-keyboard-backspace"
         title="Вернуться на главную"
         @click="goToMainPage()"
       />
       <v-app-bar-title>
-        ЗОЖ-Учёт
+        Персональная информация
       </v-app-bar-title>
     </v-app-bar>
     <v-main class="d-flex justify-center">

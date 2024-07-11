@@ -74,7 +74,10 @@
         <v-container 
           class="d-flex justify-space-between flex-column mt-6 w-100 h-100"
           transition="slide-x-transition"
-        >
+        > 
+          <!-- <p> {{ productStore.findMinMaxRange }}</p> -->
+          <!-- <p> {{ productStore.modalFilterRanges }}</p>
+          <p> {{ productStore.BaseFilterRanges }}</p> -->
           <v-card 
             v-for="(day, indexOfDay) in productStore.days"
             :key="day"
@@ -192,7 +195,7 @@
                 >
                   <v-card 
                     width="130vh"
-                    height="80vh"
+                    height="90vh"
                   >
                     <div class="d-flex justify-space-between mt-12 ml-16 mr-16">
                       <p class="text-h6 mt-2">
@@ -221,9 +224,54 @@
                         </v-form>
                       </div>
                     </div>
+                    <div class="d-flex justify-space-between mt-8 ml-16 mr-16">
+                      <p class="text-h6 mt-2">
+                        Фильтры:
+                      </p>
+                    </div>
+                    <div class="d-flex justify-space-around mt-4">
+                      <p>Калории</p>
+                      <p>Белки</p>
+                      <p>Жиры</p>
+                      <p>Углеводы</p>
+                    </div>
+                    <div class="d-flex justify-space-around mt-6">
+                      <v-range-slider 
+                        v-model="productStore.modalFilterRanges.calRange"
+                        :min="productStore.findMinMaxRange[0][0]"
+                        :max="productStore.findMinMaxRange[0][1]"
+                        :disabled="productStore.slidersDisabled"
+                        max-width="150px"
+                        thumb-label="always"  
+                      />
+                      <v-range-slider
+                        v-model="productStore.modalFilterRanges.proRange"
+                        :min="productStore.findMinMaxRange[1][0]"
+                        :max="productStore.findMinMaxRange[1][1]"
+                        :disabled="productStore.slidersDisabled"
+                        max-width="150px"
+                        thumb-label="always"
+                      />
+                      <v-range-slider
+                        v-model="productStore.modalFilterRanges.fatRange"
+                        :min="productStore.findMinMaxRange[2][0]"
+                        :max="productStore.findMinMaxRange[2][1]"
+                        :disabled="productStore.slidersDisabled" 
+                        max-width="150px"
+                        thumb-label="always"
+                      />
+                      <v-range-slider
+                        v-model="productStore.modalFilterRanges.carRange"
+                        :min="productStore.findMinMaxRange[3][0]"
+                        :max="productStore.findMinMaxRange[3][1]"
+                        :disabled="productStore.slidersDisabled" 
+                        max-width="150px"
+                        thumb-label="always"
+                      />
+                    </div>
                     <div 
                       v-if="productStore.isButtonAvailable"
-                      class="d-flex justify-center align-center h-50"
+                      class="d-flex justify-center align-center h-25 mt-2"
                     >
                       <p 
                         class="text-h6 font-weight-light"
@@ -233,7 +281,7 @@
                     </div>
                     <div 
                       v-else
-                      class="h-50 pt-16"
+                      class="h-25 mt-2"
                     >
                       <div class="d-flex justify-center pb-8">
                         <p class="text-h6">
@@ -274,7 +322,7 @@
                       </v-table>
                       <hr>
                     </div>                         
-                    <div class="d-flex justify-center">
+                    <div class="d-flex justify-center mt-8">
                       <v-btn 
                         :disabled="productStore.isButtonAvailable"
                         @click="addToProductStore()"

@@ -37,10 +37,30 @@ export const useProductStore = defineStore('products', {
       isFormValid: false, // переменная, которая нужна для корректной блокировки кнопки
       isOverlayActive: false,
       drawer: false,
-      caloriesRange: null,
-      proteinsRange: null,
-      fatsRange: null,
-      carbsRange: null, 
+      BaseFilterRanges: {
+        caloriesRange: null,
+        proteinsRange: null,
+        fatsRange: null,
+        carbsRange: null
+      },
+      // AddingFilterRanges: { //используются на этапе добавления продукта в прием пищи
+      //   calRange: null,
+      //   protRange: null,
+      //   fatRange: null,
+      //   carbRange: null
+      // }, 
+      // testObject: {
+      //   one: null,
+      //   two: null,
+      //   three: null, 
+      //   four: null
+      // },
+      modalFilterRanges: {
+        calRange: null,
+        proRange: null,
+        fatRange: null,
+        carRange: null
+      },
       searchedProduct: null, //продукт в поисковой строке базы 
       shownArrayOfProducts: null, //массив для отображения продуктов в базе с учетом фильтрации
       slidersDisabled: false,
@@ -89,10 +109,40 @@ export const useProductStore = defineStore('products', {
       this.switchedCurrentDate = CURRENT_DATE;
       this.currentDate.day = this.days[CURRENT_DATE.getDay() - 1];
       this.currentDate.month = this.months[CURRENT_DATE.getMonth()];
+      this.initMinMaxRange(); 
 
       this.foodStorage = [...foodData];
       this.shownArrayOfProducts = [...foodData];
     },
+
+    initMinMaxRange() { /*функция-затычка, которая полностью копирует геттер findMinMaxRange, 
+      но без нее данные почему-то не прогужаются */
+      const SWITCH = ["calories", "proteins", "fats", "carbs"];
+      let minMaxArr = [];
+      const RESULT_ARR = [];
+      for (let i = 0; i < SWITCH.length; i++) {
+        const CHOICE = SWITCH[i];
+        const ARR = [...(this.foodStorage.map(obj => obj[CHOICE]))];
+        for (let j = 0; j < ARR.length; j++) {
+          ARR[j] = ARR[j].replace(/,/g, '.'); //заменяем запятые на точки, т.к. parseFloat не воспринимает запятые
+          ARR[j] = parseFloat(ARR[j]); //"удаляем" лишние слова, нам нужны только цифры
+        }
+        minMaxArr[0] = Math.min(...ARR);
+        minMaxArr[1] = Math.max(...ARR);
+        RESULT_ARR[i] = [...minMaxArr];
+        minMaxArr = [];
+      }
+
+      this.BaseFilterRanges.caloriesRange = RESULT_ARR[0];
+      this.BaseFilterRanges.proteinsRange = RESULT_ARR[1];
+      this.BaseFilterRanges.fatsRange = RESULT_ARR[2];
+      this.BaseFilterRanges.carbsRange = RESULT_ARR[3];
+
+      this.modalFilterRanges.calRange = RESULT_ARR[0];
+      this.modalFilterRanges.proRange = RESULT_ARR[1];
+      this.modalFilterRanges.fatRange = RESULT_ARR[2];
+      this.modalFilterRanges.carRange = RESULT_ARR[3];
+    }, 
 
     nextWeek() { // метод для переключения на следующую неделю относительно текущей даты пользователя
       const WEEK = 7;
@@ -208,7 +258,11 @@ export const useProductStore = defineStore('products', {
 
     applyFilters() { //вызов фильтрации
       this.shownArrayOfProducts = [...this.foodStorage];
-      this.shownArrayOfProducts = this.shownArrayOfProducts.filter(this.filterFunc);
+      this.shownArrayOfProducts = this.shownArrayOfProducts.filter(value => this.filterFunc(value, 
+                                                                   this.BaseFilterRanges.caloriesRange, 
+                                                                   this.BaseFilterRanges.proteinsRange,
+                                                                   this.BaseFilterRanges.fatsRange,
+                                                                   this.BaseFilterRanges.carbsRange));
     },
 
     sortInit(value) { //замена параметров переменной для вызова геттера сортировки
@@ -231,11 +285,11 @@ export const useProductStore = defineStore('products', {
       }
       if (this.sortBy[0] === "name") {
         if(this.sortBy[1] === "asc") {
-          console.log("ASCENDING!!!")
+          //console.log("ASCENDING!!!")
           this.shownArrayOfProducts.sort((a, b) => (a.name > b.name ? 1 : -1));
         }
         else {
-          console.log("DESCENDING!!!")
+          //console.log("DESCENDING!!!")
           this.shownArrayOfProducts.sort((a, b) => (a.name > b.name ? -1 : 1));
         }
       }
@@ -268,7 +322,7 @@ export const useProductStore = defineStore('products', {
       }
     },
 
-    filterFunc(value) { //функция фильтрации
+    filterFunc(value, caloriesRange, proteinsRange, fatsRange, carbRange) { //функция фильтрации
       const STATS = ["calories", "proteins", "fats", "carbs"];
       let changedValue = {...value};
       for (let i = 0; i < STATS.length; i++) {
@@ -276,10 +330,10 @@ export const useProductStore = defineStore('products', {
         changedValue[CHOICE] = changedValue[CHOICE].replace(/,/g, '.');
         changedValue[CHOICE] = parseFloat(changedValue[CHOICE]);
       }
-      const CALORIES_CONDITION = (changedValue.calories >= this.caloriesRange[0]) && (changedValue.calories <= this.caloriesRange[1]);
-      const PROTEINS_CONDITION = (changedValue.proteins >= this.proteinsRange[0]) && (changedValue.proteins <= this.proteinsRange[1]);
-      const FATS_CONDITION = (changedValue.fats >= this.fatsRange[0]) && (changedValue.fats <= this.fatsRange[1]);
-      const CARBS_CONDITION = (changedValue.carbs >= this.carbsRange[0]) && (changedValue.carbs <= this.carbsRange[1]);
+      const CALORIES_CONDITION = (changedValue.calories >= caloriesRange[0]) && (changedValue.calories <= caloriesRange[1]);
+      const PROTEINS_CONDITION = (changedValue.proteins >= proteinsRange[0]) && (changedValue.proteins <= proteinsRange[1]);
+      const FATS_CONDITION = (changedValue.fats >= fatsRange[0]) && (changedValue.fats <= fatsRange[1]);
+      const CARBS_CONDITION = (changedValue.carbs >= carbRange[0]) && (changedValue.carbs <= carbRange[1]);
       return (CALORIES_CONDITION && PROTEINS_CONDITION && FATS_CONDITION && CARBS_CONDITION);
     },
 
@@ -353,9 +407,12 @@ export const useProductStore = defineStore('products', {
     },
 
     returnProductNames() { //выводит список продуктов в autocomplete
+      const RES_ARR = this.foodStorage.filter(value => this.filterFunc(value, this.modalFilterRanges.calRange, 
+                                              this.modalFilterRanges.proRange, this.modalFilterRanges.fatRange,
+                                              this.modalFilterRanges.carRange));
       const ARR_OF_NAMES = [];
-      for (let i = 0; i < this.foodStorage.length; i++) {
-        ARR_OF_NAMES[i] = this.foodStorage[i].name;
+      for (let i = 0; i < RES_ARR.length; i++) {
+        ARR_OF_NAMES[i] = RES_ARR[i].name;
       }
       return ARR_OF_NAMES;
     },
@@ -432,9 +489,9 @@ export const useProductStore = defineStore('products', {
       return SHOWN_ARRAY;
     },
 
-    findMinMaxRange() { //возращает максимальное/минимальное значение для слайдеров
+    findMinMaxRange() { //возращает максимальное/минимальное значение для слайдеров (отслеживает изменения в границах)
       const SWITCH = ["calories", "proteins", "fats", "carbs"];
-      const MIN_MAX_ARR = [];
+      let minMaxArr = [];
       const RESULT_ARR = [];
       for (let i = 0; i < SWITCH.length; i++) {
         const CHOICE = SWITCH[i];
@@ -443,15 +500,22 @@ export const useProductStore = defineStore('products', {
           ARR[j] = ARR[j].replace(/,/g, '.'); //заменяем запятые на точки, т.к. parseFloat не воспринимает запятые
           ARR[j] = parseFloat(ARR[j]); //"удаляем" лишние слова, нам нужны только цифры
         }
-        MIN_MAX_ARR[0] = Math.min(...ARR);
-        MIN_MAX_ARR[1] = Math.max(...ARR);
-        RESULT_ARR[i] = [...MIN_MAX_ARR];
-        MIN_MAX_ARR.length = 0;
+        minMaxArr[0] = Math.min(...ARR);
+        minMaxArr[1] = Math.max(...ARR);
+        RESULT_ARR[i] = [...minMaxArr];
+        minMaxArr = [];
       }
-      this.caloriesRange = RESULT_ARR[0];
-      this.proteinsRange = RESULT_ARR[1];
-      this.fatsRange = RESULT_ARR[2];
-      this.carbsRange = RESULT_ARR[3];
+
+      this.BaseFilterRanges.caloriesRange = RESULT_ARR[0];
+      this.BaseFilterRanges.proteinsRange = RESULT_ARR[1];
+      this.BaseFilterRanges.fatsRange = RESULT_ARR[2];
+      this.BaseFilterRanges.carbsRange = RESULT_ARR[3];
+
+      this.modalFilterRanges.calRange = RESULT_ARR[0];
+      this.modalFilterRanges.proRange = RESULT_ARR[1];
+      this.modalFilterRanges.fatRange = RESULT_ARR[2];
+      this.modalFilterRanges.carRange = RESULT_ARR[3];
+
       return RESULT_ARR;
     },
     
