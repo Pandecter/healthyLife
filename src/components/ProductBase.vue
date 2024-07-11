@@ -160,18 +160,23 @@
             <tr>
               <th class="text-left">
                 Название продукта
+                <v-btn  @click="productStore.sortInit('name')" icon="mdi-menu-down" variant="plain" :ripple="false" class=" mb-1 pr-6"></v-btn>
               </th>
               <th class="text-left">
                 Калории
+                <v-btn @click="productStore.sortInit('calories')" icon="mdi-menu-down" variant="plain" :ripple="false" class="mb-1 pr-6"></v-btn>
               </th>
               <th class="text-left">
                 Белки
+                <v-btn @click="productStore.sortInit('proteins')" icon="mdi-menu-down" variant="plain" :ripple="false" class="mb-1 pr-6"></v-btn>
               </th>
               <th class="text-left">
                 Жиры
+                <v-btn @click="productStore.sortInit('fats')" icon="mdi-menu-down" variant="plain" :ripple="false" class="mb-1 pr-6"></v-btn>
               </th>
               <th class="text-left">
                 Углеводы
+                <v-btn @click="productStore.sortInit('carbs')" icon="mdi-menu-down" variant="plain" :ripple="false" class="mb-1 pr-6"></v-btn>
               </th>
             </tr>
           </thead>
@@ -243,6 +248,7 @@ export default {
     showOverlay() { //необходимо для корректного добавления продуктов и открытия оверлея
       this.productStore.isOverlayActive = true;
     },
+
   },
 
 }

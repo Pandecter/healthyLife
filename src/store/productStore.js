@@ -71,7 +71,7 @@ export const useProductStore = defineStore('products', {
         value => (value || '').length <= 5 || "Значение не должно превышать 5 символов!",
       ],
       addingFormIsValid: false,
-      //isFilled: [false, false, false, false, false, false, false]
+      sortBy: ['calories', 'desc']
     }
   },
   actions: {
@@ -203,6 +203,50 @@ export const useProductStore = defineStore('products', {
       this.shownArrayOfProducts = this.shownArrayOfProducts.filter(this.filterFunc);
     },
 
+    sortInit(value) { //замена параметров переменной для вызова геттера сортировки
+      // console.log(value + " И " + this.sortBy[0] + "; ТИП: " + this.sortBy[1])
+      // if (value === "name") {
+      //   this.shownArrayOfProducts.sort();
+      // }
+      if (value !== this.sortBy[0]) {
+        // console.log("не совпало")
+        this.sortBy[0] = value;
+        this.sortBy[1] = "desc"; //по умолчанию ставим убывающую сортировку
+      }
+      else {
+        // console.log("совпало")
+        this.sortBy[1] === "desc" ? this.sortBy[1] = "asc" : this.sortBy[1] = "desc";
+      }
+      //console.log("ТЕКУЩАЯ СОРТИРОВКА: " + this.sortBy[1]  + " по: " + this.sortBy[0]);
+      this.shownArrayOfProducts.sort(this.sortFunction);
+    },
+
+    sortFunction(a, b) {
+      //console.log(typeof(a))
+      const FIELD = this.sortBy[0];
+      let a_mod = a[FIELD].replace(/,/g, '.');
+      //console.log(typeof(a_mod) + ": " + a_mod)
+      a_mod = parseFloat(a_mod);
+      let b_mod = b[FIELD].replace(/,/g, '.');
+      b_mod = parseFloat(b_mod);
+      if (this.sortBy[1] === "asc") { //по возрастанию
+        if (a_mod < b_mod) {
+          return -1;
+        }
+        else {
+          return 1;
+        }
+      }
+      else { //по убыванию 
+        if (a_mod < b_mod) {
+          return 1;
+        }
+        else {
+          return -1;
+        }
+      }
+    },
+
     filterFunc(value) { //функция фильтрации
       const STATS = ["calories", "proteins", "fats", "carbs"];
       let changedValue = {...value};
@@ -236,6 +280,7 @@ export const useProductStore = defineStore('products', {
       }
     }
 
+    
   },
   getters: {
     giveAlternativeCurrentDate() { // показывает текущую дату 
@@ -389,7 +434,7 @@ export const useProductStore = defineStore('products', {
       return RESULT_ARR;
     },
     
-    returnShowedArray() { //вывод списка с учетом фильтров
+    returnShowedArray() { //вывод списка с учетом фильтров/поиска
       if (this.searchedProduct !== null) {
         const RESULT = this.shownArrayOfProducts.find((el) => el.name === this.searchedProduct);
         const ARR = [];
@@ -442,6 +487,10 @@ export const useProductStore = defineStore('products', {
         }
       }
       return RESULT_ARR;
-    }
+    },
+
+    // sortData() {
+    //   return this.shownArrayOfProducts.sort(this.sortFunction(this.sortBy[0], this.sortBy[1]));
+    // }
   }
 })
