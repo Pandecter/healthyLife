@@ -71,7 +71,15 @@ export const useProductStore = defineStore('products', {
         value => (value || '').length <= 5 || "Значение не должно превышать 5 символов!",
       ],
       addingFormIsValid: false,
-      sortBy: ['calories', 'desc']
+      sortBy: ['name', 'desc'],
+      sortIcons:{
+        name: "mdi-menu-up",
+        calories: "mdi-menu-down",
+        proteins: "mdi-menu-down",
+        fats: "mdi-menu-down",
+        carbs: "mdi-menu-down"
+      },
+      //currentSortChoice: "calories"
     }
   },
   actions: {
@@ -204,28 +212,41 @@ export const useProductStore = defineStore('products', {
     },
 
     sortInit(value) { //замена параметров переменной для вызова геттера сортировки
-      // console.log(value + " И " + this.sortBy[0] + "; ТИП: " + this.sortBy[1])
-      // if (value === "name") {
-      //   this.shownArrayOfProducts.sort();
-      // }
+      this.currentSortChoice = value;
+      const FIELD = value;
       if (value !== this.sortBy[0]) {
-        // console.log("не совпало")
         this.sortBy[0] = value;
-        this.sortBy[1] = "desc"; //по умолчанию ставим убывающую сортировку
+        this.sortBy[1] = "desc";
+        this.sortIcons[FIELD] = "mdi-menu-down" //по умолчанию ставим убывающую сортировку
       }
       else {
-        // console.log("совпало")
-        this.sortBy[1] === "desc" ? this.sortBy[1] = "asc" : this.sortBy[1] = "desc";
+        if (this.sortBy[1] === "desc") {
+          this.sortBy[1] = "asc";
+          this.sortIcons[FIELD] = "mdi-menu-up";
+        }
+        else {
+          this.sortBy[1] = "desc";
+          this.sortIcons[FIELD] = "mdi-menu-down";
+        }
       }
-      //console.log("ТЕКУЩАЯ СОРТИРОВКА: " + this.sortBy[1]  + " по: " + this.sortBy[0]);
-      this.shownArrayOfProducts.sort(this.sortFunction);
+      if (this.sortBy[0] === "name") {
+        if(this.sortBy[1] === "asc") {
+          console.log("ASCENDING!!!")
+          this.shownArrayOfProducts.sort((a, b) => (a.name > b.name ? 1 : -1));
+        }
+        else {
+          console.log("DESCENDING!!!")
+          this.shownArrayOfProducts.sort((a, b) => (a.name > b.name ? -1 : 1));
+        }
+      }
+      else {
+        this.shownArrayOfProducts.sort(this.sortFunction);
+      }
     },
 
     sortFunction(a, b) {
-      //console.log(typeof(a))
       const FIELD = this.sortBy[0];
       let a_mod = a[FIELD].replace(/,/g, '.');
-      //console.log(typeof(a_mod) + ": " + a_mod)
       a_mod = parseFloat(a_mod);
       let b_mod = b[FIELD].replace(/,/g, '.');
       b_mod = parseFloat(b_mod);
@@ -489,6 +510,19 @@ export const useProductStore = defineStore('products', {
       return RESULT_ARR;
     },
 
+    returnColor() {
+      const ARR = ["name", "calories" , "proteins", "fats", "carbs"];
+      const COLORS = [];
+      for (let i = 0; i < ARR.length; i++) {
+        if (ARR[i] === this.sortBy[0]) {
+          COLORS[i] = "red";
+        }
+        else {
+          COLORS[i] = "black";
+        }
+      }
+      return COLORS;
+    }
     // sortData() {
     //   return this.shownArrayOfProducts.sort(this.sortFunction(this.sortBy[0], this.sortBy[1]));
     // }

@@ -160,23 +160,58 @@
             <tr>
               <th class="text-left">
                 Название продукта
-                <v-btn  @click="productStore.sortInit('name')" icon="mdi-menu-down" variant="plain" :ripple="false" class=" mb-1 pr-6"></v-btn>
+                <v-btn
+                  :icon="productStore.sortIcons.name" 
+                  variant="plain" 
+                  :ripple="false" 
+                  class=" mb-1 pr-6" 
+                  :color="productStore.returnColor[0]"
+                  @click="productStore.sortInit('name')"
+                />
               </th>
               <th class="text-left">
                 Калории
-                <v-btn @click="productStore.sortInit('calories')" icon="mdi-menu-down" variant="plain" :ripple="false" class="mb-1 pr-6"></v-btn>
+                <v-btn 
+                  :icon="productStore.sortIcons.calories" 
+                  variant="plain" 
+                  :ripple="false" 
+                  class="mb-1 pr-6"
+                  :color="productStore.returnColor[1]"
+                  @click="productStore.sortInit('calories')"
+                />
               </th>
               <th class="text-left">
                 Белки
-                <v-btn @click="productStore.sortInit('proteins')" icon="mdi-menu-down" variant="plain" :ripple="false" class="mb-1 pr-6"></v-btn>
+                <v-btn
+                  :icon="productStore.sortIcons.proteins" 
+                  variant="plain" 
+                  :ripple="false" 
+                  class="mb-1 pr-6"
+                  :color="productStore.returnColor[2]"
+                  @click="productStore.sortInit('proteins')"
+                />
               </th>
               <th class="text-left">
                 Жиры
-                <v-btn @click="productStore.sortInit('fats')" icon="mdi-menu-down" variant="plain" :ripple="false" class="mb-1 pr-6"></v-btn>
+                <v-btn 
+                  :icon="productStore.sortIcons.fats" 
+                  variant="plain" 
+                  :ripple="false" 
+                  class="mb-1 pr-6"
+                  :color="productStore.returnColor[3]"
+                  @click="productStore.sortInit('fats')"
+                />
               </th>
               <th class="text-left">
                 Углеводы
-                <v-btn @click="productStore.sortInit('carbs')" icon="mdi-menu-down" variant="plain" :ripple="false" class="mb-1 pr-6"></v-btn>
+                <v-btn 
+                  :icon="productStore.sortIcons.carbs" 
+                  variant="plain" 
+                  :ripple="false" 
+                  class="mb-1 pr-6"
+                  :color="productStore.returnColor[4]"
+                  @click="productStore.sortInit('carbs')"
+                />
               </th>
             </tr>
           </thead>
