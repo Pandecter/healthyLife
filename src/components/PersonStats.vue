@@ -80,11 +80,16 @@
               :options="statsStore.chartOptions" 
             />
           </div>
-          <div class="ma-8 text-h5 d-flex justify-center">
+          <div v-if="personStore.isInfoIsNotFull" class="ma-8 text-h5 d-flex justify-center">
             <p>
               Введите <RouterLink to="/person_info">
                 свои данные 
               </RouterLink> и получите расширенную статистику!
+            </p>
+          </div>
+          <div v-else class="ma-8 text-h5 d-flex justify-center">
+            <p>
+              Тут будут статы
             </p>
           </div>
         </div>
@@ -94,6 +99,7 @@
 </template>
 
 <script>
+import { usePersonStore } from '@/store/personStore'
 import { useProductStore } from '@/store/productStore'
 import { useStatsStore } from '@/store/statsStore'
 import { Line } from 'vue-chartjs'
@@ -105,6 +111,7 @@ export default {
   components: { LineChart: Line },
   data() {
     return {
+      personStore: usePersonStore(),
       statsStore: useStatsStore(),
       productStore: useProductStore(),
       menu: null,

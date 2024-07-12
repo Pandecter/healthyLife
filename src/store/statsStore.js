@@ -38,10 +38,6 @@ export const useStatsStore = defineStore('stats', {
 
   actions: {
     showStatistics() {
-      // this.chartData.datasets[0].data.length = 0;
-      // this.chartData.labels.length = 0;
-      // console.log(this.chartData.datasets[0].data);
-      // console.log(this.chartData.labels);
       if ((this.startingDate === "") || (this.endingDate === "")) { //если данных нет, либо веденной даты не существует
         this.showErrorCard = true;
         this.showSuccessCard = false;
@@ -61,16 +57,16 @@ export const useStatsStore = defineStore('stats', {
           }
         }
         else { //все правила соблюдены
-          // this.showErrorCard = false;
-          // this.showSuccessCard = true;
           this.chartData.datasets[0].data = []; //обнуляем данные на каждый клик
           this.chartData.labels = [];
           const ARR_OF_MEAL_TIME = ["breakfast", "lunch", "dinner"];
           this.message = `Данные с ${this.startingDate} по ${this.endingDate}!`;
-          for (let i = 0; i < this.productStore.listsOfDaysMenu.length; i++) { //проходимся по всему массиву с добавленной едой
-            if ((this.startingDate <= this.productStore.listsOfDaysMenu[i].date) &&
-                (this.endingDate >= this.productStore.listsOfDaysMenu[i].date)) { //выбираем все подходящие под даты дни
-              let calories = 0;
+          let currentDate = this.startingDate;
+          let i = 0;
+          while (currentDate < this.endingDate) { 
+            let calories = 0;
+            //console.log(this.productStore.listsOfDaysMenu[i].date)
+            if((i < this.productStore.listsOfDaysMenu.length) && (currentDate === this.productStore.listsOfDaysMenu[i].date)) { //если такой день есть в списке
               for (let j = 0; j < ARR_OF_MEAL_TIME.length; j++) { //проходимся по всем приемам пищи
                 const CHOICE = ARR_OF_MEAL_TIME[j];
                 for (let k = 0; k < this.productStore.listsOfDaysMenu[i][CHOICE].length; k++) { //проходимся по всем продуктам в приеме
@@ -78,11 +74,19 @@ export const useStatsStore = defineStore('stats', {
                 }
               }
               this.chartData.datasets[0].data.push(calories);
-              this.chartData.labels.push(this.productStore.listsOfDaysMenu[i].date);
-              //console.log(this.chartData.labels.length)
+              this.chartData.labels.push(currentDate);
+              //console.log(i)
+              i++;
             }
-          }
-          if (this.chartData.labels.length < 2) {
+            else { //если такого дня нет, то добавим 0 калорий
+              this.chartData.datasets[0].data.push(calories);
+              this.chartData.labels.push(currentDate);
+            }
+            let dateObj = new Date(currentDate); //переводим в тип Date чтоб можно было "прибавить" день
+            dateObj.setDate(dateObj.getDate() + 1);
+            currentDate = dateObj.toISOString().split('T')[0] //возвращаем к исходному типу 
+          } 
+          if (this.productStore.listsOfDaysMenu.length < 2) {
             this.showErrorCard = true;
             this.showSuccessCard = false;
             this.message = "Недостаточно данных для корректного отображения статистики!";

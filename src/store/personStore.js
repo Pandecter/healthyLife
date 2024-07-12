@@ -106,6 +106,15 @@ export const usePersonStore = defineStore('person', {
       }
     },
 
+    isInfoIsNotFull() {
+      if (this.arrOfValues.length === 5) {
+        return false;
+      }
+      else {
+        return true;
+      }
+    }
+
     // requiredCalories() { //формула Миффлина-Сан Жеора
     //   if (this.gender === "male") {
     //     return Number((10 * this.weigth + 6.25 * this.height - 5 * this.age + 5) * this.choosedActivity).toFixed(2); 
