@@ -91,7 +91,10 @@
               </RouterLink> и получите расширенную статистику!
             </p>
           </div>
-          <div v-else class="ma-8 text-h5 d-flex justify-center">
+          <div 
+            v-else 
+            class="ma-8 text-h5 d-flex justify-center"
+          >
             <p>
               Тут будут статы
             </p>

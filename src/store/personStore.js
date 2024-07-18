@@ -50,6 +50,7 @@ export const usePersonStore = defineStore('person', {
       this.choosedActivity = null;
       this.recomendedCalories = null;
       this.statsStore.recomendedChart = null;
+      this.arrOfValues = [];
 
       this.buttonIsClicked = false;
     },

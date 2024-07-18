@@ -55,9 +55,7 @@ export const useStatsStore = defineStore('stats', {
   },
   getters: {
     mutableChartData() {
-      //this.chartData.datasets[0].data = []; //обнуляем данные на каждый клик
-      //this.chartData.labels = [];
-      console.log(this.recomendedChart)
+
       let resArr = {
         labels: [], 
         datasets: [{
@@ -73,16 +71,19 @@ export const useStatsStore = defineStore('stats', {
       let i = 0;
       while (currentDate <= this.endingDate) { 
         let calories = 0;
+        while(i < this.productStore.listsOfDaysMenu.length && currentDate > this.productStore.listsOfDaysMenu[i].date) {
+          i++;
+        }
         if((i < this.productStore.listsOfDaysMenu.length) && (currentDate === this.productStore.listsOfDaysMenu[i].date)) { //если такой день есть в списке
           for (let j = 0; j < ARR_OF_MEAL_TIME.length; j++) { //проходимся по всем приемам пищи
             const CHOICE = ARR_OF_MEAL_TIME[j];
-            for (let k = 0; k < this.productStore.listsOfDaysMenu[i][CHOICE].length; k++) { //проходимся по всем продуктам в приеме
+            for (let k = 0; k < this.productStore.listsOfDaysMenu[i][CHOICE].length; k++) {
+              console.log("1") //проходимся по всем продуктам в приеме
               calories = calories + parseFloat(this.productStore.listsOfDaysMenu[i][CHOICE][k].calories);
             }
           }
           resArr.datasets[0].data.push(calories);
           resArr.labels.push(currentDate);
-          i++;
         }
         else { //если такого дня нет, то добавим 0 калорий
           resArr.datasets[0].data.push(calories);

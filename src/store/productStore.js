@@ -218,7 +218,7 @@ export const useProductStore = defineStore('products', {
     },
 
     deleteFoodFromMealTime(mealTimeMenu, mealTime, date) {
-      console.log(date)
+      //console.log(date)
       const DAY_ID = this.listsOfDaysMenu.findIndex((el) => el.date === date); //получаем индекс дня в массиве
       let nameOfMealTime;
       switch(mealTime) { //необходим для обращения к полю 
@@ -479,7 +479,7 @@ export const useProductStore = defineStore('products', {
     },
 
     findMinMaxRange() { //возращает максимальное/минимальное значение для слайдеров (отслеживает изменения в границах)
-      console.log("this.foodStorage")
+      //console.log("this.foodStorage")
       const SWITCH = ["calories", "proteins", "fats", "carbs"];
       let minMaxArr = [];
       const RESULT_ARR = [];
