@@ -55,7 +55,6 @@ export const useStatsStore = defineStore('stats', {
   },
   getters: {
     mutableChartData() {
-
       let resArr = {
         labels: [], 
         datasets: [{
@@ -77,8 +76,8 @@ export const useStatsStore = defineStore('stats', {
         if((i < this.productStore.listsOfDaysMenu.length) && (currentDate === this.productStore.listsOfDaysMenu[i].date)) { //если такой день есть в списке
           for (let j = 0; j < ARR_OF_MEAL_TIME.length; j++) { //проходимся по всем приемам пищи
             const CHOICE = ARR_OF_MEAL_TIME[j];
-            for (let k = 0; k < this.productStore.listsOfDaysMenu[i][CHOICE].length; k++) {
-              console.log("1") //проходимся по всем продуктам в приеме
+            for (let k = 0; k < this.productStore.listsOfDaysMenu[i][CHOICE].length; k++) { //проходимся по всем продуктам в приеме
+              //console.log("1") 
               calories = calories + parseFloat(this.productStore.listsOfDaysMenu[i][CHOICE][k].calories);
             }
           }
@@ -104,5 +103,55 @@ export const useStatsStore = defineStore('stats', {
       return resArr;
     },
 
+    returnExcess() { //возвращает значения превышения калорий
+      const RES_ARR = [];
+      for (let i = 0; i < this.mutableChartData.labels.length; i++) {
+        if (this.mutableChartData.datasets[0].data[i] > this.mutableChartData.datasets[1].data[i]) { //если есть превышение калорий
+          const OBJECT = {
+            date: null,
+            value: null
+          }
+          OBJECT.date = this.mutableChartData.labels[i];
+          OBJECT.value = (this.mutableChartData.datasets[0].data[i] - this.mutableChartData.datasets[1].data[i]).toFixed(2);
+          RES_ARR.push(OBJECT)
+        } 
+      }
+      return RES_ARR;
+    },
+
+    returnStats() { //возвращает сумму БЖУ + Калорий
+      const OBJECT = {
+        dates: null,
+        calories: null,
+        proteins: null,
+        fats: null,
+        carbs: null
+      }
+      const ARR_OF_MEAL_TIME = ["breakfast", "lunch", "dinner"];
+      let calsVal = 0;
+      let protsVal = 0;
+      let fatsVal = 0;
+      let carbsVal = 0;
+      for (let i = 0; i < this.mutableChartData.labels.length; i++) {
+        if(this.productStore.listsOfDaysMenu.find((el) => el.date === this.mutableChartData.labels[i])) {
+          let day = {...this.productStore.listsOfDaysMenu.find((el) => el.date === this.mutableChartData.labels[i])};
+          for (let j = 0; j < ARR_OF_MEAL_TIME.length; j++) { //проходимся по всем приемам пищи
+            const CHOICE = ARR_OF_MEAL_TIME[j];
+            for (let k = 0; k < day[CHOICE].length; k++) { //проходимся по всем продуктам в приеме
+              calsVal += parseFloat(day[CHOICE][k].calories);
+              protsVal += parseFloat((day[CHOICE][k].proteins).replace(/,/g, '.'));
+              fatsVal += parseFloat((day[CHOICE][k].fats).replace(/,/g, '.'));
+              carbsVal += parseFloat((day[CHOICE][k].carbs).replace(/,/g, '.'));
+            }
+          }
+        }
+      } 
+      OBJECT.dates = "с " + this.startingDate + " по " + this.endingDate;
+      OBJECT.calories = calsVal;
+      OBJECT.proteins = protsVal;
+      OBJECT.fats = fatsVal;
+      OBJECT.carbs = carbsVal;
+      return OBJECT;
+    }
   }
 })

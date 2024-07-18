@@ -87,7 +87,6 @@ export const useProductStore = defineStore('products', {
         fats: "mdi-menu-down",
         carbs: "mdi-menu-down"
       },
-      //currentSortChoice: "calories"
     }
   },
   actions: {

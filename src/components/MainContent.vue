@@ -210,7 +210,6 @@
                           no-data-text="По данному запросу нет результатов"
                         />
                       </div> 
-                      <!-- <p> {{ productStore.returnProductNames[5] }}</p>    -->
                     </div> 
                     <div class="d-flex justify-space-between mt-8 ml-16 mr-16">
                       <p class="text-h6 mt-2">

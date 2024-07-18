@@ -93,11 +93,102 @@
           </div>
           <div 
             v-else 
-            class="ma-8 text-h5 d-flex justify-center"
-          >
-            <p>
-              Тут будут статы
-            </p>
+            class="ma-8 text-h5 d-flex flex-column"
+          > 
+            <div class="d-flex justify-center mt-4 mb-4">
+              <p class="text-decoration-underline">
+                Нарушения
+              </p>
+            </div>
+            <div v-if="areThereAnyMistakes">
+              <v-table class="bg-red-lighten-4">
+                <thead>
+                  <th>
+                    День
+                  </th>
+                  <th>
+                    Превышение
+                  </th>
+                </thead>
+                <tbody>
+                  <tr 
+                    v-for="excess in statsStore.returnExcess"
+                    :key="excess"
+                    color="error"
+                  >
+                    <td>
+                      {{ excess.date }}
+                    </td>
+                    <td>
+                      {{ excess.value }} кКал
+                    </td>
+                  </tr>
+                </tbody>
+              </v-table>
+            </div>
+            <div 
+              v-else 
+              class="d-flex justify-center bg-green-lighten-4"
+            >
+              Никаких нарушений найдено не было
+            </div>
+            <div class="d-flex justify-center mt-12 mb-4 text-decoration-underline">
+              Статистика за промежуток
+            </div>
+            <div>
+              <v-table>
+                <thead>
+                  <th>
+                    Параметр
+                  </th>
+                  <th>
+                    Значение
+                  </th>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      Промежуток времени
+                    </td>
+                    <td>
+                      {{ statsStore.returnStats.dates }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Калории
+                    </td>
+                    <td>
+                      {{ statsStore.returnStats.calories }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Белки
+                    </td>
+                    <td>
+                      {{ statsStore.returnStats.proteins }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Жиры
+                    </td>
+                    <td>
+                      {{ statsStore.returnStats.fats }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Углеводы
+                    </td>
+                    <td>
+                      {{ statsStore.returnStats.carbs }}
+                    </td>
+                  </tr>
+                </tbody>
+              </v-table>
+            </div>
           </div>
         </div>
       </div>
@@ -122,15 +213,26 @@ export default {
       statsStore: useStatsStore(),
       productStore: useProductStore(),
       startDate: null,
-      endDate: null
+      endDate: null,
     }
+  },
+
+  computed: {
+    areThereAnyMistakes() {
+      if (this.statsStore.returnExcess.length === 0) {
+        return false;
+      }
+      else {
+        return true;
+      }
+    }
+    
   },
 
   mounted() {
     this.startDate = this.productStore.giveDateInDateType[0];
     this.endDate = this.productStore.giveDateInDateType[6];
   },
-
 
   methods: {
     goToMainPage() {
