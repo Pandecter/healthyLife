@@ -12,15 +12,7 @@ export const useStatsStore = defineStore('stats', {
       message: null, //переменная для уведомления пользователя
       showErrorCard: false, //переменная, которая отвечает за показ карточки с ошибками
       showSuccessCard: false,
-      chartData: {
-        labels: [], 
-        datasets: [{
-          label: 'Данные за период',
-          backgroundColor: '#f5eb64',
-          borderColor: '#f5eb64',
-          data: []
-        }]
-      },
+      recomendedChart: null,
       chartOptions: {
         responsive: true,
         maintainAspectRatio: true
@@ -32,7 +24,7 @@ export const useStatsStore = defineStore('stats', {
     showStatistics(start, end) {
       this.startingDate = null;
       this.endingDate = null;
-      console.log(start)
+      //console.log(start)
       if ((start === null || start === "") || (end === null) || (end === "")) { //если данных нет, либо веденной даты не существует
         this.showErrorCard = true;
         this.showSuccessCard = false;
@@ -65,6 +57,7 @@ export const useStatsStore = defineStore('stats', {
     mutableChartData() {
       //this.chartData.datasets[0].data = []; //обнуляем данные на каждый клик
       //this.chartData.labels = [];
+      console.log(this.recomendedChart)
       let resArr = {
         labels: [], 
         datasets: [{
@@ -100,7 +93,8 @@ export const useStatsStore = defineStore('stats', {
         currentDate = dateObj.toISOString().split('T')[0] //возвращаем к исходному типу 
       } 
 
-      if (resArr.datasets.length > 1) {
+      if (this.recomendedChart !== null) {
+        resArr.datasets.push(this.recomendedChart)
         const DATA = this.personStore.recomendedCalories;
         for (let i = 0; i < resArr.labels.length; i++) {
           resArr.datasets[1].data[i] = DATA; //копируем значение для отображения линии

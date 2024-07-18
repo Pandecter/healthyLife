@@ -49,7 +49,7 @@ export const usePersonStore = defineStore('person', {
       this.weight = null;
       this.choosedActivity = null;
       this.recomendedCalories = null;
-      this.statsStore.chartData.datasets.pop();
+      this.statsStore.recomendedChart = null;
 
       this.buttonIsClicked = false;
     },
@@ -73,15 +73,14 @@ export const usePersonStore = defineStore('person', {
       console.log(ACTIVITY_ID) //получаем не значение, а название
       this.arrOfValues[4] = this.levelOfActivity[ACTIVITY_ID].name;
 
-      if (this.statsStore.chartData.datasets.length !== 2) {
-        const DATASET = {
-          label: 'Норма калорий',
-          backgroundColor: '#ff000d',
-          borderColor: '#ff000d',
-          data: []
-        }
-        this.statsStore.chartData.datasets.push(DATASET);
+      const DATASET = {
+        label: 'Норма калорий',
+        backgroundColor: '#ff000d',
+        borderColor: '#ff000d',
+        data: []
       }
+      this.statsStore.recomendedChart = DATASET;
+      
       // else {
       //   this.statsStore.chartData.datasets[1].data = this.recomendedCalories;
       // }
