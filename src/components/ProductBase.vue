@@ -38,7 +38,7 @@
         >
           <v-card
             width="130vh"
-            height="80vh"
+            height="90vh"
           >
             <div class="d-flex flex-column align-center mt-8">
               <v-form v-model="productStore.addingFormIsValid">
@@ -80,6 +80,7 @@
               </v-form> 
               
               <v-btn 
+                class="mt-2"
                 :disabled="!productStore.addingFormIsValid"
                 @click="productStore.addProductToList(name, calories, proteins, fats, carbs)"
               >

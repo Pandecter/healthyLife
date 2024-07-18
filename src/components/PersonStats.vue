@@ -159,7 +159,7 @@
                       Калории
                     </td>
                     <td>
-                      {{ statsStore.returnStats.calories }}
+                      {{ statsStore.returnStats.calories }} кКал
                     </td>
                   </tr>
                   <tr>
@@ -167,7 +167,7 @@
                       Белки
                     </td>
                     <td>
-                      {{ statsStore.returnStats.proteins }}
+                      {{ statsStore.returnStats.proteins }} г.
                     </td>
                   </tr>
                   <tr>
@@ -175,7 +175,7 @@
                       Жиры
                     </td>
                     <td>
-                      {{ statsStore.returnStats.fats }}
+                      {{ statsStore.returnStats.fats }} г.
                     </td>
                   </tr>
                   <tr>
@@ -183,7 +183,7 @@
                       Углеводы
                     </td>
                     <td>
-                      {{ statsStore.returnStats.carbs }}
+                      {{ statsStore.returnStats.carbs }} г.
                     </td>
                   </tr>
                 </tbody>

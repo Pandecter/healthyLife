@@ -20,7 +20,8 @@
       <v-card 
         class="mt-16 mb-8 elevation-8" 
         variant="elevated" 
-        width="90vh"
+        width="100vh"
+        height="90vh"
       >
         <div 
           v-if="!personStore.buttonIsClicked"

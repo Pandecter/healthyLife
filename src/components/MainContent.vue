@@ -196,7 +196,7 @@
                 >
                   <v-card 
                     width="130vh"
-                    height="90vh"
+                    height="95vh"
                   >
                     <div class="d-flex justify-space-between mt-12 ml-16 mr-16">
                       <p class="text-h6 mt-2">
