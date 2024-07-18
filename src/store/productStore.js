@@ -87,6 +87,7 @@ export const useProductStore = defineStore('products', {
         fats: "mdi-menu-down",
         carbs: "mdi-menu-down"
       },
+      addedProducts: []
     }
   },
   actions: {
@@ -99,8 +100,11 @@ export const useProductStore = defineStore('products', {
       this.initMinMaxRange(); 
 
       this.foodStorage = [...foodData];
-      this.shownArrayOfProducts = [...foodData];
-      //console.log(this.foodStorage)
+      if(localStorage.getItem("addedProducts")) {
+        this.addedProducts = (JSON.parse(localStorage.getItem("addedProducts")))
+        this.foodStorage.push(...this.addedProducts);
+      }
+      this.shownArrayOfProducts = [...this.foodStorage];
     },
 
     initMinMaxRange() { /*функция-затычка, которая полностью копирует геттер findMinMaxRange, 
@@ -337,6 +341,8 @@ export const useProductStore = defineStore('products', {
         alert("Такой продукт уже есть в базе!")
       }
       else {
+        this.addedProducts.push(OBJECT);
+        localStorage.setItem("addedProducts", JSON.stringify(this.addedProducts)); 
         this.foodStorage.push(OBJECT);
         this.isOverlayActive = false;
         this.shownArrayOfProducts = [...this.foodStorage]
