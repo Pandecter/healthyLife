@@ -35,14 +35,14 @@ export const useProductStore = defineStore('products', {
       currentCountValue: null, // количество продукта в граммах
       currentProductName: null, //наименование продукта,
       isFormValid: false, // переменная, которая нужна для корректной блокировки кнопки
-      isOverlayActive: false,
-      drawer: false,
-      BaseFilterRanges: {
+      isOverlayActive: false, //активация/деактивация оверлея
+      drawer: false, //отвечает за открытие/закрытие меню наверху слева
+      BaseFilterRanges: { //диапазоны значения для v-range-sliders на странице БД
         caloriesRange: null,
         proteinsRange: null,
         fatsRange: null,
         carbsRange: null
-      },
+      }, //диапазоны значения для v-range-sliders в оверлее добавления продукта в "съеденное"
       modalFilterRanges: {
         calRange: null,
         proRange: null,
@@ -51,7 +51,7 @@ export const useProductStore = defineStore('products', {
       },
       searchedProduct: null, //продукт в поисковой строке базы 
       shownArrayOfProducts: null, //массив для отображения продуктов в базе с учетом фильтрации
-      slidersDisabled: false,
+      slidersDisabled: false, //отключение слайдеров во время поиска в БД
       ruleForProductName: [
         value => !!value || "Название продукта не может быть пустым!",
         value => (value || '').length <= 40 || "Название продукта не должно превышать 40 символов!",
@@ -78,16 +78,16 @@ export const useProductStore = defineStore('products', {
         value => /^(\d+|\d+,\d{1})$/.test(value) || "Значение разделяйте запятой, после запятой может быть только 1 символ!",
         value => (value || '').length <= 5 || "Значение не должно превышать 5 символов!",
       ],
-      addingFormIsValid: false,
-      sortBy: ['name', 'desc'],
-      sortIcons:{
+      addingFormIsValid: false, //активация/деактивация меню добавления
+      sortBy: ['name', 'desc'], //сортировка по убыванию/возрастанию
+      sortIcons:{ //набор стилей для кнопок сортировок, каждая из которых меняется на клик
         name: "mdi-menu-up",
         calories: "mdi-menu-down",
         proteins: "mdi-menu-down",
         fats: "mdi-menu-down",
         carbs: "mdi-menu-down"
       },
-      addedProducts: []
+      addedProducts: [] //переменная для добавления в localStorage
     }
   },
 
@@ -101,15 +101,15 @@ export const useProductStore = defineStore('products', {
       this.initMinMaxRange(); 
 
       this.foodStorage = [...foodData];
-      if(localStorage.getItem("addedProducts")) {
+      if (localStorage.getItem("addedProducts")) { //если есть данные с localStorage
         this.addedProducts = (JSON.parse(localStorage.getItem("addedProducts")))
         this.foodStorage.push(...this.addedProducts);
       }
       this.shownArrayOfProducts = [...this.foodStorage];
     },
 
-    initMinMaxRange() { /*функция-затычка, которая полностью копирует геттер findMinMaxRange, 
-      но без нее данные только одним геттером в v-overlay почему-то не прогужаются */
+    initMinMaxRange() { /*!!!!!!функция-ЗАТЫЧКА, которая полностью копирует геттер findMinMaxRange, 
+      но без нее данные только одним геттером в v-overlay почему-то не прогужаются !!!!!!*/
       const SWITCH = ["calories", "proteins", "fats", "carbs"];
       let minMaxArr = [];
       const RESULT_ARR = [];
@@ -238,7 +238,7 @@ export const useProductStore = defineStore('products', {
       const MEAL_ID = DELETING_ARR.findIndex((el) => el.name === mealTimeMenu.name); //находим ID конкретного продукта
       DELETING_ARR.splice(MEAL_ID, 1);
       const MEAL_CHECK = this.listsOfDaysMenu[DAY_ID];
-      if((MEAL_CHECK.breakfast.length === 0) && (MEAL_CHECK.lunch.length === 0) && (MEAL_CHECK.dinner.length === 0)) { //если нет данных
+      if ((MEAL_CHECK.breakfast.length === 0) && (MEAL_CHECK.lunch.length === 0) && (MEAL_CHECK.dinner.length === 0)) { //если нет данных
         this.listsOfDaysMenu.splice(DAY_ID, 1);
       }
     },
@@ -436,7 +436,6 @@ export const useProductStore = defineStore('products', {
     
     showInfoAboutProduct() { //вывод информации о продукте
       let info = this.actualProductCounter;
-      //console.log(info)
       info.calories = info.calories + " Ккал";
       info.proteins = info.proteins + " г";
       info.fats = info.fats + " г";

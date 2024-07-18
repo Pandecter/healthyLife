@@ -7,13 +7,13 @@ export const useStatsStore = defineStore('stats', {
     return {
       personStore: usePersonStore(),
       productStore: useProductStore(),
-      startingDate: null, 
-      endingDate: null,
+      startingDate: null, //начальная дата на странице статистики
+      endingDate: null, //конечная дата на странице статистики
       message: null, //переменная для уведомления пользователя
       showErrorCard: false, //переменная, которая отвечает за показ карточки с ошибками
-      showSuccessCard: false,
-      recomendedChart: null,
-      chartOptions: {
+      showSuccessCard: false, //отвечает за отображение графика
+      recomendedChart: null, //данные о "норме калорий" пользователя
+      chartOptions: { //опции для графика
         responsive: true,
         maintainAspectRatio: true
       }
@@ -21,7 +21,7 @@ export const useStatsStore = defineStore('stats', {
   },
 
   actions: {
-    showStatistics(start, end) {
+    showStatistics(start, end) { //проверяет корректность введеных данных
       this.startingDate = null;
       this.endingDate = null;
       if ((start === null || start === "") || (end === null) || (end === "")) { //если данных нет, либо веденной даты не существует
@@ -53,7 +53,7 @@ export const useStatsStore = defineStore('stats', {
   },
 
   getters: {
-    mutableChartData() {
+    mutableChartData() { //отправляет данные для графика
       let resArr = {
         labels: [], 
         datasets: [{
@@ -69,10 +69,10 @@ export const useStatsStore = defineStore('stats', {
       let i = 0;
       while (currentDate <= this.endingDate) { 
         let calories = 0;
-        while(i < this.productStore.listsOfDaysMenu.length && currentDate > this.productStore.listsOfDaysMenu[i].date) {
+        while (i < this.productStore.listsOfDaysMenu.length && currentDate > this.productStore.listsOfDaysMenu[i].date) {
           i++;
         }
-        if((i < this.productStore.listsOfDaysMenu.length) && (currentDate === this.productStore.listsOfDaysMenu[i].date)) { //если такой день есть в списке
+        if ((i < this.productStore.listsOfDaysMenu.length) && (currentDate === this.productStore.listsOfDaysMenu[i].date)) { //если такой день есть в списке
           for (let j = 0; j < ARR_OF_MEAL_TIME.length; j++) { //проходимся по всем приемам пищи
             const CHOICE = ARR_OF_MEAL_TIME[j];
             for (let k = 0; k < this.productStore.listsOfDaysMenu[i][CHOICE].length; k++) { //проходимся по всем продуктам в приеме
@@ -91,7 +91,7 @@ export const useStatsStore = defineStore('stats', {
         currentDate = dateObj.toISOString().split('T')[0] //возвращаем к исходному типу 
       } 
 
-      if (this.recomendedChart !== null) {
+      if (this.recomendedChart !== null) { //если есть данные о пользователе
         resArr.datasets.push(this.recomendedChart)
         const DATA = this.personStore.recomendedCalories;
         for (let i = 0; i < resArr.labels.length; i++) {

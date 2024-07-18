@@ -21,7 +21,7 @@ export const usePersonStore = defineStore('person', {
                   return false || "Значение не может начинаться с нуля!"
                   else 
                   return true}
-      ],  
+      ],  //общие правила валидации сразу для нескольких полей 
       ageHeightRules: [
         value => (value || '').length <= 3 || "Значение не должно превышать 3 цифр!",
         value => { const REG_EXP = /^[0-9]+$/
@@ -36,13 +36,13 @@ export const usePersonStore = defineStore('person', {
       recomendedCalories: null,
       formIsValid: false,
       buttonIsClicked: false,
-      arrOfParams: ["Пол", "Возраст", "Рост", "Вес", "Ур. активности"],
-      arrOfValues: []
+      arrOfParams: ["Пол", "Возраст", "Рост", "Вес", "Ур. активности"], //используется на странице пользователя
+      arrOfValues: [] //необходимо для хранения и обработки введенных значений
     }
   },
 
   actions: {
-    deletePersonInfo() {
+    deletePersonInfo() { //удаление информации о пользователе
       this.gender = null;
       this.age = null;
       this.height = null;
@@ -55,7 +55,7 @@ export const usePersonStore = defineStore('person', {
       this.buttonIsClicked = false;
     },
     
-    calculateRecomendedCalories() {
+    calculateRecomendedCalories() { //расчет нормы калорий
       this.arrOfValues = [];
       this.buttonIsClicked = true;
       if (this.gender === "Мужчина") {
@@ -73,7 +73,7 @@ export const usePersonStore = defineStore('person', {
       console.log(ACTIVITY_ID) //получаем не значение, а название
       this.arrOfValues[4] = this.levelOfActivity[ACTIVITY_ID].name;
 
-      const DATASET = {
+      const DATASET = { //нужно для графика
         label: 'Норма калорий',
         backgroundColor: '#ff000d',
         borderColor: '#ff000d',
@@ -101,7 +101,7 @@ export const usePersonStore = defineStore('person', {
       }
     },
 
-    isInfoIsNotFull() {
+    isInfoIsNotFull() { //отвечает за отображение данных на странице статистики
       if (this.arrOfValues.length === 5) {
         return false;
       }
