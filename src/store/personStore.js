@@ -56,7 +56,6 @@ export const usePersonStore = defineStore('person', {
     },
     
     calculateRecomendedCalories() {
-      //this.statsStore.chartData.datasets.pop();
       this.arrOfValues = [];
       this.buttonIsClicked = true;
       if (this.gender === "Мужчина") {
@@ -81,10 +80,6 @@ export const usePersonStore = defineStore('person', {
         data: []
       }
       this.statsStore.recomendedChart = DATASET;
-      
-      // else {
-      //   this.statsStore.chartData.datasets[1].data = this.recomendedCalories;
-      // }
     }
   },
 
@@ -114,14 +109,5 @@ export const usePersonStore = defineStore('person', {
         return true;
       }
     }
-
-    // requiredCalories() { //формула Миффлина-Сан Жеора
-    //   if (this.gender === "male") {
-    //     return Number((10 * this.weigth + 6.25 * this.height - 5 * this.age + 5) * this.choosedActivity).toFixed(2); 
-    //   }
-    //   else {
-    //     return Number((10 * this.weigth + 6.25 * this.height - 5 * this.age - 161) * this.choosedActivity).toFixed(2); 
-    //   }
-    // }
   }
 })

@@ -90,6 +90,7 @@ export const useProductStore = defineStore('products', {
       addedProducts: []
     }
   },
+
   actions: {
     mountFunction() { //вызывается 1 раз при запуске приложения 
       const CURRENT_DATE = new Date();
@@ -188,7 +189,6 @@ export const useProductStore = defineStore('products', {
         const OBJECT = { "dayNumber": DAY_ID, "date": CURRENT_DATE, "breakfast": [],"lunch": [], "dinner": []};
         this.listsOfDaysMenu.push(OBJECT);
         this.addFoodToMealTime(CURRENT_DATE, mealTime, food);
-
       }
       else { //если текущий день уже есть в базе
         this.addFoodToMealTime(CURRENT_DATE, mealTime, food);
@@ -221,7 +221,6 @@ export const useProductStore = defineStore('products', {
     },
 
     deleteFoodFromMealTime(mealTimeMenu, mealTime, date) {
-      //console.log(date)
       const DAY_ID = this.listsOfDaysMenu.findIndex((el) => el.date === date); //получаем индекс дня в массиве
       let nameOfMealTime;
       switch(mealTime) { //необходим для обращения к полю 
@@ -235,10 +234,6 @@ export const useProductStore = defineStore('products', {
           nameOfMealTime = "dinner";
           break; 
       }
-      // console.log(DAY_ID)
-      // console.log("TEST", this.listsOfDaysMenu)
-      // console.log("TEST", this.listsOfDaysMenu[DAY_ID])
-      // console.log("TEST", this.listsOfDaysMenu[DAY_ID][nameOfMealTime])
       const DELETING_ARR = this.listsOfDaysMenu[DAY_ID][nameOfMealTime]; //получаем массив времени приема пищи конкретной даты
       const MEAL_ID = DELETING_ARR.findIndex((el) => el.name === mealTimeMenu.name); //находим ID конкретного продукта
       DELETING_ARR.splice(MEAL_ID, 1);
@@ -277,11 +272,9 @@ export const useProductStore = defineStore('products', {
       }
       if (this.sortBy[0] === "name") {
         if(this.sortBy[1] === "asc") {
-          //console.log("ASCENDING!!!")
           this.shownArrayOfProducts.sort((a, b) => (a.name > b.name ? 1 : -1));
         }
         else {
-          //console.log("DESCENDING!!!")
           this.shownArrayOfProducts.sort((a, b) => (a.name > b.name ? -1 : 1));
         }
       }
@@ -348,7 +341,6 @@ export const useProductStore = defineStore('products', {
         this.shownArrayOfProducts = [...this.foodStorage]
       }
     }
-
     
   },
   getters: {
@@ -439,7 +431,6 @@ export const useProductStore = defineStore('products', {
         PRODUCT[CHOICE] = Number(PRODUCT[CHOICE].replace(/[^0-9.]+/g,""));
         PRODUCT[CHOICE] = (PRODUCT[CHOICE] * (this.currentCountValue / 100)).toFixed(2);
       }
-      //console.log(PRODUCT) 
       return PRODUCT;
     },
     
@@ -484,7 +475,6 @@ export const useProductStore = defineStore('products', {
     },
 
     findMinMaxRange() { //возращает максимальное/минимальное значение для слайдеров (отслеживает изменения в границах)
-      //console.log("this.foodStorage")
       const SWITCH = ["calories", "proteins", "fats", "carbs"];
       let minMaxArr = [];
       const RESULT_ARR = [];
@@ -499,7 +489,6 @@ export const useProductStore = defineStore('products', {
         minMaxArr[1] = Math.max(...ARR);
         RESULT_ARR[i] = [...minMaxArr];
         minMaxArr = [];
-
       }
 
       this.BaseFilterRanges.caloriesRange = RESULT_ARR[0];
@@ -583,8 +572,5 @@ export const useProductStore = defineStore('products', {
       }
       return COLORS;
     }
-    // sortData() {
-    //   return this.shownArrayOfProducts.sort(this.sortFunction(this.sortBy[0], this.sortBy[1]));
-    // }
   }
 })

@@ -11,9 +11,6 @@ export default {
       productStore: useProductStore()
     }
   },
-  // beforeMount() {
-  //   this.productStore.mountFunction();
-  // },
   mounted() {
     this.productStore.mountFunction();
     this.$router.push('/');

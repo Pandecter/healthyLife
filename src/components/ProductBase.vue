@@ -242,19 +242,10 @@
 
 <script>
 import { useProductStore } from '@/store/productStore'
-// import { usePersonStore } from '@/store/personStore'
-//import { useStatsStore } from '@/store/statsStore'
-//import { Bar } from 'vue-chartjs'
-//import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
-
-//ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 export default {
-  //components: { Bar },
-
   data() {
     return {
-      //statsStore: useStatsStore(),
       productStore: useProductStore(),
       isDataFiltered: false,
       name: null,
@@ -262,18 +253,9 @@ export default {
       proteins: null,
       fats: null,
       carbs: null
-      // personStore: usePersonStore(),
-      // chartData: {
-      //   labels: [ 'January', 'February', 'March' ],
-      //   datasets: [ { data: [40, 20, 12] } ]
-      // },
-      // chartOptions: {
-      //   responsive: true
-      // }
     }
   },
 
-  
   computed: {
     currentDate() {
       return this.isDataFiltered ? this.productStore.filterData : this.productStore.foodStorage;
@@ -289,8 +271,6 @@ export default {
     showOverlay() { //необходимо для корректного добавления продуктов и открытия оверлея
       this.productStore.isOverlayActive = true;
     },
-
   },
-
 }
 </script>

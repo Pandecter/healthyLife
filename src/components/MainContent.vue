@@ -75,10 +75,6 @@
           class="d-flex justify-space-between flex-column mt-6 w-100 h-100"
           transition="slide-x-transition"
         > 
-          <!-- <p> {{ returnMinMax }}</p> -->
-          <!-- <p> {{ productStore.findMinMaxRange }}</p>
-          <p> {{ productStore.modalFilterRanges }}</p>
-          <p> {{ productStore.BaseFilterRanges }}</p> -->
           <v-card 
             v-for="(day, indexOfDay) in productStore.days"
             :key="day"
@@ -374,10 +370,6 @@ export default {
 
     goToStatsPage() {
       this.$router.push('/stats');
-      // let end = this.productStore.giveDateInDateType[6];
-      // let start = this.productStore.giveDateInDateType[0];
-      // this.statsStore.startingDate = start;
-      // this.statsStore.endingDate = end;
       this.statsStore.showSuccessCard = false;
       this.statsStore.showErrorCard = false;
       this.productStore.isExpandable.fill(false);

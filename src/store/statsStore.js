@@ -24,7 +24,6 @@ export const useStatsStore = defineStore('stats', {
     showStatistics(start, end) {
       this.startingDate = null;
       this.endingDate = null;
-      //console.log(start)
       if ((start === null || start === "") || (end === null) || (end === "")) { //если данных нет, либо веденной даты не существует
         this.showErrorCard = true;
         this.showSuccessCard = false;
@@ -48,11 +47,11 @@ export const useStatsStore = defineStore('stats', {
           this.endingDate = end;
           this.showErrorCard = false;
           this.showSuccessCard = true;
-          //console.log(this.chartData.datasets[0].data)
         }
       }
     }
   },
+
   getters: {
     mutableChartData() {
       let resArr = {
@@ -77,7 +76,6 @@ export const useStatsStore = defineStore('stats', {
           for (let j = 0; j < ARR_OF_MEAL_TIME.length; j++) { //проходимся по всем приемам пищи
             const CHOICE = ARR_OF_MEAL_TIME[j];
             for (let k = 0; k < this.productStore.listsOfDaysMenu[i][CHOICE].length; k++) { //проходимся по всем продуктам в приеме
-              //console.log("1") 
               calories = calories + parseFloat(this.productStore.listsOfDaysMenu[i][CHOICE][k].calories);
             }
           }
