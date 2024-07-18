@@ -43,18 +43,6 @@ export const useProductStore = defineStore('products', {
         fatsRange: null,
         carbsRange: null
       },
-      // AddingFilterRanges: { //используются на этапе добавления продукта в прием пищи
-      //   calRange: null,
-      //   protRange: null,
-      //   fatRange: null,
-      //   carbRange: null
-      // }, 
-      // testObject: {
-      //   one: null,
-      //   two: null,
-      //   three: null, 
-      //   four: null
-      // },
       modalFilterRanges: {
         calRange: null,
         proRange: null,
@@ -113,10 +101,11 @@ export const useProductStore = defineStore('products', {
 
       this.foodStorage = [...foodData];
       this.shownArrayOfProducts = [...foodData];
+      //console.log(this.foodStorage)
     },
 
     initMinMaxRange() { /*функция-затычка, которая полностью копирует геттер findMinMaxRange, 
-      но без нее данные почему-то не прогужаются */
+      но без нее данные только одним геттером в v-overlay почему-то не прогужаются */
       const SWITCH = ["calories", "proteins", "fats", "carbs"];
       let minMaxArr = [];
       const RESULT_ARR = [];
@@ -490,13 +479,14 @@ export const useProductStore = defineStore('products', {
     },
 
     findMinMaxRange() { //возращает максимальное/минимальное значение для слайдеров (отслеживает изменения в границах)
+      console.log("this.foodStorage")
       const SWITCH = ["calories", "proteins", "fats", "carbs"];
       let minMaxArr = [];
       const RESULT_ARR = [];
       for (let i = 0; i < SWITCH.length; i++) {
         const CHOICE = SWITCH[i];
         const ARR = [...(this.foodStorage.map(obj => obj[CHOICE]))];
-        for (let j = 0; j < ARR.length; j++) {
+      for (let j = 0; j < ARR.length; j++) {
           ARR[j] = ARR[j].replace(/,/g, '.'); //заменяем запятые на точки, т.к. parseFloat не воспринимает запятые
           ARR[j] = parseFloat(ARR[j]); //"удаляем" лишние слова, нам нужны только цифры
         }
@@ -504,6 +494,7 @@ export const useProductStore = defineStore('products', {
         minMaxArr[1] = Math.max(...ARR);
         RESULT_ARR[i] = [...minMaxArr];
         minMaxArr = [];
+
       }
 
       this.BaseFilterRanges.caloriesRange = RESULT_ARR[0];

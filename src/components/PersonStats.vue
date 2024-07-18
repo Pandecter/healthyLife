@@ -28,7 +28,8 @@
             От:
           </p>
           <v-text-field 
-            v-model="statsStore.startingDate"
+           
+            v-model="startDate"
             width="130px"
             variant="outlined"
             type="date"
@@ -39,7 +40,7 @@
             До:
           </p>
           <v-text-field
-            v-model="statsStore.endingDate" 
+            v-model="endDate" 
             width="130px"
             variant="outlined"
             type="date"
@@ -48,7 +49,7 @@
       </div>
       <div class="d-flex justify-center mt-4">
         <v-btn
-          @click="statsStore.showStatistics()"
+          @click="statsStore.showStatistics(startDate, endDate)"
         >
           Вывести статистику
         </v-btn>
@@ -76,11 +77,14 @@
           </v-card>
           <div>
             <LineChart 
-              :data="statsStore.chartData" 
+              :data="statsStore.mutableChartData" 
               :options="statsStore.chartOptions" 
             />
           </div>
-          <div v-if="personStore.isInfoIsNotFull" class="ma-8 text-h5 d-flex justify-center">
+          <div 
+            v-if="personStore.isInfoIsNotFull" 
+            class="ma-8 text-h5 d-flex justify-center"
+          >
             <p>
               Введите <RouterLink to="/person_info">
                 свои данные 
@@ -114,15 +118,23 @@ export default {
       personStore: usePersonStore(),
       statsStore: useStatsStore(),
       productStore: useProductStore(),
-      menu: null,
+      startDate: null,
+      endDate: null
     }
   },
+
+  mounted() {
+    this.startDate = this.productStore.giveDateInDateType[0];
+    this.endDate = this.productStore.giveDateInDateType[6];
+  },
+
 
   methods: {
     goToMainPage() {
       this.productStore.drawer = false;
       this.$router.push('/');
-    }
+    },
+
   }
 }
 </script>
