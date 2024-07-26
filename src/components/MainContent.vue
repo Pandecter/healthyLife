@@ -9,7 +9,7 @@
       </template>
       <v-app-bar-nav-icon 
         variant="text"
-        @click.stop="productStore.drawer = !productStore.drawer"
+        @click.stop="drawer = !drawer"
       />
       <v-app-bar-title>
         ЗОЖ-Учёт
@@ -22,7 +22,7 @@
     </v-app-bar>
     <v-main>
       <v-menu
-        v-model="productStore.drawer"
+        v-model="drawer"
         location="bottom"
       >
         <v-list>
@@ -187,7 +187,7 @@
                   </v-expansion-panel> 
                 </v-expansion-panels>
                 <v-overlay
-                  v-model="productStore.isOverlayActive"
+                  v-model="isOverlayActive"
                   class="d-flex justify-center align-center"
                 >
                   <v-card 
@@ -359,7 +359,9 @@ export default {
       isExpandable: [false, false, false, false, false, false, false], //позволяет открывать/закрывать вкладки
       currentCountValue: null, // количество продукта в граммах
       currentProductName: null, //наименование продукта,
-      isFormValid: false, // переменная, которая нужна для корректной блокировки кнопки
+      isFormValid: false,
+      isOverlayActive: false, //активация/деактивация оверлея // переменная, которая нужна для корректной блокировки кнопки,
+      drawer: false, //отвечает за открытие/закрытие меню наверху слева
     }
   },
   computed: {
@@ -422,12 +424,12 @@ export default {
     showOverlay(day, mealTime) { //необходимо для корректного добавления продуктов и открытия оверлея
       this.currentDay = day;
       this.currentMealTime = mealTime;
-      this.productStore.isOverlayActive = true;
+      this.isOverlayActive = true;
     },
 
     addToProductStore() {//необходимо для корректного добавления продуктов и закрытия оверлея
       this.productStore.addToProductList(this.currentDay, this.currentMealTime, this.showInfoAboutProduct, this.days);
-      this.productStore.isOverlayActive = false;
+      this.isOverlayActive = false;
     },
 
     goToPersonPage() {

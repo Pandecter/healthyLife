@@ -214,8 +214,8 @@ export default {
       productStore: useProductStore(),
       startDate: null,
       endDate: null,
-      showErrorCard: false,
-      showSuccessCard: false
+      showErrorCard: false, //переменная, которая отвечает за показ карточки с ошибками
+      showSuccessCard: false //отвечает за отображение графика
     }
   },
 

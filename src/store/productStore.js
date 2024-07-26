@@ -9,8 +9,6 @@ export const useProductStore = defineStore('products', {
       switchedCurrentDate: null, //дата, использующаяся при "смене" недели
       listsOfDaysMenu: [], //хранилище продуктов, выбранных пользователем
       foodStorage: [], //хранилище данных по продуктах
-      isOverlayActive: false, //активация/деактивация оверлея
-      drawer: false, //отвечает за открытие/закрытие меню наверху слева
       BaseFilterRanges: { //диапазоны значения для v-range-sliders на странице БД
         caloriesRange: null,
         proteinsRange: null,
@@ -26,32 +24,6 @@ export const useProductStore = defineStore('products', {
       searchedProduct: null, //продукт в поисковой строке базы 
       shownArrayOfProducts: null, //массив для отображения продуктов в базе с учетом фильтрации
       slidersDisabled: false, //отключение слайдеров во время поиска в БД
-      ruleForProductName: [
-        value => !!value || "Название продукта не может быть пустым!",
-        value => (value || '').length <= 40 || "Название продукта не должно превышать 40 символов!",
-      ],
-      rulesForCalories: [
-        value => !!value || "Значение не может быть пустым!",
-        value => {if (value.startsWith(0)) 
-          return false || "Значение не может начинаться с нуля!"
-          else 
-          return true},
-        value => !/^-.*/.test(value) || "Значение не должно быть отрицательным!",
-        value => { const REG_EXP = /^[0-9]+$/
-          return REG_EXP.test(value) || "Значение должно быть положительным числом и не содержать знаков!"
-        },
-        value => (value || '').length <= 4 || "Значение не должно превышать 4 цифр!",
-      ],
-      rulesForProductStats: [
-        value => !!value || "Значение не может быть пустым!",
-        value => {if (value.startsWith(0)) 
-          return false || "Значение не может начинаться с нуля!"
-          else 
-          return true},
-        value => !/^-.*/.test(value) || "Значение не должно быть отрицательным!",
-        value => /^(\d+|\d+,\d{1})$/.test(value) || "Значение разделяйте запятой, после запятой может быть только 1 символ!",
-        value => (value || '').length <= 5 || "Значение не должно превышать 5 символов!",
-      ],
       addingFormIsValid: false, //активация/деактивация меню добавления
       sortBy: ['name', 'desc'], //сортировка по убыванию/возрастанию
       sortIcons:{ //набор стилей для кнопок сортировок, каждая из которых меняется на клик
@@ -288,7 +260,6 @@ export const useProductStore = defineStore('products', {
         this.addedProducts.push(OBJECT);
         localStorage.setItem("addedProducts", JSON.stringify(this.addedProducts)); 
         this.foodStorage.push(OBJECT);
-        this.isOverlayActive = false;
         this.shownArrayOfProducts = [...this.foodStorage]
       }
     }

@@ -33,7 +33,7 @@
           Добавить свой продукт в базу данных
         </v-btn>
         <v-overlay
-          v-model="productStore.isOverlayActive"
+          v-model="isOverlayActive"
           class="d-flex justify-center align-center"
         >
           <v-card
@@ -47,42 +47,42 @@
                 </p>
                 <v-text-field
                   v-model="name" 
-                  :rules="productStore.ruleForProductName" 
+                  :rules="returnNameRules" 
                 />
                 <p class="text-h6">
                   Введите количество ккал на 100 гр. продукта
                 </p>
                 <v-text-field
                   v-model="calories" 
-                  :rules="productStore.rulesForCalories"
+                  :rules="returnCaloriesRules"
                 />
                 <p class="text-h6">
                   Введите количество белков на 100 гр. продукта
                 </p>
                 <v-text-field
                   v-model="proteins" 
-                  :rules="productStore.rulesForProductStats"
+                  :rules="returnRulesForOtherFields"
                 />
                 <p class="text-h6">
                   Введите количество жиров на 100 гр. продукта
                 </p>
                 <v-text-field
                   v-model="fats"
-                  :rules="productStore.rulesForProductStats"
+                  :rules="returnRulesForOtherFields"
                 />
                 <p class="text-h6">
                   Введите количество углеводов на 100 гр. продукта
                 </p>
                 <v-text-field
                   v-model="carbs"
-                  :rules="productStore.rulesForProductStats"
+                  :rules="returnRulesForOtherFields"
                 />
               </v-form> 
               
               <v-btn 
                 class="mt-2"
                 :disabled="!productStore.addingFormIsValid"
-                @click="productStore.addProductToList(name, calories, proteins, fats, carbs)"
+                @click="initAddingToBaseFunc(name, calories, proteins, fats, carbs)"
               >
                 Подтвердить
               </v-btn>
@@ -242,6 +242,7 @@
 
 <script>
 import { useProductStore } from '@/store/productStore'
+import validationRules from '@/shared/rules/index.js'
 
 export default {
   data() {
@@ -252,13 +253,26 @@ export default {
       calories: null,
       proteins: null,
       fats: null,
-      carbs: null
+      carbs: null,
+      isOverlayActive: false
     }
   },
 
   computed: {
     currentDate() {
       return this.isDataFiltered ? this.productStore.filterData : this.productStore.foodStorage;
+    },
+
+    returnNameRules() {
+      return validationRules.ruleForProductName;
+    },
+
+    returnCaloriesRules() {
+      return validationRules.rulesForCalories;
+    },
+
+    returnRulesForOtherFields() {
+      return validationRules.rulesForProductStats;
     }
   },
 
@@ -269,8 +283,13 @@ export default {
     },
 
     showOverlay() { //необходимо для корректного добавления продуктов и открытия оверлея
-      this.productStore.isOverlayActive = true;
+      this.isOverlayActive = true;
     },
+
+    initAddingToBaseFunc(nameVal, caloriesVal, proteinsVal, fatsVal, carbsVal) {
+      this.isOverlayActive = false;
+      this.productStore.addProductToList(nameVal, caloriesVal, proteinsVal, fatsVal, carbsVal);
+    }
   },
 }
 </script>
