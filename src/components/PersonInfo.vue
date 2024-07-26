@@ -24,11 +24,11 @@
         height="90vh"
       >
         <div 
-          v-if="!personStore.buttonIsClicked"
+          v-if="!buttonIsClicked"
           class="d-flex align-center justify-center"
         >
           <v-form
-            v-model="personStore.formIsValid" 
+            v-model="formIsValid" 
             class="w-50 mt-8"
           >
             <div>
@@ -48,14 +48,14 @@
               <p> Введите ваш возраст </p>
               <v-text-field
                 v-model="personStore.age"
-                :rules="personStore.returnAgeHeightRule"
+                :rules="returnAgeHeightRule"
               />
             </div>
             <div>
               <p> Введите ваш рост </p>
               <v-text-field
                 v-model="personStore.height" 
-                :rules="personStore.returnAgeHeightRule"
+                :rules="returnAgeHeightRule"
                 label="в см"
               />
             </div>
@@ -63,7 +63,7 @@
               <p> Введите ваш вес </p>
               <v-text-field 
                 v-model="personStore.weight" 
-                :rules="personStore.returnWeightRule"
+                :rules="returnWeightRule"
                 label="в кг"
               />      
             </div>
@@ -74,7 +74,7 @@
                   <v-select
                     v-model="personStore.choosedActivity"
                     label="Уровень вашей активности"
-                    :items="personStore.levelOfActivity"
+                    :items="levelOfActivity"
                     item-title="name"
                     width="370px"
                   />
@@ -144,8 +144,8 @@
             </div>
             <div class="d-flex justify-center mt-4">
               <v-btn
-                :disabled="!personStore.showInfo"
-                @click="personStore.calculateRecomendedCalories()"
+                :disabled="!showInfo"
+                @click="initCaloriesCalculation()"
               >
                 Подтвердить
               </v-btn>
@@ -175,7 +175,7 @@
             </thead>
             <tbody>
               <tr 
-                v-for="(param, index) in personStore.arrOfParams"
+                v-for="(param, index) in arrOfParams"
                 :key="param"
               >
                 <td>
@@ -195,7 +195,7 @@
               title="Удалить данные о себе"
               class="ma-4"
               color="error"
-              @click="personStore.deletePersonInfo()"
+              @click="initDeleteInfo()"
             >
               Удалить
             </v-btn>
@@ -203,7 +203,7 @@
               title="Изменить введенные данные"
               class="ma-4"
               color="warning"
-              @click="personStore.buttonIsClicked = false"
+              @click="buttonIsClicked = false"
             >
               Изменить
             </v-btn>
@@ -217,19 +217,57 @@
 <script>
 import { useProductStore } from '@/store/productStore'
 import { usePersonStore } from '@/store/personStore' 
+import validationRules from '@/shared/rules/index.js'
 
 export default {
   data() {
     return {
       productStore: useProductStore(),
       personStore: usePersonStore(),
+      formIsValid: null,
+      buttonIsClicked: false,
+      arrOfParams: ["Пол", "Возраст", "Рост", "Вес", "Ур. активности"],
+      levelOfActivity: [{ name: "Минимальная активность", value: 1.2 }, 
+                        { name: "Слабый уровень активности", value: 1.375 },
+                        { name: "Умеренный уровень активности", value: 1.55 }, 
+                        { name: "Тяжелая активность", value: 1.7 },
+                        { name: "Экстремальный уровень активности", value: 1.9}],
     }
+  },
+
+  computed: {
+    returnAgeHeightRule() { //совмещает общие правила и правила для роста/возраста
+      return [...validationRules.commonRules, ...validationRules.ageHeightRules]
+    },
+
+    returnWeightRule() { //совмещает общие правила и правила для веса
+      return [...validationRules.commonRules, ...validationRules.weightRules]
+    },
+
+    showInfo() { //отвечает за блокировку кнопки
+      if (this.formIsValid && (this.personStore.gender !== null && this.personStore.choosedActivity !== null)) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    },
   },
 
   methods: {
     goToMainPage() {
       this.$router.push('/');
+    },
+
+    initCaloriesCalculation() { //вызов функции расчета калорий
+      this.buttonIsClicked = true;
+      this.personStore.calculateRecomendedCalories(this.levelOfActivity);
+    },
+
+    initDeleteInfo() { //вызов функции удаления информации о пользователе
+      this.buttonIsClicked = false;
+      this.personStore.deletePersonInfo();
     }
-  }
+  },
 }
 </script>

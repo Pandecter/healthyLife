@@ -1,0 +1,20 @@
+export default {
+  commonRules: [
+    value => !!value || "Значение не может быть пустым!",
+    value => {if (value.startsWith(0)) 
+              return false || "Значение не может начинаться с нуля!"
+              else 
+              return true}
+  ], //общие правила валидации сразу для нескольких полей 
+  ageHeightRules: [
+    value => (value || '').length <= 3 || "Значение не должно превышать 3 цифр!",
+    value => { const REG_EXP = /^[0-9]+$/
+      return REG_EXP.test(value) || "Значение должно быть положительным числом и не содержать знаков!"
+    }
+  ],
+  weightRules: [
+    value => { const REG_EXP = /^\d*\.?\d+$/
+      return REG_EXP.test(value) || "Значение должно быть положительным, корректным и, при необходимости, разделяться точкой!"
+    }
+  ],
+}

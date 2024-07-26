@@ -10,33 +10,7 @@ export const usePersonStore = defineStore('person', {
       height: null,
       weight: null,
       choosedActivity: null,
-      levelOfActivity: [{ name: "Минимальная активность", value: 1.2 }, 
-                        { name: "Слабый уровень активности", value: 1.375 },
-                        { name: "Умеренный уровень активности", value: 1.55 }, 
-                        { name: "Тяжелая активность", value: 1.7 },
-                        { name: "Экстремальный уровень активности", value: 1.9}],
-      commonRules: [
-        value => !!value || "Значение не может быть пустым!",
-        value => {if (value.startsWith(0)) 
-                  return false || "Значение не может начинаться с нуля!"
-                  else 
-                  return true}
-      ],  //общие правила валидации сразу для нескольких полей 
-      ageHeightRules: [
-        value => (value || '').length <= 3 || "Значение не должно превышать 3 цифр!",
-        value => { const REG_EXP = /^[0-9]+$/
-          return REG_EXP.test(value) || "Значение должно быть положительным числом и не содержать знаков!"
-        }
-      ],
-      weightRules: [
-        value => { const REG_EXP = /^\d*\.?\d+$/
-          return REG_EXP.test(value) || "Значение должно быть положительным, корректным и, при необходимости, разделяться точкой!"
-        }
-      ],
       recomendedCalories: null,
-      formIsValid: false,
-      buttonIsClicked: false,
-      arrOfParams: ["Пол", "Возраст", "Рост", "Вес", "Ур. активности"], //используется на странице пользователя
       arrOfValues: [] //необходимо для хранения и обработки введенных значений
     }
   },
@@ -51,13 +25,10 @@ export const usePersonStore = defineStore('person', {
       this.recomendedCalories = null;
       this.statsStore.recomendedChart = null;
       this.arrOfValues = [];
-
-      this.buttonIsClicked = false;
     },
     
-    calculateRecomendedCalories() { //расчет нормы калорий
+    calculateRecomendedCalories(level) { //расчет нормы калорий
       this.arrOfValues = [];
-      this.buttonIsClicked = true;
       if (this.gender === "Мужчина") {
         this.recomendedCalories = Number((10 * this.weight + 6.25 * this.height - 5 * this.age + 5) * this.choosedActivity).toFixed(2); 
       }
@@ -69,9 +40,8 @@ export const usePersonStore = defineStore('person', {
         const CHOICE = ARR_OF_PARAMS[i];
         this.arrOfValues.push(this[CHOICE]);
       }
-      const ACTIVITY_ID = this.levelOfActivity.findIndex((el) => el.value === this.arrOfValues[4]);
-      console.log(ACTIVITY_ID) //получаем не значение, а название
-      this.arrOfValues[4] = this.levelOfActivity[ACTIVITY_ID].name;
+      const ACTIVITY_ID = level.findIndex((el) => el.value === this.arrOfValues[4]); //получаем не значение, а название
+      this.arrOfValues[4] = level[ACTIVITY_ID].name;
 
       const DATASET = { //нужно для графика
         label: 'Норма калорий',
@@ -84,23 +54,6 @@ export const usePersonStore = defineStore('person', {
   },
 
   getters: {
-    returnAgeHeightRule() { //совмещает общие правила и правила для роста/возраста
-      return [...this.commonRules, ...this.ageHeightRules]
-    },
-
-    returnWeightRule() { //совмещает общие правила и правила для веса
-      return [...this.commonRules, ...this.weightRules]
-    },
-
-    showInfo() { //отвечает за блокировку кнопки
-      if (this.formIsValid && (this.gender !== null && this.choosedActivity !== null)) {
-        return true;
-      }
-      else {
-        return false;
-      }
-    },
-
     isInfoIsNotFull() { //отвечает за отображение данных на странице статистики
       if (this.arrOfValues.length === 5) {
         return false;
