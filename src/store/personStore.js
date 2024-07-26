@@ -1,8 +1,6 @@
 import { defineStore } from 'pinia'
 import { useStatsStore } from './statsStore'
 
-
-
 export const usePersonStore = defineStore('person', {
   state: () => {
     return {
@@ -32,7 +30,7 @@ export const usePersonStore = defineStore('person', {
     
     calculateRecomendedCalories(level) { //расчет нормы калорий
       const STATS_STORE = useStatsStore();
-      
+
       this.arrOfValues = [];
       if (this.gender === "Мужчина") {
         this.recomendedCalories = Number((10 * this.weight + 6.25 * this.height - 5 * this.age + 5) * this.choosedActivity).toFixed(2); 

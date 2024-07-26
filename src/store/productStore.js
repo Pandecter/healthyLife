@@ -1,40 +1,14 @@
 import { defineStore } from 'pinia'
 import foodData from '../../datasets/food_base.json'
 
+const MEAL_TIME = ["Завтрак", "Обед", "Ужин"];
+
 export const useProductStore = defineStore('products', {
   state: () => {
     return {
-      months: ["Январь", "Февраль", "Март",
-               "Апрель", "Май", "Июнь",
-               "Июль", "Август", "Сентябрь",
-               "Октябрь", "Ноябрь", "Декабрь"], 
-      days: ["Понедельник", "Вторник", 
-             "Среда", "Четверг", 
-             "Пятница", "Суббота", "Воскресенье"],
-      listOfStats: ["Наименование", "Калорийность", "Белки",
-                    "Жиры", "Углеводы", "Удаление"],
-      isExpandable: [false, false, false, false, false, false, false], //переменная, которая отвечает за расширение вкладок
-      mealTime: ["Завтрак", "Обед", "Ужин"],
-      currentDate: {day: null, month: null},
-      alternativeCurrentDate: null, //текущая дата в более "удобном" виде 
       switchedCurrentDate: null, //дата, использующаяся при "смене" недели
-      clickedDate: null, //дата дня, с которой работает пользователь
       listsOfDaysMenu: [], //хранилище продуктов, выбранных пользователем
       foodStorage: [], //хранилище данных по продуктах
-      inputCountRules: [ //валидация для поля ввода массы продукта
-        value => !!value || "Значение не может быть пустым!",
-        value => { const REG_EXP = /^[0-9]+$/
-                   return REG_EXP.test(value) || "Значение должно быть положительным числом!"
-        },
-        value => (value || '').length <= 5 || "Значение не должно превышать 5 цифр!",
-        value => {if (value.startsWith(0)) 
-                  return false || "Значение не может начинаться с нуля!"
-                  else 
-                  return true}
-      ],
-      currentCountValue: null, // количество продукта в граммах
-      currentProductName: null, //наименование продукта,
-      isFormValid: false, // переменная, которая нужна для корректной блокировки кнопки
       isOverlayActive: false, //активация/деактивация оверлея
       drawer: false, //отвечает за открытие/закрытие меню наверху слева
       BaseFilterRanges: { //диапазоны значения для v-range-sliders на странице БД
@@ -94,10 +68,7 @@ export const useProductStore = defineStore('products', {
   actions: {
     mountFunction() { //вызывается 1 раз при запуске приложения 
       const CURRENT_DATE = new Date();
-      this.alternativeCurrentDate = CURRENT_DATE;
       this.switchedCurrentDate = CURRENT_DATE;
-      this.currentDate.day = this.days[CURRENT_DATE.getDay() - 1];
-      this.currentDate.month = this.months[CURRENT_DATE.getMonth()];
       this.initMinMaxRange(); 
 
       this.foodStorage = [...foodData];
@@ -137,22 +108,6 @@ export const useProductStore = defineStore('products', {
       this.modalFilterRanges.carRange = RESULT_ARR[3];
     }, 
 
-    nextWeek() { // метод для переключения на следующую неделю относительно текущей даты пользователя
-      const WEEK = 7;
-      let currentDate = this.switchedCurrentDate;
-      currentDate = new Date(currentDate.getFullYear(),  currentDate.getMonth(), currentDate.getDate() + WEEK);
-      this.switchedCurrentDate = currentDate;
-      this.isExpandable.fill(false)
-    },
-
-    previousWeek() { // метод для переключения на предыдущую неделю относительно текущей даты пользователя
-      const WEEK = 7;
-      let currentDate = this.switchedCurrentDate;
-      currentDate = new Date(currentDate.getFullYear(),  currentDate.getMonth(), currentDate.getDate() - WEEK);
-      this.switchedCurrentDate = currentDate;
-      this.isExpandable.fill(false);
-    },
-
     dateFormer(date) { //создает строку с датой в привычном для отображения виде
       let month = date.getMonth() + 1; 
       let day = date.getDate();
@@ -163,7 +118,8 @@ export const useProductStore = defineStore('products', {
       if (day < 10) {
         day = "0" + day;
       }
-      const RESULT = day + "." + month + "." + this.alternativeCurrentDate.getFullYear();
+      const CURRENT_DATE = new Date();
+      const RESULT = day + "." + month + "." + CURRENT_DATE.getFullYear();
       return RESULT;
     },
 
@@ -177,13 +133,8 @@ export const useProductStore = defineStore('products', {
       return result;
     },
 
-    toggleDay(index, date) { //открывает/закрывает меню дня
-      this.isExpandable[index] == false ? this.isExpandable[index] = true : this.isExpandable[index] = false;
-      this.clickedDate = date; 
-    },
-
-    addToProductList(dayNumber, mealTime, food) { //добавляет продукт в общий массив выбранных продуктов
-      const DAY_ID = this.days.findIndex((el) => el === dayNumber);
+    addToProductList(dayNumber, mealTime, food, arrOfDays) { //добавляет продукт в общий массив выбранных продуктов
+      const DAY_ID = arrOfDays.findIndex((el) => el === dayNumber);
       const CURRENT_DATE = this.giveDateInDateType[DAY_ID];
       if (!(this.listsOfDaysMenu.find((el) => el.date === CURRENT_DATE))) { //если текущего дня нет в базе 
         const OBJECT = { "dayNumber": DAY_ID, "date": CURRENT_DATE, "breakfast": [],"lunch": [], "dinner": []};
@@ -344,11 +295,6 @@ export const useProductStore = defineStore('products', {
     
   },
   getters: {
-    giveAlternativeCurrentDate() { // показывает текущую дату 
-      const RESULT_DATA = this.dateFormer(this.alternativeCurrentDate);
-      return RESULT_DATA;
-    },
-
     giveCurrentWeek() { //показывает текущую неделю 
       const NUMBER = this.switchedCurrentDate.getDay();
       const CURRENT_DATE = this.switchedCurrentDate;
@@ -411,38 +357,6 @@ export const useProductStore = defineStore('products', {
       return ARR_OF_NAMES;
     },
 
-    isButtonAvailable() { //отвечает за блокировку/разблокировку кнопки
-      if (this.isFormValid && this.currentProductName != null) {
-        this.showModalInfo = true;
-        return false;
-      }
-      else {
-        this.showModalInfo = false;
-        return true;
-      }
-    },
-
-    actualProductCounter() { //высчитывает количество "состава" с учетом количества продукта
-      const STATS = ["calories", "proteins", "fats", "carbs"];
-      const PRODUCT = {...this.foodStorage.find((el) => el.name === this.currentProductName) };
-      for (let i = 0; i < STATS.length; i++) {
-        const CHOICE = STATS[i];
-        PRODUCT[CHOICE] = PRODUCT[CHOICE].replace(/,/g, '.');
-        PRODUCT[CHOICE] = Number(PRODUCT[CHOICE].replace(/[^0-9.]+/g,""));
-        PRODUCT[CHOICE] = (PRODUCT[CHOICE] * (this.currentCountValue / 100)).toFixed(2);
-      }
-      return PRODUCT;
-    },
-    
-    showInfoAboutProduct() { //вывод информации о продукте
-      let info = this.actualProductCounter;
-      info.calories = info.calories + " Ккал";
-      info.proteins = info.proteins + " г";
-      info.fats = info.fats + " г";
-      info.carbs = info.carbs + " г";
-      return info;
-    },
-
     showInfo() {
       const SHOWN_ARRAY = []; 
       const CURRENT_DATE = this.giveDateInDateType; 
@@ -450,7 +364,7 @@ export const useProductStore = defineStore('products', {
         const RESULT = this.listsOfDaysMenu.find((el) => el.date === CURRENT_DATE[i]) 
         if (typeof(RESULT) === "undefined") { //если полученный тип undefined, т.е. данных с такой датой найдено не было
           let tempArr = [];
-          for (let j = 0; j < this.mealTime.length; j++) { 
+          for (let j = 0; j < MEAL_TIME.length; j++) { 
             tempArr.push(null);
           }
           SHOWN_ARRAY.push(tempArr);
@@ -549,7 +463,7 @@ export const useProductStore = defineStore('products', {
           RESULT_ARR.push(SUB_ARRAY);
         }
         else {
-          for (let j = 0; j < this.mealTime.length; j++) {
+          for (let j = 0; j < MEAL_TIME.length; j++) {
             SUB_ARRAY[j] = false;
           }
           RESULT_ARR.push(SUB_ARRAY);

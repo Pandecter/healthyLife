@@ -58,13 +58,13 @@
             <div class="d-flex justify-center mt-8">
               <v-btn 
                 class="mr-2" 
-                @click="productStore.previousWeek()"
+                @click="previousWeek()"
               >
                 Предыдущая
               </v-btn>
               <v-btn 
                 class="ml-2" 
-                @click="productStore.nextWeek()"
+                @click="nextWeek()"
               >
                 Следующая
               </v-btn>
@@ -76,7 +76,7 @@
           transition="slide-x-transition"
         > 
           <v-card 
-            v-for="(day, indexOfDay) in productStore.days"
+            v-for="(day, indexOfDay) in days"
             :key="day"
             variant="outlined"
             width="100%"
@@ -99,14 +99,14 @@
             </div>
             <v-card-actions>
               <v-btn
-                :icon="productStore.isExpandable[indexOfDay] ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-                @click="productStore.toggleDay(indexOfDay, productStore.giveCurrentDate[indexOfDay])"
+                :icon="isExpandable[indexOfDay] ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+                @click="toggleDay(indexOfDay)"
               />
             </v-card-actions>
             <v-expand-transition>
-              <div v-if="productStore.isExpandable[indexOfDay]">
+              <div v-if="isExpandable[indexOfDay]">
                 <v-expansion-panels 
-                  v-for="(time, indexOfTime) in productStore.mealTime"
+                  v-for="(time, indexOfTime) in mealTime"
                   :key="time"
                 >
                   <v-expansion-panel
@@ -134,7 +134,7 @@
                         <v-container>
                           <v-row class="mb-2 font-weight-bold">
                             <v-col 
-                              v-for="stat in productStore.listOfStats"
+                              v-for="stat in listOfStats"
                               :key="stat"
                               class=""
                             >
@@ -200,7 +200,7 @@
                       </p>
                       <div class="w-50">
                         <v-autocomplete 
-                          v-model="productStore.currentProductName"
+                          v-model="currentProductName"
                           label="Введите наименование продукта" 
                           :items="productStore.returnProductNames"
                           no-data-text="По данному запросу нет результатов"
@@ -212,10 +212,10 @@
                         Количество продукта:
                       </p>
                       <div class="w-50">
-                        <v-form v-model="productStore.isFormValid">
+                        <v-form v-model="isFormValid">
                           <v-text-field
-                            v-model="productStore.currentCountValue"
-                            :rules="productStore.inputCountRules" 
+                            v-model="currentCountValue"
+                            :rules="returnProductMassRule" 
                             label="Введите количество в граммах"
                           />
                         </v-form>
@@ -267,7 +267,7 @@
                       />
                     </div>
                     <div 
-                      v-if="productStore.isButtonAvailable"
+                      v-if="isButtonAvailable"
                       class="d-flex justify-center align-center h-25 mt-2"
                     >
                       <p 
@@ -309,7 +309,7 @@
                         <tbody>
                           <tr>
                             <td 
-                              v-for="stat in productStore.showInfoAboutProduct"
+                              v-for="stat in showInfoAboutProduct"
                               :key="stat.name"
                             >
                               {{ stat }}
@@ -321,7 +321,7 @@
                     </div>                         
                     <div class="d-flex justify-center mt-8">
                       <v-btn 
-                        :disabled="productStore.isButtonAvailable"
+                        :disabled="isButtonAvailable"
                         @click="addToProductStore()"
                       > 
                         Добавить продукт 
@@ -341,6 +341,7 @@
 <script>
 import { useProductStore } from '@/store/productStore' 
 import { useStatsStore } from '@/store/statsStore'
+import validationRules from '@/shared/rules/index.js'
 
 export default {
   data() {
@@ -349,9 +350,75 @@ export default {
       statsStore: useStatsStore(),
       currentDay: null,
       currentMealTime: null,
+      mealTime: ["Завтрак", "Обед", "Ужин"],
+      days: ["Понедельник", "Вторник", 
+             "Среда", "Четверг", 
+             "Пятница", "Суббота", "Воскресенье"],
+      listOfStats: ["Наименование", "Калорийность", "Белки",
+      "Жиры", "Углеводы", "Удаление"],
+      isExpandable: [false, false, false, false, false, false, false], //позволяет открывать/закрывать вкладки
+      currentCountValue: null, // количество продукта в граммах
+      currentProductName: null, //наименование продукта,
+      isFormValid: false, // переменная, которая нужна для корректной блокировки кнопки
     }
   },
+  computed: {
+    returnProductMassRule() {
+      return validationRules.inputCountRules;
+    },
+
+    actualProductCounter() { //высчитывает количество "состава" с учетом количества продукта
+      const STATS = ["calories", "proteins", "fats", "carbs"];
+      const PRODUCT = {...this.productStore.foodStorage.find((el) => el.name === this.currentProductName) };
+      for (let i = 0; i < STATS.length; i++) {
+        const CHOICE = STATS[i];
+        PRODUCT[CHOICE] = PRODUCT[CHOICE].replace(/,/g, '.');
+        PRODUCT[CHOICE] = Number(PRODUCT[CHOICE].replace(/[^0-9.]+/g,""));
+        PRODUCT[CHOICE] = (PRODUCT[CHOICE] * (this.currentCountValue / 100)).toFixed(2);
+      }
+      return PRODUCT;
+    },
+    
+    showInfoAboutProduct() { //вывод информации о продукте
+      let info = this.actualProductCounter;
+      info.calories = info.calories + " Ккал";
+      info.proteins = info.proteins + " г";
+      info.fats = info.fats + " г";
+      info.carbs = info.carbs + " г";
+      return info;
+    },
+
+    isButtonAvailable() { //отвечает за блокировку/разблокировку кнопки
+      if (this.isFormValid && this.currentProductName != null) {
+        return false;
+      }
+      else {
+        return true;
+      }
+    },
+  },
+
   methods: {
+    nextWeek() { // метод для переключения на следующую неделю относительно текущей даты пользователя
+      const WEEK = 7;
+      let currentDate = this.productStore.switchedCurrentDate;
+      currentDate = new Date(currentDate.getFullYear(),  currentDate.getMonth(), currentDate.getDate() + WEEK);
+      this.productStore.switchedCurrentDate = currentDate;
+      this.isExpandable.fill(false)
+    },
+
+    previousWeek() { // метод для переключения на предыдущую неделю относительно текущей даты пользователя
+      const WEEK = 7;
+      let currentDate = this.productStore.switchedCurrentDate;
+      currentDate = new Date(currentDate.getFullYear(),  currentDate.getMonth(), currentDate.getDate() - WEEK);
+      this.productStore.switchedCurrentDate = currentDate;
+      this.isExpandable.fill(false);
+    },
+
+    toggleDay(index) { //открывает/закрывает меню дня
+      this.isExpandable[index] == false ? this.isExpandable[index] = true : this.isExpandable[index] = false;
+    },
+
     showOverlay(day, mealTime) { //необходимо для корректного добавления продуктов и открытия оверлея
       this.currentDay = day;
       this.currentMealTime = mealTime;
@@ -359,12 +426,12 @@ export default {
     },
 
     addToProductStore() {//необходимо для корректного добавления продуктов и закрытия оверлея
-      this.productStore.addToProductList(this.currentDay, this.currentMealTime, this.productStore.showInfoAboutProduct);
+      this.productStore.addToProductList(this.currentDay, this.currentMealTime, this.showInfoAboutProduct, this.days);
       this.productStore.isOverlayActive = false;
     },
 
     goToPersonPage() {
-      this.productStore.isExpandable.fill(false);
+      this.isExpandable.fill(false);
       this.$router.push('/person_info');
     },
 
@@ -372,12 +439,11 @@ export default {
       this.$router.push('/stats');
       this.statsStore.showSuccessCard = false;
       this.statsStore.showErrorCard = false;
-      this.productStore.isExpandable.fill(false);
+      this.isExpandable.fill(false);
     },
 
-
     goToBasePage() {
-      this.productStore.isExpandable.fill(false);
+      this.isExpandable.fill(false);
       this.$router.push('/base');
     },
   }

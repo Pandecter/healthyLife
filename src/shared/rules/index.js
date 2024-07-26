@@ -5,7 +5,7 @@ export default {
               return false || "Значение не может начинаться с нуля!"
               else 
               return true}
-  ], //общие правила валидации сразу для нескольких полей 
+  ], //общие правила валидации сразу для нескольких полей (в меню ввода данных пользователя)
   ageHeightRules: [
     value => (value || '').length <= 3 || "Значение не должно превышать 3 цифр!",
     value => { const REG_EXP = /^[0-9]+$/
@@ -16,5 +16,16 @@ export default {
     value => { const REG_EXP = /^\d*\.?\d+$/
       return REG_EXP.test(value) || "Значение должно быть положительным, корректным и, при необходимости, разделяться точкой!"
     }
+  ],
+  inputCountRules: [ //валидация для поля ввода массы продукта
+    value => !!value || "Значение не может быть пустым!",
+    value => { const REG_EXP = /^[0-9]+$/
+               return REG_EXP.test(value) || "Значение должно быть положительным числом!"
+    },
+    value => (value || '').length <= 5 || "Значение не должно превышать 5 цифр!",
+    value => {if (value.startsWith(0)) 
+              return false || "Значение не может начинаться с нуля!"
+              else 
+              return true}
   ],
 }
