@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import foodData from '../../datasets/food_base.json'
 
 const MEAL_TIME = ["Завтрак", "Обед", "Ужин"];
+const STATS_OF_MEAL = ["calories", "proteins", "fats", "carbs"]
 
 export const useProductStore = defineStore('products', {
   state: () => {
@@ -23,16 +24,6 @@ export const useProductStore = defineStore('products', {
       },
       searchedProduct: null, //продукт в поисковой строке базы 
       shownArrayOfProducts: null, //массив для отображения продуктов в базе с учетом фильтрации
-      slidersDisabled: false, //отключение слайдеров во время поиска в БД
-      addingFormIsValid: false, //активация/деактивация меню добавления
-      sortBy: ['name', 'desc'], //сортировка по убыванию/возрастанию
-      sortIcons:{ //набор стилей для кнопок сортировок, каждая из которых меняется на клик
-        name: "mdi-menu-up",
-        calories: "mdi-menu-down",
-        proteins: "mdi-menu-down",
-        fats: "mdi-menu-down",
-        carbs: "mdi-menu-down"
-      },
       addedProducts: [] //переменная для добавления в localStorage
     }
   },
@@ -53,11 +44,11 @@ export const useProductStore = defineStore('products', {
 
     initMinMaxRange() { /*!!!!!!функция-ЗАТЫЧКА, которая полностью копирует геттер findMinMaxRange, 
       но без нее данные только одним геттером в v-overlay почему-то не прогужаются !!!!!!*/
-      const SWITCH = ["calories", "proteins", "fats", "carbs"];
+      //const SWITCH = ["calories", "proteins", "fats", "carbs"];
       let minMaxArr = [];
       const RESULT_ARR = [];
-      for (let i = 0; i < SWITCH.length; i++) {
-        const CHOICE = SWITCH[i];
+      for (let i = 0; i < STATS_OF_MEAL.length; i++) {
+        const CHOICE = STATS_OF_MEAL[i];
         const ARR = [...(this.foodStorage.map(obj => obj[CHOICE]))];
         for (let j = 0; j < ARR.length; j++) {
           ARR[j] = ARR[j].replace(/,/g, '.'); //заменяем запятые на точки, т.к. parseFloat не воспринимает запятые
@@ -175,66 +166,11 @@ export const useProductStore = defineStore('products', {
                                                                    this.BaseFilterRanges.carbsRange));
     },
 
-    sortInit(value) { //замена параметров переменной для вызова геттера сортировки
-      this.currentSortChoice = value;
-      const FIELD = value;
-      if (value !== this.sortBy[0]) {
-        this.sortBy[0] = value;
-        this.sortBy[1] = "desc";
-        this.sortIcons[FIELD] = "mdi-menu-down" //по умолчанию ставим убывающую сортировку
-      }
-      else {
-        if (this.sortBy[1] === "desc") {
-          this.sortBy[1] = "asc";
-          this.sortIcons[FIELD] = "mdi-menu-up";
-        }
-        else {
-          this.sortBy[1] = "desc";
-          this.sortIcons[FIELD] = "mdi-menu-down";
-        }
-      }
-      if (this.sortBy[0] === "name") {
-        if(this.sortBy[1] === "asc") {
-          this.shownArrayOfProducts.sort((a, b) => (a.name > b.name ? 1 : -1));
-        }
-        else {
-          this.shownArrayOfProducts.sort((a, b) => (a.name > b.name ? -1 : 1));
-        }
-      }
-      else {
-        this.shownArrayOfProducts.sort(this.sortFunction);
-      }
-    },
-
-    sortFunction(a, b) {
-      const FIELD = this.sortBy[0];
-      let a_mod = a[FIELD].replace(/,/g, '.');
-      a_mod = parseFloat(a_mod);
-      let b_mod = b[FIELD].replace(/,/g, '.');
-      b_mod = parseFloat(b_mod);
-      if (this.sortBy[1] === "asc") { //по возрастанию
-        if (a_mod < b_mod) {
-          return -1;
-        }
-        else {
-          return 1;
-        }
-      }
-      else { //по убыванию 
-        if (a_mod < b_mod) {
-          return 1;
-        }
-        else {
-          return -1;
-        }
-      }
-    },
-
     filterFunc(value, caloriesRange, proteinsRange, fatsRange, carbRange) { //функция фильтрации
-      const STATS = ["calories", "proteins", "fats", "carbs"];
+      //const STATS = ["calories", "proteins", "fats", "carbs"];
       let changedValue = {...value};
-      for (let i = 0; i < STATS.length; i++) {
-        const CHOICE = STATS[i];
+      for (let i = 0; i < STATS_OF_MEAL.length; i++) {
+        const CHOICE = STATS_OF_MEAL[i];
         changedValue[CHOICE] = changedValue[CHOICE].replace(/,/g, '.');
         changedValue[CHOICE] = parseFloat(changedValue[CHOICE]);
       }
@@ -359,11 +295,11 @@ export const useProductStore = defineStore('products', {
     },
 
     findMinMaxRange() { //возращает максимальное/минимальное значение для слайдеров (отслеживает изменения в границах)
-      const SWITCH = ["calories", "proteins", "fats", "carbs"];
+      //const SWITCH = ["calories", "proteins", "fats", "carbs"];
       let minMaxArr = [];
       const RESULT_ARR = [];
-      for (let i = 0; i < SWITCH.length; i++) {
-        const CHOICE = SWITCH[i];
+      for (let i = 0; i < STATS_OF_MEAL.length; i++) {
+        const CHOICE = STATS_OF_MEAL[i];
         const ARR = [...(this.foodStorage.map(obj => obj[CHOICE]))];
       for (let j = 0; j < ARR.length; j++) {
           ARR[j] = ARR[j].replace(/,/g, '.'); //заменяем запятые на точки, т.к. parseFloat не воспринимает запятые
@@ -393,11 +329,9 @@ export const useProductStore = defineStore('products', {
         const RESULT = this.shownArrayOfProducts.find((el) => el.name === this.searchedProduct);
         const ARR = [];
         ARR.push(RESULT)
-        this.slidersDisabled = true;
         return ARR;
       }
       else {
-        this.slidersDisabled = false;
         return this.shownArrayOfProducts;
       }
     },
@@ -442,19 +376,5 @@ export const useProductStore = defineStore('products', {
       }
       return RESULT_ARR;
     },
-
-    returnColor() {
-      const ARR = ["name", "calories" , "proteins", "fats", "carbs"];
-      const COLORS = [];
-      for (let i = 0; i < ARR.length; i++) {
-        if (ARR[i] === this.sortBy[0]) {
-          COLORS[i] = "red";
-        }
-        else {
-          COLORS[i] = "black";
-        }
-      }
-      return COLORS;
-    }
   }
 })

@@ -41,7 +41,7 @@
             height="90vh"
           >
             <div class="d-flex flex-column align-center mt-8">
-              <v-form v-model="productStore.addingFormIsValid">
+              <v-form v-model="addingFormIsValid">
                 <p class="text-h6">
                   Введите наименование продукта
                 </p>
@@ -81,7 +81,7 @@
               
               <v-btn 
                 class="mt-2"
-                :disabled="!productStore.addingFormIsValid"
+                :disabled="!addingFormIsValid"
                 @click="initAddingToBaseFunc(name, calories, proteins, fats, carbs)"
               >
                 Подтвердить
@@ -113,7 +113,7 @@
             v-model="productStore.BaseFilterRanges.caloriesRange"
             :min="productStore.findMinMaxRange[0][0]"
             :max="productStore.findMinMaxRange[0][1]"
-            :disabled="productStore.slidersDisabled"
+            :disabled="blockSliders"
             max-width="300px"
             thumb-label="always"
           />
@@ -121,7 +121,7 @@
             v-model="productStore.BaseFilterRanges.proteinsRange"
             :min="productStore.findMinMaxRange[1][0]"
             :max="productStore.findMinMaxRange[1][1]"
-            :disabled="productStore.slidersDisabled"
+            :disabled="blockSliders"
             max-width="300px"
             thumb-label="always"
           />
@@ -129,7 +129,7 @@
             v-model="productStore.BaseFilterRanges.fatsRange"
             :min="productStore.findMinMaxRange[2][0]"
             :max="productStore.findMinMaxRange[2][1]"
-            :disabled="productStore.slidersDisabled" 
+            :disabled="blockSliders" 
             max-width="300px"
             thumb-label="always"
           />
@@ -137,14 +137,14 @@
             v-model="productStore.BaseFilterRanges.carbsRange"
             :min="productStore.findMinMaxRange[3][0]"
             :max="productStore.findMinMaxRange[3][1]"
-            :disabled="productStore.slidersDisabled" 
+            :disabled="blockSliders" 
             max-width="300px"
             thumb-label="always"
           />
         </div>
         <div class="d-flex justify-center mb-6 mt-6">
           <v-btn
-            :disabled="productStore.slidersDisabled" 
+            :disabled="blockSliders" 
             @click="productStore.applyFilters()"
           >
             Применить
@@ -162,61 +162,61 @@
               <th class="text-left">
                 Название продукта
                 <v-btn
-                  :icon="productStore.sortIcons.name"
-                  :disabled="productStore.slidersDisabled"  
+                  :icon="sortIcons.name"
+                  :disabled="blockSliders"  
                   variant="plain" 
                   :ripple="false" 
                   class=" mb-1 pr-6" 
-                  :color="productStore.returnColor[0]"
-                  @click="productStore.sortInit('name')"
+                  :color="returnColor[0]"
+                  @click="sortInit('name')"
                 />
               </th>
               <th class="text-left">
                 Калории
                 <v-btn 
-                  :icon="productStore.sortIcons.calories" 
-                  :disabled="productStore.slidersDisabled" 
+                  :icon="sortIcons.calories" 
+                  :disabled="blockSliders" 
                   variant="plain" 
                   :ripple="false" 
                   class="mb-1 pr-6"
-                  :color="productStore.returnColor[1]"
-                  @click="productStore.sortInit('calories')"
+                  :color="returnColor[1]"
+                  @click="sortInit('calories')"
                 />
               </th>
               <th class="text-left">
                 Белки
                 <v-btn
-                  :icon="productStore.sortIcons.proteins" 
-                  :disabled="productStore.slidersDisabled" 
+                  :icon="sortIcons.proteins" 
+                  :disabled="blockSliders" 
                   variant="plain" 
                   :ripple="false" 
                   class="mb-1 pr-6"
-                  :color="productStore.returnColor[2]"
-                  @click="productStore.sortInit('proteins')"
+                  :color="returnColor[2]"
+                  @click="sortInit('proteins')"
                 />
               </th>
               <th class="text-left">
                 Жиры
                 <v-btn 
-                  :icon="productStore.sortIcons.fats" 
-                  :disabled="productStore.slidersDisabled" 
+                  :icon="sortIcons.fats" 
+                  :disabled="blockSliders" 
                   variant="plain" 
                   :ripple="false" 
                   class="mb-1 pr-6"
-                  :color="productStore.returnColor[3]"
-                  @click="productStore.sortInit('fats')"
+                  :color="returnColor[3]"
+                  @click="sortInit('fats')"
                 />
               </th>
               <th class="text-left">
                 Углеводы
                 <v-btn 
-                  :icon="productStore.sortIcons.carbs" 
-                  :disabled="productStore.slidersDisabled" 
+                  :icon="sortIcons.carbs" 
+                  :disabled="blockSliders" 
                   variant="plain" 
                   :ripple="false" 
                   class="mb-1 pr-6"
-                  :color="productStore.returnColor[4]"
-                  @click="productStore.sortInit('carbs')"
+                  :color="returnColor[4]"
+                  @click="sortInit('carbs')"
                 />
               </th>
             </tr>
@@ -254,7 +254,16 @@ export default {
       proteins: null,
       fats: null,
       carbs: null,
-      isOverlayActive: false
+      isOverlayActive: false, //активация/деактивация оверлея
+      addingFormIsValid: false, //активация/деактивация кнопки добавления
+      sortBy: ['name', 'desc'], //сортировка по убыванию/возрастанию,
+      sortIcons:{ //набор стилей для кнопок сортировок, каждая из которых меняется на клик
+        name: "mdi-menu-up",
+        calories: "mdi-menu-down",
+        proteins: "mdi-menu-down",
+        fats: "mdi-menu-down",
+        carbs: "mdi-menu-down"
+      },
     }
   },
 
@@ -273,6 +282,29 @@ export default {
 
     returnRulesForOtherFields() {
       return validationRules.rulesForProductStats;
+    },
+
+    blockSliders() {
+      if (this.productStore.searchedProduct !== null) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    },
+
+    returnColor() {
+      const ARR = ["name", "calories" , "proteins", "fats", "carbs"];
+      const COLORS = [];
+      for (let i = 0; i < ARR.length; i++) {
+        if (ARR[i] === this.sortBy[0]) {
+          COLORS[i] = "red";
+        }
+        else {
+          COLORS[i] = "black";
+        }
+      }
+      return COLORS;
     }
   },
 
@@ -289,7 +321,61 @@ export default {
     initAddingToBaseFunc(nameVal, caloriesVal, proteinsVal, fatsVal, carbsVal) {
       this.isOverlayActive = false;
       this.productStore.addProductToList(nameVal, caloriesVal, proteinsVal, fatsVal, carbsVal);
-    }
+    },
+
+    sortInit(value) { //замена параметров переменной для вызова геттера сортировки
+      const FIELD = value;
+      if (value !== this.sortBy[0]) {
+        this.sortBy[0] = value;
+        this.sortBy[1] = "desc";
+        this.sortIcons[FIELD] = "mdi-menu-down" //по умолчанию ставим убывающую сортировку
+      }
+      else {
+        if (this.sortBy[1] === "desc") {
+          this.sortBy[1] = "asc";
+          this.sortIcons[FIELD] = "mdi-menu-up";
+        }
+        else {
+          this.sortBy[1] = "desc";
+          this.sortIcons[FIELD] = "mdi-menu-down";
+        }
+      }
+      if (this.sortBy[0] === "name") {
+        if(this.sortBy[1] === "asc") {
+          this.productStore.shownArrayOfProducts.sort((a, b) => (a.name > b.name ? 1 : -1));
+        }
+        else {
+          this.productStore.shownArrayOfProducts.sort((a, b) => (a.name > b.name ? -1 : 1));
+        }
+      }
+      else {
+        this.productStore.shownArrayOfProducts.sort(this.sortFunction);
+      }
+    },
+
+    sortFunction(a, b) {
+      const FIELD = this.sortBy[0];
+      let a_mod = a[FIELD].replace(/,/g, '.');
+      a_mod = parseFloat(a_mod);
+      let b_mod = b[FIELD].replace(/,/g, '.');
+      b_mod = parseFloat(b_mod);
+      if (this.sortBy[1] === "asc") { //по возрастанию
+        if (a_mod < b_mod) {
+          return -1;
+        }
+        else {
+          return 1;
+        }
+      }
+      else { //по убыванию 
+        if (a_mod < b_mod) {
+          return 1;
+        }
+        else {
+          return -1;
+        }
+      }
+    },
   },
 }
 </script>
