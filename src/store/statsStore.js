@@ -5,8 +5,6 @@ import { usePersonStore } from './personStore'
 export const useStatsStore = defineStore('stats', {
   state: () => {
     return {
-      personStore: usePersonStore(),
-      productStore: useProductStore(),
       startingDate: null, //начальная дата на странице статистики
       endingDate: null, //конечная дата на странице статистики
       message: null, //переменная для уведомления пользователя
@@ -20,6 +18,9 @@ export const useStatsStore = defineStore('stats', {
 
   getters: {
     mutableChartData() { //отправляет данные для графика
+      const PERSON_STORE = usePersonStore();
+      const PRODUCT_STORE = useProductStore();
+
       let resArr = {
         labels: [], 
         datasets: [{
@@ -35,14 +36,14 @@ export const useStatsStore = defineStore('stats', {
       let i = 0;
       while (currentDate <= this.endingDate) { 
         let calories = 0;
-        while (i < this.productStore.listsOfDaysMenu.length && currentDate > this.productStore.listsOfDaysMenu[i].date) {
+        while (i < PRODUCT_STORE.listsOfDaysMenu.length && currentDate > PRODUCT_STORE.listsOfDaysMenu[i].date) {
           i++;
         }
-        if ((i < this.productStore.listsOfDaysMenu.length) && (currentDate === this.productStore.listsOfDaysMenu[i].date)) { //если такой день есть в списке
+        if ((i < PRODUCT_STORE.listsOfDaysMenu.length) && (currentDate === PRODUCT_STORE.listsOfDaysMenu[i].date)) { //если такой день есть в списке
           for (let j = 0; j < ARR_OF_MEAL_TIME.length; j++) { //проходимся по всем приемам пищи
             const CHOICE = ARR_OF_MEAL_TIME[j];
-            for (let k = 0; k < this.productStore.listsOfDaysMenu[i][CHOICE].length; k++) { //проходимся по всем продуктам в приеме
-              calories = calories + parseFloat(this.productStore.listsOfDaysMenu[i][CHOICE][k].calories);
+            for (let k = 0; k < PRODUCT_STORE.listsOfDaysMenu[i][CHOICE].length; k++) { //проходимся по всем продуктам в приеме
+              calories = calories + parseFloat(PRODUCT_STORE.listsOfDaysMenu[i][CHOICE][k].calories);
             }
           }
           resArr.datasets[0].data.push(calories);
@@ -59,7 +60,7 @@ export const useStatsStore = defineStore('stats', {
 
       if (this.recomendedChart !== null) { //если есть данные о пользователе
         resArr.datasets.push(this.recomendedChart)
-        const DATA = this.personStore.recomendedCalories;
+        const DATA = PERSON_STORE.recomendedCalories;
         for (let i = 0; i < resArr.labels.length; i++) {
           resArr.datasets[1].data[i] = DATA; //копируем значение для отображения линии
         }
@@ -84,6 +85,7 @@ export const useStatsStore = defineStore('stats', {
     },
 
     returnStats() { //возвращает сумму БЖУ + Калорий
+      const PRODUCT_STORE = useProductStore();
       const OBJECT = {
         dates: null,
         calories: null,
@@ -97,8 +99,8 @@ export const useStatsStore = defineStore('stats', {
       let fatsVal = 0;
       let carbsVal = 0;
       for (let i = 0; i < this.mutableChartData.labels.length; i++) {
-        if(this.productStore.listsOfDaysMenu.find((el) => el.date === this.mutableChartData.labels[i])) {
-          let day = {...this.productStore.listsOfDaysMenu.find((el) => el.date === this.mutableChartData.labels[i])};
+        if(PRODUCT_STORE.listsOfDaysMenu.find((el) => el.date === this.mutableChartData.labels[i])) {
+          let day = {...PRODUCT_STORE.listsOfDaysMenu.find((el) => el.date === this.mutableChartData.labels[i])};
           for (let j = 0; j < ARR_OF_MEAL_TIME.length; j++) { //проходимся по всем приемам пищи
             const CHOICE = ARR_OF_MEAL_TIME[j];
             for (let k = 0; k < day[CHOICE].length; k++) { //проходимся по всем продуктам в приеме

@@ -1,10 +1,11 @@
 import { defineStore } from 'pinia'
 import { useStatsStore } from './statsStore'
 
+
+
 export const usePersonStore = defineStore('person', {
   state: () => {
     return {
-      statsStore: useStatsStore(),
       gender: null,
       age: null,
       height: null,
@@ -17,17 +18,21 @@ export const usePersonStore = defineStore('person', {
 
   actions: {
     deletePersonInfo() { //удаление информации о пользователе
+      const STATS_STORE = useStatsStore();
+      
       this.gender = null;
       this.age = null;
       this.height = null;
       this.weight = null;
       this.choosedActivity = null;
       this.recomendedCalories = null;
-      this.statsStore.recomendedChart = null;
+      STATS_STORE.recomendedChart = null;
       this.arrOfValues = [];
     },
     
     calculateRecomendedCalories(level) { //расчет нормы калорий
+      const STATS_STORE = useStatsStore();
+      
       this.arrOfValues = [];
       if (this.gender === "Мужчина") {
         this.recomendedCalories = Number((10 * this.weight + 6.25 * this.height - 5 * this.age + 5) * this.choosedActivity).toFixed(2); 
@@ -49,7 +54,7 @@ export const usePersonStore = defineStore('person', {
         borderColor: '#ff000d',
         data: []
       }
-      this.statsStore.recomendedChart = DATASET;
+      STATS_STORE.recomendedChart = DATASET;
     }
   },
 
