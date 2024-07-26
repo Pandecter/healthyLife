@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { useProductStore } from './productStore'
-import { usePersonStore } from './personStore'
+import { usePersonStore } from './personStore'  
 
 export const useStatsStore = defineStore('stats', {
   state: () => {
@@ -10,44 +10,10 @@ export const useStatsStore = defineStore('stats', {
       startingDate: null, //начальная дата на странице статистики
       endingDate: null, //конечная дата на странице статистики
       message: null, //переменная для уведомления пользователя
-      showErrorCard: false, //переменная, которая отвечает за показ карточки с ошибками
-      showSuccessCard: false, //отвечает за отображение графика
       recomendedChart: null, //данные о "норме калорий" пользователя
       chartOptions: { //опции для графика
         responsive: true,
         maintainAspectRatio: true
-      }
-    }
-  },
-
-  actions: {
-    showStatistics(start, end) { //проверяет корректность введеных данных
-      this.startingDate = null;
-      this.endingDate = null;
-      if ((start === null || start === "") || (end === null) || (end === "")) { //если данных нет, либо веденной даты не существует
-        this.showErrorCard = true;
-        this.showSuccessCard = false;
-        this.message = "Дата не была введена или такой даты не существует!"
-      }
-      else { // данные существуют, но могут быть некорректны для сравнения 
-        if (start >= end) { //если дата начала "позднее" даты конца или равна ему
-          if (start === end) { //один и тот же день выбран в обоих полях
-            this.showErrorCard = true;
-            this.showSuccessCard = false;
-            this.message = "Нельзя отобразить статистику менее чем за 2 дня!"
-          }
-          else { //старт позже конца
-            this.showErrorCard = true;
-            this.showSuccessCard = false;
-            this.message = "Начальная дата не может быть раньше даты окончания!"
-          }
-        }
-        else { //все правила соблюдены
-          this.startingDate = start;
-          this.endingDate = end;
-          this.showErrorCard = false;
-          this.showSuccessCard = true;
-        }
       }
     }
   },

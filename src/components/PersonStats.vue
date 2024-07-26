@@ -49,14 +49,14 @@
       </div>
       <div class="d-flex justify-center mt-4">
         <v-btn
-          @click="statsStore.showStatistics(startDate, endDate)"
+          @click="showStatistics()"
         >
           Вывести статистику
         </v-btn>
       </div>
       <div class="d-flex justify-center mt-16">
         <v-card 
-          v-if="statsStore.showErrorCard"
+          v-if="showErrorCard"
           color="error"
           class="d-flex justify-center"
           width="80vh"
@@ -65,7 +65,7 @@
             {{ statsStore.message }}
           </v-card-title>
         </v-card>
-        <div v-if="statsStore.showSuccessCard">
+        <div v-if="showSuccessCard">
           <v-card 
             color="success"
             class="d-flex justify-center"
@@ -214,6 +214,8 @@ export default {
       productStore: useProductStore(),
       startDate: null,
       endDate: null,
+      showErrorCard: false,
+      showSuccessCard: false
     }
   },
 
@@ -238,6 +240,35 @@ export default {
       this.productStore.drawer = false;
       this.$router.push('/');
     },
+
+    showStatistics() { //проверяет корректность введеных данных
+      if ((this.startDate === null || this.startDate === "") 
+          || (this.endDate === null) || (this.endDate === "")) { //если данных нет, либо веденной даты не существует
+        this.showErrorCard = true;
+        this.showSuccessCard = false;
+        this.statsStore.message = "Дата не была введена или такой даты не существует!"
+      }
+      else { // данные существуют, но могут быть некорректны для сравнения 
+        if (this.startDate >= this.endDate) { //если дата начала "позднее" даты конца или равна ему
+          if (this.startDate === this.endDate) { //один и тот же день выбран в обоих полях
+            this.showErrorCard = true;
+            this.showSuccessCard = false;
+            this.statsStore.message = "Нельзя отобразить статистику менее чем за 2 дня!"
+          }
+          else { //старт позже конца
+            this.showErrorCard = true;
+            this.showSuccessCard = false;
+            this.statsStore.message = "Начальная дата не может быть раньше даты окончания!"
+          }
+        }
+        else { //все правила соблюдены
+          this.statsStore.startingDate = this.startDate;
+          this.statsStore.endingDate = this.endDate;
+          this.showErrorCard = false;
+          this.showSuccessCard = true;
+        }
+      }
+    }
   }
 }
 </script>
