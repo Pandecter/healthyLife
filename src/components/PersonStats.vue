@@ -226,7 +226,6 @@ export default {
         return true;
       }
     }
-    
   },
 
   mounted() {
@@ -239,7 +238,6 @@ export default {
       this.productStore.drawer = false;
       this.$router.push('/');
     },
-
   }
 }
 </script>
