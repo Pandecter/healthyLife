@@ -96,9 +96,9 @@
       >
         <v-card-text>
           <v-autocomplete 
-            v-model="productStore.searchedProduct"
+            v-model="productBase.searchedProduct"
             label="Введите наименование продукта" 
-            :items="productStore.returnProductNamesInBase"
+            :items="productBase.returnProductNamesInBase"
             no-data-text="По данному запросу нет результатов"
           />
         </v-card-text>
@@ -110,7 +110,7 @@
         </div>
         <div class="d-flex justify-space-around">
           <v-range-slider 
-            v-model="productStore.BaseFilterRanges.caloriesRange"
+            v-model="productBase.BaseFilterRanges.caloriesRange"
             :min="productStore.findMinMaxRange[0][0]"
             :max="productStore.findMinMaxRange[0][1]"
             :disabled="blockSliders"
@@ -118,7 +118,7 @@
             thumb-label="always"
           />
           <v-range-slider
-            v-model="productStore.BaseFilterRanges.proteinsRange"
+            v-model="productBase.BaseFilterRanges.proteinsRange"
             :min="productStore.findMinMaxRange[1][0]"
             :max="productStore.findMinMaxRange[1][1]"
             :disabled="blockSliders"
@@ -126,7 +126,7 @@
             thumb-label="always"
           />
           <v-range-slider
-            v-model="productStore.BaseFilterRanges.fatsRange"
+            v-model="productBase.BaseFilterRanges.fatsRange"
             :min="productStore.findMinMaxRange[2][0]"
             :max="productStore.findMinMaxRange[2][1]"
             :disabled="blockSliders" 
@@ -134,7 +134,7 @@
             thumb-label="always"
           />
           <v-range-slider
-            v-model="productStore.BaseFilterRanges.carbsRange"
+            v-model="productBase.BaseFilterRanges.carbsRange"
             :min="productStore.findMinMaxRange[3][0]"
             :max="productStore.findMinMaxRange[3][1]"
             :disabled="blockSliders" 
@@ -145,13 +145,13 @@
         <div class="d-flex justify-center mb-6 mt-6">
           <v-btn
             :disabled="blockSliders" 
-            @click="productStore.applyFilters()"
+            @click="productBase.applyFilters()"
           >
             Применить
           </v-btn>
         </div>
         <div class="d-flex justify-center mb-4 text-h6">
-          Найдено продуктов: {{ productStore.shownArrayOfProducts.length }}
+          Найдено продуктов: {{ productBase.shownArrayOfProducts.length }}
         </div>
       </v-card>
       <hr>
@@ -223,7 +223,7 @@
           </thead>
           <tbody>
             <tr 
-              v-for="product in productStore.returnShowedArray"
+              v-for="product in productBase.returnShowedArray"
               :key="product"
             >
               <td 
@@ -242,12 +242,14 @@
 
 <script>
 import { useProductStore } from '@/store/productStore'
+import { useProductBase } from '@/store/productBase'
 import validationRules from '@/shared/rules/index.js'
 
 export default {
   data() {
     return {
       productStore: useProductStore(),
+      productBase: useProductBase(),
       isDataFiltered: false,
       name: null,
       calories: null,
@@ -268,10 +270,6 @@ export default {
   },
 
   computed: {
-    currentDate() {
-      return this.isDataFiltered ? this.productStore.filterData : this.productStore.foodStorage;
-    },
-
     returnNameRules() {
       return validationRules.ruleForProductName;
     },
@@ -285,7 +283,7 @@ export default {
     },
 
     blockSliders() {
-      if (this.productStore.searchedProduct !== null) {
+      if (this.productBase.searchedProduct !== null) {
         return true;
       }
       else {
@@ -320,7 +318,7 @@ export default {
 
     initAddingToBaseFunc(nameVal, caloriesVal, proteinsVal, fatsVal, carbsVal) {
       this.isOverlayActive = false;
-      this.productStore.addProductToList(nameVal, caloriesVal, proteinsVal, fatsVal, carbsVal);
+      this.productBase.addProductToList(nameVal, caloriesVal, proteinsVal, fatsVal, carbsVal);
     },
 
     sortInit(value) { //замена параметров переменной для вызова геттера сортировки
@@ -342,14 +340,14 @@ export default {
       }
       if (this.sortBy[0] === "name") {
         if(this.sortBy[1] === "asc") {
-          this.productStore.shownArrayOfProducts.sort((a, b) => (a.name > b.name ? 1 : -1));
+          this.productBase.shownArrayOfProducts.sort((a, b) => (a.name > b.name ? 1 : -1));
         }
         else {
-          this.productStore.shownArrayOfProducts.sort((a, b) => (a.name > b.name ? -1 : 1));
+          this.productBase.shownArrayOfProducts.sort((a, b) => (a.name > b.name ? -1 : 1));
         }
       }
       else {
-        this.productStore.shownArrayOfProducts.sort(this.sortFunction);
+        this.productBase.shownArrayOfProducts.sort(this.sortFunction);
       }
     },
 

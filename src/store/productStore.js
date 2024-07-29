@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import foodData from '../../datasets/food_base.json'
+import { useProductBase } from './productBase';
 
 const MEAL_TIME = ["Завтрак", "Обед", "Ужин"];
 const STATS_OF_MEAL = ["calories", "proteins", "fats", "carbs"]
@@ -10,26 +11,20 @@ export const useProductStore = defineStore('products', {
       switchedCurrentDate: null, //дата, использующаяся при "смене" недели
       listsOfDaysMenu: [], //хранилище продуктов, выбранных пользователем
       foodStorage: [], //хранилище данных по продуктах
-      BaseFilterRanges: { //диапазоны значения для v-range-sliders на странице БД
-        caloriesRange: null,
-        proteinsRange: null,
-        fatsRange: null,
-        carbsRange: null
-      }, //диапазоны значения для v-range-sliders в оверлее добавления продукта в "съеденное"
-      modalFilterRanges: {
+      modalFilterRanges: { //диапазоны значения для v-range-sliders в оверлее добавления продукта в "съеденное"
         calRange: null,
         proRange: null,
         fatRange: null,
         carRange: null
       },
-      searchedProduct: null, //продукт в поисковой строке базы 
-      shownArrayOfProducts: null, //массив для отображения продуктов в базе с учетом фильтрации
       addedProducts: [] //переменная для добавления в localStorage
     }
   },
 
   actions: {
     mountFunction() { //вызывается 1 раз при запуске приложения 
+      const PRODUTC_BASE = useProductBase();
+
       const CURRENT_DATE = new Date();
       this.switchedCurrentDate = CURRENT_DATE;
       this.initMinMaxRange(); 
@@ -39,12 +34,11 @@ export const useProductStore = defineStore('products', {
         this.addedProducts = (JSON.parse(localStorage.getItem("addedProducts")))
         this.foodStorage.push(...this.addedProducts);
       }
-      this.shownArrayOfProducts = [...this.foodStorage];
+      PRODUTC_BASE.shownArrayOfProducts = [...this.foodStorage];
     },
 
     initMinMaxRange() { /*!!!!!!функция-ЗАТЫЧКА, которая полностью копирует геттер findMinMaxRange, 
       но без нее данные только одним геттером в v-overlay почему-то не прогужаются !!!!!!*/
-      //const SWITCH = ["calories", "proteins", "fats", "carbs"];
       let minMaxArr = [];
       const RESULT_ARR = [];
       for (let i = 0; i < STATS_OF_MEAL.length; i++) {
@@ -59,12 +53,6 @@ export const useProductStore = defineStore('products', {
         RESULT_ARR[i] = [...minMaxArr];
         minMaxArr = [];
       }
-
-      this.BaseFilterRanges.caloriesRange = RESULT_ARR[0];
-      this.BaseFilterRanges.proteinsRange = RESULT_ARR[1];
-      this.BaseFilterRanges.fatsRange = RESULT_ARR[2];
-      this.BaseFilterRanges.carbsRange = RESULT_ARR[3];
-
       this.modalFilterRanges.calRange = RESULT_ARR[0];
       this.modalFilterRanges.proRange = RESULT_ARR[1];
       this.modalFilterRanges.fatRange = RESULT_ARR[2];
@@ -157,17 +145,7 @@ export const useProductStore = defineStore('products', {
       }
     },
 
-    applyFilters() { //вызов фильтрации
-      this.shownArrayOfProducts = [...this.foodStorage];
-      this.shownArrayOfProducts = this.shownArrayOfProducts.filter(value => this.filterFunc(value, 
-                                                                   this.BaseFilterRanges.caloriesRange, 
-                                                                   this.BaseFilterRanges.proteinsRange,
-                                                                   this.BaseFilterRanges.fatsRange,
-                                                                   this.BaseFilterRanges.carbsRange));
-    },
-
     filterFunc(value, caloriesRange, proteinsRange, fatsRange, carbRange) { //функция фильтрации
-      //const STATS = ["calories", "proteins", "fats", "carbs"];
       let changedValue = {...value};
       for (let i = 0; i < STATS_OF_MEAL.length; i++) {
         const CHOICE = STATS_OF_MEAL[i];
@@ -180,26 +158,6 @@ export const useProductStore = defineStore('products', {
       const CARBS_CONDITION = (changedValue.carbs >= carbRange[0]) && (changedValue.carbs <= carbRange[1]);
       return (CALORIES_CONDITION && PROTEINS_CONDITION && FATS_CONDITION && CARBS_CONDITION);
     },
-
-    addProductToList(nameValue, caloriesValue, proteinsValue, fatsValue, carbsValue) { //добавление продукта в базу
-      let OBJECT = {
-        name: nameValue, 
-        calories: caloriesValue + " Ккал", 
-        proteins: proteinsValue + " г",
-        fats: fatsValue + " г",
-        carbs: carbsValue + " г"
-      }
-      if (this.foodStorage.find((el) => el.name === nameValue)) {
-        alert("Такой продукт уже есть в базе!")
-      }
-      else {
-        this.addedProducts.push(OBJECT);
-        localStorage.setItem("addedProducts", JSON.stringify(this.addedProducts)); 
-        this.foodStorage.push(OBJECT);
-        this.shownArrayOfProducts = [...this.foodStorage]
-      }
-    }
-    
   },
   getters: {
     giveCurrentWeek() { //показывает текущую неделю 
@@ -256,14 +214,6 @@ export const useProductStore = defineStore('products', {
       return ARR_OF_NAMES;
     },
 
-    returnProductNamesInBase() { //выводит список продуктов в autocomplete с учетом фильтров
-      const ARR_OF_NAMES = [];
-      for (let i = 0; i < this.shownArrayOfProducts.length; i++) {
-        ARR_OF_NAMES[i] = this.shownArrayOfProducts[i].name;
-      }
-      return ARR_OF_NAMES;
-    },
-
     showInfo() {
       const SHOWN_ARRAY = []; 
       const CURRENT_DATE = this.giveDateInDateType; 
@@ -295,7 +245,8 @@ export const useProductStore = defineStore('products', {
     },
 
     findMinMaxRange() { //возращает максимальное/минимальное значение для слайдеров (отслеживает изменения в границах)
-      //const SWITCH = ["calories", "proteins", "fats", "carbs"];
+      const PRODUTC_BASE = useProductBase();
+
       let minMaxArr = [];
       const RESULT_ARR = [];
       for (let i = 0; i < STATS_OF_MEAL.length; i++) {
@@ -311,10 +262,10 @@ export const useProductStore = defineStore('products', {
         minMaxArr = [];
       }
 
-      this.BaseFilterRanges.caloriesRange = RESULT_ARR[0];
-      this.BaseFilterRanges.proteinsRange = RESULT_ARR[1];
-      this.BaseFilterRanges.fatsRange = RESULT_ARR[2];
-      this.BaseFilterRanges.carbsRange = RESULT_ARR[3];
+      PRODUTC_BASE.BaseFilterRanges.caloriesRange = RESULT_ARR[0];
+      PRODUTC_BASE.BaseFilterRanges.proteinsRange = RESULT_ARR[1];
+      PRODUTC_BASE.BaseFilterRanges.fatsRange = RESULT_ARR[2];
+      PRODUTC_BASE.BaseFilterRanges.carbsRange = RESULT_ARR[3];
 
       this.modalFilterRanges.calRange = RESULT_ARR[0];
       this.modalFilterRanges.proRange = RESULT_ARR[1];
@@ -322,18 +273,6 @@ export const useProductStore = defineStore('products', {
       this.modalFilterRanges.carRange = RESULT_ARR[3];
 
       return RESULT_ARR;
-    },
-    
-    returnShowedArray() { //вывод списка с учетом фильтров/поиска
-      if (this.searchedProduct !== null) {
-        const RESULT = this.shownArrayOfProducts.find((el) => el.name === this.searchedProduct);
-        const ARR = [];
-        ARR.push(RESULT)
-        return ARR;
-      }
-      else {
-        return this.shownArrayOfProducts;
-      }
     },
     
     isDayFilled() { //отображает "отмеченные" дни
