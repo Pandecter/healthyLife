@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import CalendarComponent from '@/components/MainContent.vue'
+import CalendarComponent from '@/components/pages/MainContent.vue'
 
 export default {
   components: {

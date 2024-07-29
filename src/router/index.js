@@ -1,7 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-//import PersonalPage from '../components/PersonInfo.vue'
-//import StatsPage from '../components/PersonStats.vue'
-//import ProductPage from '../components/ProductBase.vue'
 
 const routes = [
   {
@@ -10,15 +7,15 @@ const routes = [
   },
   {
     path: '/person_info',
-    component: () => import('@/components/PersonInfo.vue')
+    component: () => import('@/components/pages/PersonInfo.vue')
   },
   {
     path: '/stats',
-    component: () => import('@/components/PersonStats.vue')
+    component: () => import('@/components/pages/PersonStats.vue')
   },
   {
     path: '/base',
-    component: () => import('@/components/ProductBase.vue')
+    component: () => import('@/components/pages/ProductBase.vue')
   }
 ]
 

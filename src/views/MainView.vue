@@ -3,5 +3,5 @@
 </template>
 
 <script setup>
-  import MainPage from '@/components/MainPage.vue'
+  import MainPage from '@/components/pages/MainPage.vue'
 </script>
