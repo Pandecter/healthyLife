@@ -122,7 +122,7 @@ export default {
 
   methods: {
     initCaloriesCalculation() { //вызов функции расчета калорий
-      this.$emit('buttonClick', true);
+      this.$emit('buttonClick');
       this.personStore.calculateRecomendedCalories(this.levelOfActivity);
     },
   }

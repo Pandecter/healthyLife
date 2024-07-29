@@ -12,10 +12,10 @@ export const useProductStore = defineStore('products', {
       listsOfDaysMenu: [], //хранилище продуктов, выбранных пользователем
       foodStorage: [], //хранилище данных по продуктах
       modalFilterRanges: { //диапазоны значения для v-range-sliders в оверлее добавления продукта в "съеденное"
-        calRange: null,
-        proRange: null,
-        fatRange: null,
-        carRange: null
+        caloriesRange: null,
+        proteinsRange: null,
+        fatsRange: null,
+        carbsRange: null
       },
       addedProducts: [] //переменная для добавления в localStorage
     }
@@ -53,10 +53,10 @@ export const useProductStore = defineStore('products', {
         RESULT_ARR[i] = [...minMaxArr];
         minMaxArr = [];
       }
-      this.modalFilterRanges.calRange = RESULT_ARR[0];
-      this.modalFilterRanges.proRange = RESULT_ARR[1];
-      this.modalFilterRanges.fatRange = RESULT_ARR[2];
-      this.modalFilterRanges.carRange = RESULT_ARR[3];
+      this.modalFilterRanges.caloriesRange = [...RESULT_ARR[0]];
+      this.modalFilterRanges.proteinsRange = [...RESULT_ARR[1]];
+      this.modalFilterRanges.fatsRange = [...RESULT_ARR[2]];
+      this.modalFilterRanges.carbsRange = [...RESULT_ARR[3]];
     }, 
 
     dateFormer(date) { //создает строку с датой в привычном для отображения виде
@@ -204,9 +204,9 @@ export const useProductStore = defineStore('products', {
     },
 
     returnProductNames() { //выводит список продуктов в autocomplete
-      const RES_ARR = this.foodStorage.filter(value => this.filterFunc(value, this.modalFilterRanges.calRange, 
-                                              this.modalFilterRanges.proRange, this.modalFilterRanges.fatRange,
-                                              this.modalFilterRanges.carRange));
+      const RES_ARR = this.foodStorage.filter(value => this.filterFunc(value, this.modalFilterRanges.caloriesRange, 
+                                              this.modalFilterRanges.proteinsRange, this.modalFilterRanges.fatsRange,
+                                              this.modalFilterRanges.carbsRange));
       const ARR_OF_NAMES = [];
       for (let i = 0; i < RES_ARR.length; i++) {
         ARR_OF_NAMES[i] = RES_ARR[i].name;
@@ -262,15 +262,17 @@ export const useProductStore = defineStore('products', {
         minMaxArr = [];
       }
 
-      PRODUTC_BASE.BaseFilterRanges.caloriesRange = RESULT_ARR[0];
-      PRODUTC_BASE.BaseFilterRanges.proteinsRange = RESULT_ARR[1];
-      PRODUTC_BASE.BaseFilterRanges.fatsRange = RESULT_ARR[2];
-      PRODUTC_BASE.BaseFilterRanges.carbsRange = RESULT_ARR[3];
+      PRODUTC_BASE.BaseFilterRanges.caloriesRange = [...RESULT_ARR[0]];
+      PRODUTC_BASE.BaseFilterRanges.proteinsRange = [...RESULT_ARR[1]];
+      PRODUTC_BASE.BaseFilterRanges.fatsRange = [...RESULT_ARR[2]];
+      PRODUTC_BASE.BaseFilterRanges.carbsRange = [...RESULT_ARR[3]];
 
-      this.modalFilterRanges.calRange = RESULT_ARR[0];
-      this.modalFilterRanges.proRange = RESULT_ARR[1];
-      this.modalFilterRanges.fatRange = RESULT_ARR[2];
-      this.modalFilterRanges.carRange = RESULT_ARR[3];
+      this.modalFilterRanges.caloriesRange = [...RESULT_ARR[0]];
+      this.modalFilterRanges.proteinsRange = [...RESULT_ARR[1]];
+      this.modalFilterRanges.fatsRange = [...RESULT_ARR[2]];
+      this.modalFilterRanges.carbsRange = [...RESULT_ARR[3]];
+
+      //console.log(RESULT_ARR)
 
       return RESULT_ARR;
     },

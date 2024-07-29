@@ -108,40 +108,13 @@
           <p>Жиры</p>
           <p>Углеводы</p>
         </div>
-        <div class="d-flex justify-space-around">
-          <v-range-slider 
-            v-model="productBase.BaseFilterRanges.caloriesRange"
-            :min="productStore.findMinMaxRange[0][0]"
-            :max="productStore.findMinMaxRange[0][1]"
-            :disabled="blockSliders"
-            max-width="300px"
-            thumb-label="always"
-          />
-          <v-range-slider
-            v-model="productBase.BaseFilterRanges.proteinsRange"
-            :min="productStore.findMinMaxRange[1][0]"
-            :max="productStore.findMinMaxRange[1][1]"
-            :disabled="blockSliders"
-            max-width="300px"
-            thumb-label="always"
-          />
-          <v-range-slider
-            v-model="productBase.BaseFilterRanges.fatsRange"
-            :min="productStore.findMinMaxRange[2][0]"
-            :max="productStore.findMinMaxRange[2][1]"
-            :disabled="blockSliders" 
-            max-width="300px"
-            thumb-label="always"
-          />
-          <v-range-slider
-            v-model="productBase.BaseFilterRanges.carbsRange"
-            :min="productStore.findMinMaxRange[3][0]"
-            :max="productStore.findMinMaxRange[3][1]"
-            :disabled="blockSliders" 
-            max-width="300px"
-            thumb-label="always"
-          />
-        </div>
+        <range-slider-component
+          :value="productBase.BaseFilterRanges"
+          :min-max-val="productStore.findMinMaxRange"
+          :disabled-val="blockSliders"
+          max-width-val="300px"
+          @change-value="changeValInit"
+        />
         <div class="d-flex justify-center mb-6 mt-6">
           <v-btn
             :disabled="blockSliders" 
@@ -244,8 +217,13 @@
 import { useProductStore } from '@/store/productStore'
 import { useProductBase } from '@/store/productBase'
 import validationRules from '@/shared/rules/index.js'
+import RangeSliderComponent from '@/components/parts/RangeSlider.vue'
 
 export default {
+  components: {
+    RangeSliderComponent
+  },
+
   data() {
     return {
       productStore: useProductStore(),
@@ -374,6 +352,11 @@ export default {
         }
       }
     },
+
+    changeValInit(data, string) {
+      this.productBase.BaseFilterRanges[string][0] = data[0];
+      this.productBase.BaseFilterRanges[string][1] = data[1]
+    }
   },
 }
 </script>

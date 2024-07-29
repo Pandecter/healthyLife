@@ -232,40 +232,13 @@
                       <p>Жиры</p>
                       <p>Углеводы</p>
                     </div>
-                    <div class="d-flex justify-space-around mt-6">
-                      <v-range-slider 
-                        v-model="productStore.modalFilterRanges.calRange"
-                        :min="productStore.findMinMaxRange[0][0]"
-                        :max="productStore.findMinMaxRange[0][1]"
-                        :disabled="productStore.slidersDisabled"
-                        max-width="150px"
-                        thumb-label="always"  
-                      />
-                      <v-range-slider
-                        v-model="productStore.modalFilterRanges.proRange"
-                        :min="productStore.findMinMaxRange[1][0]"
-                        :max="productStore.findMinMaxRange[1][1]"
-                        :disabled="productStore.slidersDisabled"
-                        max-width="150px"
-                        thumb-label="always"
-                      />
-                      <v-range-slider
-                        v-model="productStore.modalFilterRanges.fatRange"
-                        :min="productStore.findMinMaxRange[2][0]"
-                        :max="productStore.findMinMaxRange[2][1]"
-                        :disabled="productStore.slidersDisabled" 
-                        max-width="150px"
-                        thumb-label="always"
-                      />
-                      <v-range-slider
-                        v-model="productStore.modalFilterRanges.carRange"
-                        :min="productStore.findMinMaxRange[3][0]"
-                        :max="productStore.findMinMaxRange[3][1]"
-                        :disabled="productStore.slidersDisabled" 
-                        max-width="150px"
-                        thumb-label="always"
-                      />
-                    </div>
+                    <range-slider-component
+                      :value="productStore.modalFilterRanges"
+                      :min-max-val="productStore.findMinMaxRange"
+                      :disabled-val="blockSliders"
+                      max-width-val="150px"
+                      @change-value="changeValInit"
+                    />
                     <div 
                       v-if="isButtonAvailable"
                       class="d-flex justify-center align-center h-25 mt-2"
@@ -342,8 +315,12 @@
 import { useProductStore } from '@/store/productStore' 
 import { useStatsStore } from '@/store/statsStore'
 import validationRules from '@/shared/rules/index.js'
+import RangeSliderComponent from '@/components/parts/RangeSlider.vue'
 
 export default {
+  components: {
+    RangeSliderComponent
+  },
   data() {
     return {
       productStore: useProductStore(),
@@ -398,6 +375,15 @@ export default {
         return true;
       }
     },
+
+    blockSliders() {
+      if (this.currentProductName!== null) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    },
   },
 
   methods: {
@@ -447,6 +433,11 @@ export default {
     goToBasePage() {
       this.isExpandable.fill(false);
       this.$router.push('/base');
+    },
+
+    changeValInit(data, string) {
+      this.productStore.modalFilterRanges[string][0] = data[0];
+      this.productStore.modalFilterRanges[string][1] = data[1]
     },
   }
 }
