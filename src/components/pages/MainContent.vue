@@ -21,56 +21,14 @@
       />
     </v-app-bar>
     <v-main>
-      <v-menu
-        v-model="drawer"
-        location="bottom"
-      >
-        <v-list>
-          <v-list-item>
-            <v-btn 
-              variant="text"
-              width="150"
-              @click="goToStatsPage()"
-            >
-              Статистика
-            </v-btn>
-          </v-list-item>
-          <v-list-item>
-            <v-btn 
-              variant="text"
-              width="150"
-              @click="goToBasePage()"
-            >
-              База данных
-            </v-btn>
-          </v-list-item>
-        </v-list>
-      </v-menu> 
+      <menu-component
+        :drawer-value="drawer"
+        @close-expandables="isExpandable.fill(false)"
+      />
       <div>
-        <div class="d-flex justify-center">
-          <v-card 
-            variant="elevated" 
-            class="mt-10 pb-6 pl-6 pr-6 elevation-4"
-          >
-            <p class="d-flex justify-center mt-16 text-h6">
-              {{ productStore.giveCurrentWeek }}
-            </p>
-            <div class="d-flex justify-center mt-8">
-              <v-btn 
-                class="mr-2" 
-                @click="previousWeek()"
-              >
-                Предыдущая
-              </v-btn>
-              <v-btn 
-                class="ml-2" 
-                @click="nextWeek()"
-              >
-                Следующая
-              </v-btn>
-            </div>
-          </v-card>
-        </div>
+        <week-changer-component 
+          @expand-window="isExpandable.fill(false)"
+        />
         <v-container 
           class="d-flex justify-space-between flex-column mt-6 w-100 h-100"
           transition="slide-x-transition"
@@ -316,11 +274,16 @@ import { useProductStore } from '@/store/productStore'
 import { useStatsStore } from '@/store/statsStore'
 import validationRules from '@/shared/rules/index.js'
 import RangeSliderComponent from '@/components/parts/RangeSlider.vue'
+import WeekChangerComponent from '@/components/parts/WeekChanger.vue'
+import MenuComponent from '@/components/parts/MenuComponent.vue'
 
 export default {
   components: {
-    RangeSliderComponent
+    RangeSliderComponent,
+    WeekChangerComponent,
+    MenuComponent
   },
+  
   data() {
     return {
       productStore: useProductStore(),
@@ -341,6 +304,7 @@ export default {
       drawer: false, //отвечает за открытие/закрытие меню наверху слева
     }
   },
+
   computed: {
     returnProductMassRule() {
       return validationRules.inputCountRules;
@@ -387,22 +351,6 @@ export default {
   },
 
   methods: {
-    nextWeek() { // метод для переключения на следующую неделю относительно текущей даты пользователя
-      const WEEK = 7;
-      let currentDate = this.productStore.switchedCurrentDate;
-      currentDate = new Date(currentDate.getFullYear(),  currentDate.getMonth(), currentDate.getDate() + WEEK);
-      this.productStore.switchedCurrentDate = currentDate;
-      this.isExpandable.fill(false)
-    },
-
-    previousWeek() { // метод для переключения на предыдущую неделю относительно текущей даты пользователя
-      const WEEK = 7;
-      let currentDate = this.productStore.switchedCurrentDate;
-      currentDate = new Date(currentDate.getFullYear(),  currentDate.getMonth(), currentDate.getDate() - WEEK);
-      this.productStore.switchedCurrentDate = currentDate;
-      this.isExpandable.fill(false);
-    },
-
     toggleDay(index) { //открывает/закрывает меню дня
       this.isExpandable[index] == false ? this.isExpandable[index] = true : this.isExpandable[index] = false;
     },
@@ -421,18 +369,6 @@ export default {
     goToPersonPage() {
       this.isExpandable.fill(false);
       this.$router.push('/person_info');
-    },
-
-    goToStatsPage() {
-      this.$router.push('/stats');
-      this.statsStore.showSuccessCard = false;
-      this.statsStore.showErrorCard = false;
-      this.isExpandable.fill(false);
-    },
-
-    goToBasePage() {
-      this.isExpandable.fill(false);
-      this.$router.push('/base');
     },
 
     changeValInit(data, string) {

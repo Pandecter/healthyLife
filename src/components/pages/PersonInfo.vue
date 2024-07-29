@@ -1,21 +1,8 @@
 <template>
   <v-app>
-    <v-app-bar 
-      absolute 
-      app
-    >
-      <template #image>
-        <v-img gradient="to top right, rgba(81, 217, 61,.9), rgba(141,216,125,.5)" />
-      </template>
-      <v-btn 
-        icon="mdi-keyboard-backspace"
-        title="Вернуться на главную"
-        @click="goToMainPage()"
-      />
-      <v-app-bar-title>
-        Персональная информация
-      </v-app-bar-title>
-    </v-app-bar>
+    <my-app-bar
+      string-val="Персональная информация"
+    />
     <v-main class="d-flex justify-center">
       <v-card 
         class="mt-16 mb-8 elevation-8" 
@@ -97,11 +84,14 @@
 import { useProductStore } from '@/store/productStore'
 import { usePersonStore } from '@/store/personStore' 
 import PersonInfoComponent from '@/components/parts/PersonForm.vue'
+import MyAppBar from '@/components/parts/MyAppBar.vue'
 
 export default {
   components: {
-    PersonInfoComponent
+    PersonInfoComponent,
+    MyAppBar
   },
+  
   data() {
     return {
       productStore: useProductStore(),
@@ -112,10 +102,6 @@ export default {
   },
 
   methods: {
-    goToMainPage() {
-      this.$router.push('/');
-    },
-
     initDeleteInfo() { //вызов функции удаления информации о пользователе
       this.buttonIsClicked = false;
       this.personStore.deletePersonInfo();

@@ -1,21 +1,8 @@
 <template>
   <v-app>
-    <v-app-bar 
-      absolute 
-      app
-    >
-      <template #image>
-        <v-img gradient="to top right, rgba(81, 217, 61,.9), rgba(141,216,125,.5)" />
-      </template>
-      <v-btn 
-        icon="mdi-keyboard-backspace"
-        title="Вернуться на главную"
-        @click="goToMainPage()"
-      />
-      <v-app-bar-title>
-        Статистика
-      </v-app-bar-title>
-    </v-app-bar>
+    <my-app-bar
+      string-val="Статистика"
+    />
     <v-main>
       <div class="d-flex justify-center mt-8">
         <p class="text-h5">
@@ -28,7 +15,6 @@
             От:
           </p>
           <v-text-field 
-           
             v-model="startDate"
             width="130px"
             variant="outlined"
@@ -136,58 +122,7 @@
               Статистика за промежуток
             </div>
             <div>
-              <v-table>
-                <thead>
-                  <th>
-                    Параметр
-                  </th>
-                  <th>
-                    Значение
-                  </th>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      Промежуток времени
-                    </td>
-                    <td>
-                      {{ statsStore.returnStats.dates }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      Калории
-                    </td>
-                    <td>
-                      {{ statsStore.returnStats.calories }} кКал
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      Белки
-                    </td>
-                    <td>
-                      {{ statsStore.returnStats.proteins }} г.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      Жиры
-                    </td>
-                    <td>
-                      {{ statsStore.returnStats.fats }} г.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      Углеводы
-                    </td>
-                    <td>
-                      {{ statsStore.returnStats.carbs }} г.
-                    </td>
-                  </tr>
-                </tbody>
-              </v-table>
+              <person-stat-table />
             </div>
           </div>
         </div>
@@ -202,11 +137,18 @@ import { useProductStore } from '@/store/productStore'
 import { useStatsStore } from '@/store/statsStore'
 import { Line } from 'vue-chartjs'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend} from 'chart.js'
+import PersonStatTable from '@/components/parts/PersonStatisticTable.vue'
+import MyAppBar from '@/components/parts/MyAppBar.vue'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
 export default {
-  components: { LineChart: Line },
+  components: { 
+    LineChart: Line,
+    PersonStatTable,
+    MyAppBar
+  },
+  
   data() {
     return {
       personStore: usePersonStore(),
@@ -236,11 +178,6 @@ export default {
   },
 
   methods: {
-    goToMainPage() {
-      this.productStore.drawer = false;
-      this.$router.push('/');
-    },
-
     showStatistics() { //проверяет корректность введеных данных
       if ((this.startDate === null || this.startDate === "") 
           || (this.endDate === null) || (this.endDate === "")) { //если данных нет, либо веденной даты не существует

@@ -88,7 +88,9 @@ export default {
   components: {
     ActivityInfoComponent
   },
+
   emits: ["buttonClick"],
+  
   data() {
     return {
       personStore: usePersonStore(),

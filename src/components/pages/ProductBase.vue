@@ -1,30 +1,8 @@
 <template>
   <v-app>
-    <v-app-bar 
-      absolute 
-      app
-    >
-      <template #image>
-        <v-img gradient="to top right, rgba(81, 217, 61,.9), rgba(141,216,125,.5)" />
-      </template>
-      <v-btn
-        variant="plain"
-        icon="mdi-keyboard-backspace"
-        title="Вернуться на главную"
-        @click="goToMainPage()"
-      />
-      <v-app-bar-title>
-        База данных продуктов
-        <v-tooltip text="Вся информация в базе представлена на 100 гр. продукта">
-          <template #activator="{ props }">
-            <v-icon 
-              v-bind="props" 
-              icon="mdi-information-variant" 
-            />
-          </template>
-        </v-tooltip>
-      </v-app-bar-title>
-    </v-app-bar>
+    <my-app-bar
+      string-val="База данных продуктов"
+    />
     <v-main>
       <div class="d-flex justify-center mt-8">
         <v-btn
@@ -36,58 +14,9 @@
           v-model="isOverlayActive"
           class="d-flex justify-center align-center"
         >
-          <v-card
-            width="130vh"
-            height="90vh"
-          >
-            <div class="d-flex flex-column align-center mt-8">
-              <v-form v-model="addingFormIsValid">
-                <p class="text-h6">
-                  Введите наименование продукта
-                </p>
-                <v-text-field
-                  v-model="name" 
-                  :rules="returnNameRules" 
-                />
-                <p class="text-h6">
-                  Введите количество ккал на 100 гр. продукта
-                </p>
-                <v-text-field
-                  v-model="calories" 
-                  :rules="returnCaloriesRules"
-                />
-                <p class="text-h6">
-                  Введите количество белков на 100 гр. продукта
-                </p>
-                <v-text-field
-                  v-model="proteins" 
-                  :rules="returnRulesForOtherFields"
-                />
-                <p class="text-h6">
-                  Введите количество жиров на 100 гр. продукта
-                </p>
-                <v-text-field
-                  v-model="fats"
-                  :rules="returnRulesForOtherFields"
-                />
-                <p class="text-h6">
-                  Введите количество углеводов на 100 гр. продукта
-                </p>
-                <v-text-field
-                  v-model="carbs"
-                  :rules="returnRulesForOtherFields"
-                />
-              </v-form> 
-              
-              <v-btn 
-                class="mt-2"
-                :disabled="!addingFormIsValid"
-                @click="initAddingToBaseFunc(name, calories, proteins, fats, carbs)"
-              >
-                Подтвердить
-              </v-btn>
-            </div>
-          </v-card>
+          <adding-window 
+            @swith-overlay="isOverlayActive = false"
+          />
         </v-overlay>
       </div>
       <v-card 
@@ -216,12 +145,16 @@
 <script>
 import { useProductStore } from '@/store/productStore'
 import { useProductBase } from '@/store/productBase'
-import validationRules from '@/shared/rules/index.js'
 import RangeSliderComponent from '@/components/parts/RangeSlider.vue'
+import AddingWindow from '@/components/parts/AddToBaseWindows.vue'
+import MyAppBar from '@/components/parts/MyAppBar.vue'
+
 
 export default {
   components: {
-    RangeSliderComponent
+    RangeSliderComponent,
+    AddingWindow,
+    MyAppBar
   },
 
   data() {
@@ -229,13 +162,7 @@ export default {
       productStore: useProductStore(),
       productBase: useProductBase(),
       isDataFiltered: false,
-      name: null,
-      calories: null,
-      proteins: null,
-      fats: null,
-      carbs: null,
       isOverlayActive: false, //активация/деактивация оверлея
-      addingFormIsValid: false, //активация/деактивация кнопки добавления
       sortBy: ['name', 'desc'], //сортировка по убыванию/возрастанию,
       sortIcons:{ //набор стилей для кнопок сортировок, каждая из которых меняется на клик
         name: "mdi-menu-up",
@@ -248,18 +175,6 @@ export default {
   },
 
   computed: {
-    returnNameRules() {
-      return validationRules.ruleForProductName;
-    },
-
-    returnCaloriesRules() {
-      return validationRules.rulesForCalories;
-    },
-
-    returnRulesForOtherFields() {
-      return validationRules.rulesForProductStats;
-    },
-
     blockSliders() {
       if (this.productBase.searchedProduct !== null) {
         return true;
@@ -285,18 +200,8 @@ export default {
   },
 
   methods: {
-    goToMainPage() {
-      this.productStore.drawer = false;
-      this.$router.push('/');
-    },
-
     showOverlay() { //необходимо для корректного добавления продуктов и открытия оверлея
       this.isOverlayActive = true;
-    },
-
-    initAddingToBaseFunc(nameVal, caloriesVal, proteinsVal, fatsVal, carbsVal) {
-      this.isOverlayActive = false;
-      this.productBase.addProductToList(nameVal, caloriesVal, proteinsVal, fatsVal, carbsVal);
     },
 
     sortInit(value) { //замена параметров переменной для вызова геттера сортировки
