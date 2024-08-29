@@ -87,6 +87,5 @@ export const useRangeStore = defineStore('rangeStore',{
 
       return resultArr;
     },
-    
   }
 })
