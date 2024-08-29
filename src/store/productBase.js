@@ -16,7 +16,7 @@ export const useProductBase = defineStore('productBase', {
   },
   actions: {
     addProductToList(nameValue, caloriesValue, proteinsValue, fatsValue, carbsValue) { //добавление продукта в базу
-      const PRODUCT_STORE_ = useProductStore();
+      const productStore = useProductStore();
       
       let OBJECT = {
         name: nameValue, 
@@ -25,22 +25,22 @@ export const useProductBase = defineStore('productBase', {
         fats: fatsValue + " г",
         carbs: carbsValue + " г"
       }
-      if (PRODUCT_STORE_.foodStorage.find((el) => el.name === nameValue)) {
+      if (productStore.foodStorage.find((el) => el.name === nameValue)) {
         alert("Такой продукт уже есть в базе!")
       }
       else {
-        PRODUCT_STORE_.addedProducts.push(OBJECT);
-        localStorage.setItem("addedProducts", JSON.stringify(PRODUCT_STORE_.addedProducts)); 
-        PRODUCT_STORE_.foodStorage.push(OBJECT);
-        this.shownArrayOfProducts = [...PRODUCT_STORE_.foodStorage]
+        productStore.addedProducts.push(OBJECT);
+        localStorage.setItem("addedProducts", JSON.stringify(productStore.addedProducts)); 
+        productStore.foodStorage.push(OBJECT);
+        this.shownArrayOfProducts = [...productStore.foodStorage]
       }
     },
 
     applyFilters() { //вызов фильтрации
-      const PRODUCT_STORE = useProductStore();
+      const productStore = useProductStore();
 
-      this.shownArrayOfProducts = [...PRODUCT_STORE.foodStorage];
-      this.shownArrayOfProducts = this.shownArrayOfProducts.filter(value => PRODUCT_STORE.filterFunc(value, 
+      this.shownArrayOfProducts = [...productStore.foodStorage];
+      this.shownArrayOfProducts = this.shownArrayOfProducts.filter(value => productStore.filterFunc(value, 
                                                                    this.BaseFilterRanges.caloriesRange, 
                                                                    this.BaseFilterRanges.proteinsRange,
                                                                    this.BaseFilterRanges.fatsRange,
@@ -49,20 +49,20 @@ export const useProductBase = defineStore('productBase', {
   },
   getters: {
     returnProductNamesInBase() { //выводит список продуктов в autocomplete с учетом фильтров
-      const ARR_OF_NAMES = [];
+      const arrOfNames = [];
 
       for (let i = 0; i < this.shownArrayOfProducts.length; i++) {
-        ARR_OF_NAMES[i] = this.shownArrayOfProducts[i].name;
+        arrOfNames[i] = this.shownArrayOfProducts[i].name;
       }
-      return ARR_OF_NAMES;
+      return arrOfNames;
     },
 
     returnShowedArray() { //вывод списка с учетом фильтров/поиска
       if (this.searchedProduct !== null) {
-        const RESULT = this.shownArrayOfProducts.find((el) => el.name === this.searchedProduct);
-        const ARR = [];
-        ARR.push(RESULT)
-        return ARR;
+        const result = this.shownArrayOfProducts.find((el) => el.name === this.searchedProduct);
+        const arr = [];
+        arr.push(result)
+        return arr;
       }
       else {
         return this.shownArrayOfProducts;

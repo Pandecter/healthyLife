@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 import { useProductStore } from './productStore'
 import { usePersonStore } from './personStore'  
 
+const ARR_OF_MEAL_TIME = ["breakfast", "lunch", "dinner"];
+
 export const useStatsStore = defineStore('stats', {
   state: () => {
     return {
@@ -18,8 +20,8 @@ export const useStatsStore = defineStore('stats', {
 
   getters: {
     mutableChartData() { //отправляет данные для графика
-      const PERSON_STORE = usePersonStore();
-      const PRODUCT_STORE = useProductStore();
+      const personStore = usePersonStore();
+      const productStore = useProductStore();
 
       let resArr = {
         labels: [], 
@@ -30,20 +32,19 @@ export const useStatsStore = defineStore('stats', {
           data: []
         }]
       }
-      const ARR_OF_MEAL_TIME = ["breakfast", "lunch", "dinner"];
       this.message = `Данные с ${this.startingDate} по ${this.endingDate}!`;
       let currentDate = this.startingDate;
       let i = 0;
       while (currentDate <= this.endingDate) { 
         let calories = 0;
-        while (i < PRODUCT_STORE.listsOfDaysMenu.length && currentDate > PRODUCT_STORE.listsOfDaysMenu[i].date) {
+        while (i < productStore.listsOfDaysMenu.length && currentDate > productStore.listsOfDaysMenu[i].date) {
           i++;
         }
-        if ((i < PRODUCT_STORE.listsOfDaysMenu.length) && (currentDate === PRODUCT_STORE.listsOfDaysMenu[i].date)) { //если такой день есть в списке
+        if ((i < productStore.listsOfDaysMenu.length) && (currentDate === productStore.listsOfDaysMenu[i].date)) { //если такой день есть в списке
           for (let j = 0; j < ARR_OF_MEAL_TIME.length; j++) { //проходимся по всем приемам пищи
-            const CHOICE = ARR_OF_MEAL_TIME[j];
-            for (let k = 0; k < PRODUCT_STORE.listsOfDaysMenu[i][CHOICE].length; k++) { //проходимся по всем продуктам в приеме
-              calories = calories + parseFloat(PRODUCT_STORE.listsOfDaysMenu[i][CHOICE][k].calories);
+            const choice = ARR_OF_MEAL_TIME[j];
+            for (let k = 0; k < productStore.listsOfDaysMenu[i][choice].length; k++) { //проходимся по всем продуктам в приеме
+              calories = calories + parseFloat(productStore.listsOfDaysMenu[i][choice][k].calories);
             }
           }
           resArr.datasets[0].data.push(calories);
@@ -60,64 +61,63 @@ export const useStatsStore = defineStore('stats', {
 
       if (this.recomendedChart !== null) { //если есть данные о пользователе
         resArr.datasets.push(this.recomendedChart)
-        const DATA = PERSON_STORE.recomendedCalories;
+        const caloriesData = personStore.recomendedCalories;
         for (let i = 0; i < resArr.labels.length; i++) {
-          resArr.datasets[1].data[i] = DATA; //копируем значение для отображения линии
+          resArr.datasets[1].data[i] = caloriesData; //копируем значение для отображения линии
         }
       }
       return resArr;
     },
 
     returnExcess() { //возвращает значения превышения калорий
-      const RES_ARR = [];
+      const resArr = [];
       for (let i = 0; i < this.mutableChartData.labels.length; i++) {
         if (this.mutableChartData.datasets[0].data[i] > this.mutableChartData.datasets[1].data[i]) { //если есть превышение калорий
-          const OBJECT = {
+          const caloriesObject = {
             date: null,
             value: null
           }
-          OBJECT.date = this.mutableChartData.labels[i];
-          OBJECT.value = (this.mutableChartData.datasets[0].data[i] - this.mutableChartData.datasets[1].data[i]).toFixed(2);
-          RES_ARR.push(OBJECT)
+          caloriesObject.date = this.mutableChartData.labels[i];
+          caloriesObject.value = (this.mutableChartData.datasets[0].data[i] - this.mutableChartData.datasets[1].data[i]).toFixed(2);
+          resArr.push(caloriesObject)
         } 
       }
-      return RES_ARR;
+      return resArr;
     },
 
     returnStats() { //возвращает сумму БЖУ + Калорий
-      const PRODUCT_STORE = useProductStore();
-      const OBJECT = {
+      const productStore = useProductStore();
+      const dataObject = {
         dates: null,
         calories: null,
         proteins: null,
         fats: null,
         carbs: null
       }
-      const ARR_OF_MEAL_TIME = ["breakfast", "lunch", "dinner"];
       let calsVal = 0;
       let protsVal = 0;
       let fatsVal = 0;
       let carbsVal = 0;
       for (let i = 0; i < this.mutableChartData.labels.length; i++) {
-        if(PRODUCT_STORE.listsOfDaysMenu.find((el) => el.date === this.mutableChartData.labels[i])) {
-          let day = {...PRODUCT_STORE.listsOfDaysMenu.find((el) => el.date === this.mutableChartData.labels[i])};
+        if(productStore.listsOfDaysMenu.find((el) => el.date === this.mutableChartData.labels[i])) {
+          let day = {...productStore.listsOfDaysMenu.find((el) => el.date === this.mutableChartData.labels[i])};
           for (let j = 0; j < ARR_OF_MEAL_TIME.length; j++) { //проходимся по всем приемам пищи
-            const CHOICE = ARR_OF_MEAL_TIME[j];
-            for (let k = 0; k < day[CHOICE].length; k++) { //проходимся по всем продуктам в приеме
-              calsVal += parseFloat(day[CHOICE][k].calories);
-              protsVal += parseFloat((day[CHOICE][k].proteins).replace(/,/g, '.'));
-              fatsVal += parseFloat((day[CHOICE][k].fats).replace(/,/g, '.'));
-              carbsVal += parseFloat((day[CHOICE][k].carbs).replace(/,/g, '.'));
+            const choice = ARR_OF_MEAL_TIME[j];
+            for (let k = 0; k < day[choice].length; k++) { //проходимся по всем продуктам в приеме
+              calsVal += parseFloat(day[choice][k].calories);
+              protsVal += parseFloat((day[choice][k].proteins).replace(/,/g, '.'));
+              fatsVal += parseFloat((day[choice][k].fats).replace(/,/g, '.'));
+              carbsVal += parseFloat((day[choice][k].carbs).replace(/,/g, '.'));
             }
           }
         }
       } 
-      OBJECT.dates = "с " + this.startingDate + " по " + this.endingDate;
-      OBJECT.calories = calsVal;
-      OBJECT.proteins = protsVal;
-      OBJECT.fats = fatsVal;
-      OBJECT.carbs = carbsVal;
-      return OBJECT;
+      dataObject.dates = "с " + this.startingDate + " по " + this.endingDate;
+      dataObject.calories = calsVal;
+      dataObject.proteins = protsVal;
+      dataObject.fats = fatsVal;
+      dataObject.carbs = carbsVal;
+      return dataObject;
     }
   }
 })

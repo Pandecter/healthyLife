@@ -16,7 +16,7 @@ export const usePersonStore = defineStore('person', {
 
   actions: {
     deletePersonInfo() { //удаление информации о пользователе
-      const STATS_STORE = useStatsStore();
+      const statsStore = useStatsStore();
       
       this.gender = null;
       this.age = null;
@@ -24,12 +24,12 @@ export const usePersonStore = defineStore('person', {
       this.weight = null;
       this.choosedActivity = null;
       this.recomendedCalories = null;
-      STATS_STORE.recomendedChart = null;
+      statsStore.recomendedChart = null;
       this.arrOfValues = [];
     },
     
     calculateRecomendedCalories(level) { //расчет нормы калорий
-      const STATS_STORE = useStatsStore();
+      const statsStore = useStatsStore();
 
       this.arrOfValues = [];
       if (this.gender === "Мужчина") {
@@ -38,21 +38,21 @@ export const usePersonStore = defineStore('person', {
       else {
         this.recomendedCalories = Number((10 * this.weight + 6.25 * this.height - 5 * this.age - 161) * this.choosedActivity).toFixed(2); 
       }
-      const ARR_OF_PARAMS = ["gender", "age", "height", "weight", "choosedActivity"];
-      for (let i = 0; i < ARR_OF_PARAMS.length; i++) {
-        const CHOICE = ARR_OF_PARAMS[i];
-        this.arrOfValues.push(this[CHOICE]);
+      const arrOfParams = ["gender", "age", "height", "weight", "choosedActivity"];
+      for (let i = 0; i < arrOfParams.length; i++) {
+        const choice = arrOfParams[i];
+        this.arrOfValues.push(this[choice]);
       }
-      const ACTIVITY_ID = level.findIndex((el) => el.value === this.arrOfValues[4]); //получаем не значение, а название
-      this.arrOfValues[4] = level[ACTIVITY_ID].name;
+      const activityId = level.findIndex((el) => el.value === this.arrOfValues[4]); //получаем не значение, а название
+      this.arrOfValues[4] = level[activityId].name;
 
-      const DATASET = { //нужно для графика
+      const dataset = { //нужно для графика
         label: 'Норма калорий',
         backgroundColor: '#ff000d',
         borderColor: '#ff000d',
         data: []
       }
-      STATS_STORE.recomendedChart = DATASET;
+      statsStore.recomendedChart = dataset;
     }
   },
 

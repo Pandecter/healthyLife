@@ -180,17 +180,17 @@ export default {
     },
 
     returnColor() {
-      const ARR = ["name", "calories" , "proteins", "fats", "carbs"];
-      const COLORS = [];
-      for (let i = 0; i < ARR.length; i++) {
-        if (ARR[i] === this.sortBy[0]) {
-          COLORS[i] = "red";
+      const arr = ["name", "calories" , "proteins", "fats", "carbs"];
+      const colors = [];
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i] === this.sortBy[0]) {
+          colors[i] = "red";
         }
         else {
-          COLORS[i] = "black";
+          colors[i] = "black";
         }
       }
-      return COLORS;
+      return colors;
     }
   },
 
@@ -200,20 +200,20 @@ export default {
     },
 
     sortInit(value) { //замена параметров переменной для вызова геттера сортировки
-      const FIELD = value;
+      const field = value;
       if (value !== this.sortBy[0]) {
         this.sortBy[0] = value;
         this.sortBy[1] = "desc";
-        this.sortIcons[FIELD] = "mdi-menu-down" //по умолчанию ставим убывающую сортировку
+        this.sortIcons[field] = "mdi-menu-down" //по умолчанию ставим убывающую сортировку
       }
       else {
         if (this.sortBy[1] === "desc") {
           this.sortBy[1] = "asc";
-          this.sortIcons[FIELD] = "mdi-menu-up";
+          this.sortIcons[field] = "mdi-menu-up";
         }
         else {
           this.sortBy[1] = "desc";
-          this.sortIcons[FIELD] = "mdi-menu-down";
+          this.sortIcons[field] = "mdi-menu-down";
         }
       }
       if (this.sortBy[0] === "name") {
@@ -230,10 +230,10 @@ export default {
     },
 
     sortFunction(a, b) {
-      const FIELD = this.sortBy[0];
-      let a_mod = a[FIELD].replace(/,/g, '.');
+      const field = this.sortBy[0];
+      let a_mod = a[field].replace(/,/g, '.');
       a_mod = parseFloat(a_mod);
-      let b_mod = b[FIELD].replace(/,/g, '.');
+      let b_mod = b[field].replace(/,/g, '.');
       b_mod = parseFloat(b_mod);
       if (this.sortBy[1] === "asc") { //по возрастанию
         if (a_mod < b_mod) {
