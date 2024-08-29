@@ -68,37 +68,9 @@
         </p>
       </div>
       <hr>
-      <v-table>
-        <thead>
-          <tr>
-            <th class="text-left">
-              Название продукта
-            </th>
-            <th class="text-left">
-              Калории
-            </th>
-            <th class="text-left">
-              Белки
-            </th>
-            <th class="text-left">
-              Жиры
-            </th>
-            <th class="text-left">
-              Углеводы
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td 
-              v-for="stat in showInfoAboutProduct"
-              :key="stat.name"
-            >
-              {{ stat }}
-            </td>
-          </tr>
-        </tbody>
-      </v-table>
+      <product-table
+        :resulted-array="showInfoAboutProduct"
+      />
       <hr>
     </div>                         
     <div class="d-flex justify-center mt-8">
@@ -116,10 +88,12 @@
 import { useProductStore } from '../../store/productStore'
 import validationRules from '../../shared/rules' 
 import RangeSliderComponent from '../parts/RangeSlider.vue'
+import ProductTable from '../parts/ProductInfoTable.vue'
 
 export default {
   components: {
-    RangeSliderComponent
+    RangeSliderComponent,
+    ProductTable
   },
 
   props: {
