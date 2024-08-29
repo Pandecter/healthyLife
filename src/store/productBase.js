@@ -58,14 +58,33 @@ export const useProductBase = defineStore('productBase', {
     },
 
     returnShowedArray() { //вывод списка с учетом фильтров/поиска
+      // if (this.searchedProduct !== null) {
+      //   const result = this.shownArrayOfProducts.find((el) => el.name === this.searchedProduct);
+      //   const arr = [];
+      //   arr.push(result)
+      //   return arr;
+      // }
+      // else {
+      //   return this.shownArrayOfProducts;
+      // }
+      
+      const field = ['calories', 'proteins', 'fats', 'carbs']
+      let returnedArr = this.shownArrayOfProducts.map(product => { return {...product }});
+      for (let i = 0; i < returnedArr.length; i++) { //проходим по всему массиву данных
+        for (let j = 0; j < field.length; j++) { //проходим по каждому (кроме имени) полю объекта массива
+          const choice = field[j];
+          returnedArr[i][choice] = returnedArr[i][choice].replace(/,/g, '.');
+          returnedArr[i][choice] = parseFloat(returnedArr[i][choice]);
+        }
+      }
       if (this.searchedProduct !== null) {
-        const result = this.shownArrayOfProducts.find((el) => el.name === this.searchedProduct);
+        const result = returnedArr.find((el) => el.name === this.searchedProduct);
         const arr = [];
         arr.push(result)
         return arr;
       }
       else {
-        return this.shownArrayOfProducts;
+        return returnedArr;
       }
     },
   }

@@ -58,85 +58,10 @@
       </v-card>
       <hr>
       <div class="mt-8">
-        <v-table>
-          <thead>
-            <tr>
-              <th class="text-left">
-                Название продукта
-                <v-btn
-                  :icon="sortIcons.name"
-                  :disabled="blockSliders"  
-                  variant="plain" 
-                  :ripple="false" 
-                  class=" mb-1 pr-6" 
-                  :color="returnColor[0]"
-                  @click="sortInit('name')"
-                />
-              </th>
-              <th class="text-left">
-                Калории
-                <v-btn 
-                  :icon="sortIcons.calories" 
-                  :disabled="blockSliders" 
-                  variant="plain" 
-                  :ripple="false" 
-                  class="mb-1 pr-6"
-                  :color="returnColor[1]"
-                  @click="sortInit('calories')"
-                />
-              </th>
-              <th class="text-left">
-                Белки
-                <v-btn
-                  :icon="sortIcons.proteins" 
-                  :disabled="blockSliders" 
-                  variant="plain" 
-                  :ripple="false" 
-                  class="mb-1 pr-6"
-                  :color="returnColor[2]"
-                  @click="sortInit('proteins')"
-                />
-              </th>
-              <th class="text-left">
-                Жиры
-                <v-btn 
-                  :icon="sortIcons.fats" 
-                  :disabled="blockSliders" 
-                  variant="plain" 
-                  :ripple="false" 
-                  class="mb-1 pr-6"
-                  :color="returnColor[3]"
-                  @click="sortInit('fats')"
-                />
-              </th>
-              <th class="text-left">
-                Углеводы
-                <v-btn 
-                  :icon="sortIcons.carbs" 
-                  :disabled="blockSliders" 
-                  variant="plain" 
-                  :ripple="false" 
-                  class="mb-1 pr-6"
-                  :color="returnColor[4]"
-                  @click="sortInit('carbs')"
-                />
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr 
-              v-for="product in productBase.returnShowedArray"
-              :key="product"
-            >
-              <td 
-                v-for="stat in product"
-                :key="stat"
-              >
-                {{ stat }}
-              </td>
-            </tr>
-          </tbody>
-        </v-table>
+        <v-data-table
+          :headers="tableHeaders"
+          :items="productBase.returnShowedArray"
+        />
       </div>
     </v-main>
   </v-app>
@@ -163,14 +88,13 @@ export default {
       productBase: useProductBase(),
       isDataFiltered: false,
       isOverlayActive: false, //активация/деактивация оверлея
-      sortBy: ['name', 'desc'], //сортировка по убыванию/возрастанию,
-      sortIcons:{ //набор стилей для кнопок сортировок, каждая из которых меняется на клик
-        name: "mdi-menu-up",
-        calories: "mdi-menu-down",
-        proteins: "mdi-menu-down",
-        fats: "mdi-menu-down",
-        carbs: "mdi-menu-down"
-      },
+      tableHeaders: [
+        { title: 'Наименование продукта', align: 'start', key: 'name'},
+        { title: 'Калории (кКал)', align: 'end', key: 'calories',  },
+        { title: 'Белки (г)', align: 'end', key: 'proteins',  },
+        { title: 'Жиры (г)', align: 'end', key: 'fats', },
+        { title: 'Углеводы (г)', align: 'end', key: 'carbs',  },
+      ]
     }
   },
 
@@ -197,60 +121,6 @@ export default {
   methods: {
     showOverlay() { //необходимо для корректного добавления продуктов и открытия оверлея
       this.isOverlayActive = true;
-    },
-
-    sortInit(value) { //замена параметров переменной для вызова геттера сортировки
-      const field = value;
-      if (value !== this.sortBy[0]) {
-        this.sortBy[0] = value;
-        this.sortBy[1] = "desc";
-        this.sortIcons[field] = "mdi-menu-down" //по умолчанию ставим убывающую сортировку
-      }
-      else {
-        if (this.sortBy[1] === "desc") {
-          this.sortBy[1] = "asc";
-          this.sortIcons[field] = "mdi-menu-up";
-        }
-        else {
-          this.sortBy[1] = "desc";
-          this.sortIcons[field] = "mdi-menu-down";
-        }
-      }
-      if (this.sortBy[0] === "name") {
-        if(this.sortBy[1] === "asc") {
-          this.productBase.shownArrayOfProducts.sort((a, b) => (a.name > b.name ? 1 : -1));
-        }
-        else {
-          this.productBase.shownArrayOfProducts.sort((a, b) => (a.name > b.name ? -1 : 1));
-        }
-      }
-      else {
-        this.productBase.shownArrayOfProducts.sort(this.sortFunction);
-      }
-    },
-
-    sortFunction(a, b) {
-      const field = this.sortBy[0];
-      let a_mod = a[field].replace(/,/g, '.');
-      a_mod = parseFloat(a_mod);
-      let b_mod = b[field].replace(/,/g, '.');
-      b_mod = parseFloat(b_mod);
-      if (this.sortBy[1] === "asc") { //по возрастанию
-        if (a_mod < b_mod) {
-          return -1;
-        }
-        else {
-          return 1;
-        }
-      }
-      else { //по убыванию 
-        if (a_mod < b_mod) {
-          return 1;
-        }
-        else {
-          return -1;
-        }
-      }
     },
 
     changeValInit(data, string) {
