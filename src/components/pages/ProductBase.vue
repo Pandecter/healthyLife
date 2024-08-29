@@ -39,7 +39,7 @@
         </div>
         <range-slider-component
           :value="productBase.BaseFilterRanges"
-          :min-max-val="productStore.findMinMaxRange"
+          :min-max-val="rangeStore.findMinMaxRange"
           :disabled-val="blockSliders"
           max-width-val="300px"
           @change-value="changeValInit"
@@ -70,6 +70,7 @@
 <script>
 import { useProductStore } from '@/store/productStore'
 import { useProductBase } from '@/store/productBase'
+import { useRangeStore } from '../../store/rangeStore'
 import RangeSliderComponent from '@/components/parts/RangeSlider.vue'
 import AddingWindow from '@/components/parts/AddToBaseWindows.vue'
 import MyAppBar from '@/components/parts/MyAppBar.vue'
@@ -86,6 +87,7 @@ export default {
     return {
       productStore: useProductStore(),
       productBase: useProductBase(),
+      rangeStore: useRangeStore(),
       isDataFiltered: false,
       isOverlayActive: false, //активация/деактивация оверлея
       tableHeaders: [

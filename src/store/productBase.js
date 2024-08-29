@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { useProductStore } from './productStore'
+import { useRangeStore } from './rangeStore'
 
 export const useProductBase = defineStore('productBase', {
   state: () => {
@@ -38,9 +39,10 @@ export const useProductBase = defineStore('productBase', {
 
     applyFilters() { //вызов фильтрации
       const productStore = useProductStore();
+      const rangeStore = useRangeStore();
 
       this.shownArrayOfProducts = [...productStore.foodStorage];
-      this.shownArrayOfProducts = this.shownArrayOfProducts.filter(value => productStore.filterFunc(value, 
+      this.shownArrayOfProducts = this.shownArrayOfProducts.filter(value => rangeStore.filterFunc(value, 
                                                                    this.BaseFilterRanges.caloriesRange, 
                                                                    this.BaseFilterRanges.proteinsRange,
                                                                    this.BaseFilterRanges.fatsRange,

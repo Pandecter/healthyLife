@@ -42,8 +42,8 @@
       <p>Углеводы</p>
     </div>
     <range-slider-component
-      :value="productStore.modalFilterRanges"
-      :min-max-val="productStore.findMinMaxRange"
+      :value="rangeStore.modalFilterRanges"
+      :min-max-val="rangeStore.findMinMaxRange"
       :disabled-val="blockSliders"
       max-width-val="150px"
       @change-value="changeValInit"
@@ -86,6 +86,7 @@
 
 <script>
 import { useProductStore } from '../../store/productStore'
+import { useRangeStore } from '../../store/rangeStore'
 import validationRules from '../../shared/rules' 
 import RangeSliderComponent from '../parts/RangeSlider.vue'
 import ProductTable from '../parts/ProductInfoTable.vue'
@@ -116,6 +117,7 @@ export default {
   data() {
     return {
       productStore: useProductStore(),
+      rangeStore: useRangeStore(),
       currentProductName: null, //наименование продукта
       isFormValid: false,
       currentCountValue: null, // количество продукта в граммах
@@ -159,8 +161,8 @@ export default {
 
   methods: {
     changeValInit(data, string) {
-      this.productStore.modalFilterRanges[string][0] = data[0];
-      this.productStore.modalFilterRanges[string][1] = data[1]
+      this.rangeStore.modalFilterRanges[string][0] = data[0];
+      this.rangeStore.modalFilterRanges[string][1] = data[1]
     },
 
     addToProductStore() {//необходимо для корректного добавления продуктов и закрытия оверлея

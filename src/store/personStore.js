@@ -10,7 +10,8 @@ export const usePersonStore = defineStore('person', {
       weight: null,
       choosedActivity: null,
       recomendedCalories: null,
-      arrOfValues: [] //необходимо для хранения и обработки введенных значений
+      arrOfValues: [], //необходимо для хранения и обработки введенных значений
+      buttonIsClicked: false //отвечает за отображение информации/поля ввода
     }
   },
 

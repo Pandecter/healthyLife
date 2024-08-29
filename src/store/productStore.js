@@ -2,21 +2,15 @@ import { defineStore } from 'pinia'
 import foodData from '../../datasets/food_base.json'
 import { useProductBase } from './productBase';
 import { useDateStore } from './dateStore';
+import { useRangeStore } from './rangeStore';
 
 const MEAL_TIME = ["Завтрак", "Обед", "Ужин"];
-const STATS_OF_MEAL = ["calories", "proteins", "fats", "carbs"]
 
 export const useProductStore = defineStore('products', {
   state: () => {
     return {
       listsOfDaysMenu: [], //хранилище продуктов, выбранных пользователем
       foodStorage: [], //хранилище данных по продуктах
-      modalFilterRanges: { //диапазоны значения для v-range-sliders в оверлее добавления продукта в "съеденное"
-        caloriesRange: null,
-        proteinsRange: null,
-        fatsRange: null,
-        carbsRange: null
-      },
       addedProducts: [] //переменная для добавления в localStorage
     }
   },
@@ -25,10 +19,11 @@ export const useProductStore = defineStore('products', {
     mountFunction() { //вызывается 1 раз при запуске приложения 
       const productBase = useProductBase();
       const dateStore = useDateStore();
+      const rangeStore = useRangeStore();
 
       const currenDate = new Date();
       dateStore.switchedCurrentDate = currenDate;
-      this.initMinMaxRange(); 
+      rangeStore.initMinMaxRange(); 
 
       this.foodStorage = [...foodData];
       if (localStorage.getItem("addedProducts")) { //если есть данные с localStorage
@@ -37,28 +32,6 @@ export const useProductStore = defineStore('products', {
       }
       productBase.shownArrayOfProducts = [...this.foodStorage];
     },
-
-    initMinMaxRange() { /*!!!!!!функция-ЗАТЫЧКА, которая полностью копирует геттер findMinMaxRange, 
-      но без нее данные только одним геттером в v-overlay почему-то не прогужаются !!!!!!*/
-      let minMaxArr = [];
-      const resultArr = [];
-      for (let i = 0; i < STATS_OF_MEAL.length; i++) {
-        const choice = STATS_OF_MEAL[i];
-        const arr = [...(this.foodStorage.map(obj => obj[choice]))];
-        for (let j = 0; j < arr.length; j++) {
-          arr[j] = arr[j].replace(/,/g, '.'); //заменяем запятые на точки, т.к. parseFloat не воспринимает запятые
-          arr[j] = parseFloat(arr[j]); //"удаляем" лишние слова, нам нужны только цифры
-        }
-        minMaxArr[0] = Math.min(...arr);
-        minMaxArr[1] = Math.max(...arr);
-        resultArr[i] = [...minMaxArr];
-        minMaxArr = [];
-      }
-      this.modalFilterRanges.caloriesRange = [...resultArr[0]];
-      this.modalFilterRanges.proteinsRange = [...resultArr[1]];
-      this.modalFilterRanges.fatsRange = [...resultArr[2]];
-      this.modalFilterRanges.carbsRange = [...resultArr[3]];
-    }, 
 
     addToProductList(dayNumber, mealTime, food, arrOfDays) { //добавляет продукт в общий массив выбранных продуктов
       const dateStore = useDateStore();
@@ -122,27 +95,15 @@ export const useProductStore = defineStore('products', {
         this.listsOfDaysMenu.splice(dayId, 1);
       }
     },
-
-    filterFunc(value, caloriesRange, proteinsRange, fatsRange, carbRange) { //функция фильтрации
-      let changedValue = {...value};
-      for (let i = 0; i < STATS_OF_MEAL.length; i++) {
-        const choice = STATS_OF_MEAL[i];
-        changedValue[choice] = changedValue[choice].replace(/,/g, '.');
-        changedValue[choice] = parseFloat(changedValue[choice]);
-      }
-      const caloriesCondition = (changedValue.calories >= caloriesRange[0]) && (changedValue.calories <= caloriesRange[1]);
-      const proteinsCondition = (changedValue.proteins >= proteinsRange[0]) && (changedValue.proteins <= proteinsRange[1]);
-      const fatsCondition = (changedValue.fats >= fatsRange[0]) && (changedValue.fats <= fatsRange[1]);
-      const carbsCondition = (changedValue.carbs >= carbRange[0]) && (changedValue.carbs <= carbRange[1]);
-      return (caloriesCondition && proteinsCondition && fatsCondition && carbsCondition);
-    },
   },
-  
+
   getters: {
     returnProductNames() { //выводит список продуктов в autocomplete
-      const resArr = this.foodStorage.filter(value => this.filterFunc(value, this.modalFilterRanges.caloriesRange, 
-                                              this.modalFilterRanges.proteinsRange, this.modalFilterRanges.fatsRange,
-                                              this.modalFilterRanges.carbsRange));
+      const rangeStore = useRangeStore();
+
+      const resArr = this.foodStorage.filter(value => rangeStore.filterFunc(value, rangeStore.modalFilterRanges.caloriesRange, 
+                                              rangeStore.modalFilterRanges.proteinsRange, rangeStore.modalFilterRanges.fatsRange,
+                                              rangeStore.modalFilterRanges.carbsRange));
       const arrOfNames = [];
       for (let i = 0; i < resArr.length; i++) {
         arrOfNames[i] = resArr[i].name;
@@ -180,37 +141,6 @@ export const useProductStore = defineStore('products', {
         }
       }
       return shownArray;
-    },
-
-    findMinMaxRange() { //возращает максимальное/минимальное значение для слайдеров (отслеживает изменения в границах)
-      const productBase = useProductBase();
-
-      let minMaxArr = [];
-      const resultArr = [];
-      for (let i = 0; i < STATS_OF_MEAL.length; i++) {
-        const choice = STATS_OF_MEAL[i];
-        const arr = [...(this.foodStorage.map(obj => obj[choice]))];
-      for (let j = 0; j < arr.length; j++) {
-          arr[j] = arr[j].replace(/,/g, '.'); //заменяем запятые на точки, т.к. parseFloat не воспринимает запятые
-          arr[j] = parseFloat(arr[j]); //"удаляем" лишние слова, нам нужны только цифры
-        }
-        minMaxArr[0] = Math.min(...arr);
-        minMaxArr[1] = Math.max(...arr);
-        resultArr[i] = [...minMaxArr];
-        minMaxArr = [];
-      }
-
-      productBase.BaseFilterRanges.caloriesRange = [...resultArr[0]];
-      productBase.BaseFilterRanges.proteinsRange = [...resultArr[1]];
-      productBase.BaseFilterRanges.fatsRange = [...resultArr[2]];
-      productBase.BaseFilterRanges.carbsRange = [...resultArr[3]];
-
-      this.modalFilterRanges.caloriesRange = [...resultArr[0]];
-      this.modalFilterRanges.proteinsRange = [...resultArr[1]];
-      this.modalFilterRanges.fatsRange = [...resultArr[2]];
-      this.modalFilterRanges.carbsRange = [...resultArr[3]];
-
-      return resultArr;
     },
     
     isDayFilled() { //отображает "отмеченные" дни

@@ -11,11 +11,11 @@
         height="90vh"
       >
         <div 
-          v-if="!buttonIsClicked"
+          v-if="!personStore.buttonIsClicked"
           class="d-flex align-center justify-center"
         >
           <person-info-component
-            @button-click="buttonIsClicked = true" 
+            @button-click="personStore.buttonIsClicked = true" 
           />
         </div>
         <div 
@@ -69,7 +69,7 @@
               title="Изменить введенные данные"
               class="ma-4"
               color="warning"
-              @click="buttonIsClicked = false"
+              @click="personStore.buttonIsClicked = false"
             >
               Изменить
             </v-btn>
@@ -96,14 +96,13 @@ export default {
     return {
       productStore: useProductStore(),
       personStore: usePersonStore(),
-      buttonIsClicked: false,
       arrOfParams: ["Пол", "Возраст", "Рост", "Вес", "Ур. активности"],
     }
   },
 
   methods: {
     initDeleteInfo() { //вызов функции удаления информации о пользователе
-      this.buttonIsClicked = false;
+      this.personStore.buttonIsClicked = false;
       this.personStore.deletePersonInfo();
     }
   },
