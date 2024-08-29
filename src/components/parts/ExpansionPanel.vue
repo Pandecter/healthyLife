@@ -54,7 +54,7 @@
                       title="Удалить продукт"
                       color="red"
                       variant="tonal"
-                      @click="productStore.deleteFoodFromMealTime(element, indexOfTime, productStore.giveDateInDateType[dayIndex])"
+                      @click="productStore.deleteFoodFromMealTime(element, indexOfTime, dateStore.giveDateInDateType[dayIndex])"
                     >
                       Удалить 
                     </v-btn>
@@ -99,6 +99,7 @@
 <script>
 import { useProductStore } from '../../store/productStore'
 import FoodCardComponent from '../parts/AddFoodToTimeCard.vue'
+import { useDateStore } from '@/store/dateStore'
 
 export default {
   components: {
@@ -130,6 +131,7 @@ export default {
   data() {
     return {
       productStore: useProductStore(),
+      dateStore: useDateStore(),
       currentDay: null,
       currentMealTime: null,
       mealTime: ["Завтрак", "Обед", "Ужин"],

@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import foodData from '../../datasets/food_base.json'
 import { useProductBase } from './productBase';
+import { useDateStore } from './dateStore';
 
 const MEAL_TIME = ["Завтрак", "Обед", "Ужин"];
 const STATS_OF_MEAL = ["calories", "proteins", "fats", "carbs"]
@@ -8,7 +9,6 @@ const STATS_OF_MEAL = ["calories", "proteins", "fats", "carbs"]
 export const useProductStore = defineStore('products', {
   state: () => {
     return {
-      switchedCurrentDate: null, //дата, использующаяся при "смене" недели
       listsOfDaysMenu: [], //хранилище продуктов, выбранных пользователем
       foodStorage: [], //хранилище данных по продуктах
       modalFilterRanges: { //диапазоны значения для v-range-sliders в оверлее добавления продукта в "съеденное"
@@ -24,9 +24,10 @@ export const useProductStore = defineStore('products', {
   actions: {
     mountFunction() { //вызывается 1 раз при запуске приложения 
       const productBase = useProductBase();
+      const dateStore = useDateStore();
 
       const currenDate = new Date();
-      this.switchedCurrentDate = currenDate;
+      dateStore.switchedCurrentDate = currenDate;
       this.initMinMaxRange(); 
 
       this.foodStorage = [...foodData];
@@ -59,34 +60,11 @@ export const useProductStore = defineStore('products', {
       this.modalFilterRanges.carbsRange = [...resultArr[3]];
     }, 
 
-    dateFormer(date) { //создает строку с датой в привычном для отображения виде
-      let month = date.getMonth() + 1; 
-      let day = date.getDate();
-
-      if (month < 10) {
-        month = "0" + month;
-      }
-      if (day < 10) {
-        day = "0" + day;
-      }
-      const currenDate = new Date();
-      const result = day + "." + month + "." + currenDate.getFullYear();
-      return result;
-    },
-
-    dateTypeFormer(date){
-      date = this.dateFormer(date); //переведем в привичный вид
-      date = date.split(""); //необходимо для преобразования string в array
-      let year = date.splice(6, 4).join(''); //выбираем нужную часть даты и преобразуем ее в нужный формат 
-      let month = date.splice(3, 2).join('');
-      let day = date.splice(0, 2).join('');
-      let result = year + "-" + month + "-" + day;
-      return result;
-    },
-
     addToProductList(dayNumber, mealTime, food, arrOfDays) { //добавляет продукт в общий массив выбранных продуктов
+      const dateStore = useDateStore();
+
       const dayId = arrOfDays.findIndex((el) => el === dayNumber);
-      const currenDate = this.giveDateInDateType[dayId];
+      const currenDate = dateStore.giveDateInDateType[dayId];
       if (!(this.listsOfDaysMenu.find((el) => el.date === currenDate))) { //если текущего дня нет в базе 
         const OBJECT = { "dayNumber": dayId, "date": currenDate, "breakfast": [],"lunch": [], "dinner": []};
         this.listsOfDaysMenu.push(OBJECT);
@@ -159,50 +137,8 @@ export const useProductStore = defineStore('products', {
       return (caloriesCondition && proteinsCondition && fatsCondition && carbsCondition);
     },
   },
+  
   getters: {
-    giveCurrentWeek() { //показывает текущую неделю 
-      const number = this.switchedCurrentDate.getDay();
-      const currenDate = this.switchedCurrentDate;
-
-      const startValue = new Date(currenDate.getFullYear(),  currenDate.getMonth(), currenDate.getDate() - (number === 0 ? 6 : number - 1));
-      const startString = this.dateFormer(startValue);
-
-      const endValue = new Date(currenDate.getFullYear(),  currenDate.getMonth(), currenDate.getDate() + (number === 0 ? 0 : 7 - number));
-      const endString = this.dateFormer(endValue);
-      
-      return "Текущая неделя: " + startString + " - " + endString;
-    },
-
-    giveCurrentDate() { //отображает даты для дней недели
-      const number = this.switchedCurrentDate.getDay();
-      const currenDate = this.switchedCurrentDate;
-      let startValue;
-      let day = 0;
-      const arr = [];
-      while (day < 7) {
-        startValue = new Date(currenDate.getFullYear(),  currenDate.getMonth(), currenDate.getDate() - number + 1 + day);
-        startValue = this.dateFormer(startValue);
-        arr[day] = startValue;
-        day++;
-      }
-      return arr;
-    },
-
-    giveDateInDateType() { //выводит дату в том виде, в котором она хранится в text-field для типа date
-      const number = this.switchedCurrentDate.getDay();
-      const currenDate = this.switchedCurrentDate;
-      let startValue;
-      let day = 0;
-      const arr = [];
-      while (day < 7) {
-        startValue = new Date(currenDate.getFullYear(),  currenDate.getMonth(), currenDate.getDate() - number + 1 + day);
-        startValue = this.dateTypeFormer(startValue);
-        arr[day] = startValue;
-        day++;
-      }
-      return arr;
-    },
-
     returnProductNames() { //выводит список продуктов в autocomplete
       const resArr = this.foodStorage.filter(value => this.filterFunc(value, this.modalFilterRanges.caloriesRange, 
                                               this.modalFilterRanges.proteinsRange, this.modalFilterRanges.fatsRange,
@@ -215,8 +151,10 @@ export const useProductStore = defineStore('products', {
     },
 
     showInfo() {
+      const dateStore = useDateStore();
+
       const shownArray = []; 
-      const currenDate = this.giveDateInDateType; 
+      const currenDate = dateStore.giveDateInDateType; 
       for (let i = 0; i < currenDate.length; i++) { 
         const result = this.listsOfDaysMenu.find((el) => el.date === currenDate[i]) 
         if (typeof(result) === "undefined") { //если полученный тип undefined, т.е. данных с такой датой найдено не было
@@ -276,9 +214,11 @@ export const useProductStore = defineStore('products', {
     },
     
     isDayFilled() { //отображает "отмеченные" дни
+      const dateStore = useDateStore();
+
       const resultArr = []; 
-      for (let i = 0; i < this.giveDateInDateType.length; i++) {
-        if (this.listsOfDaysMenu.find((el) => el.date === this.giveDateInDateType[i])) {
+      for (let i = 0; i < dateStore.giveDateInDateType.length; i++) {
+        if (this.listsOfDaysMenu.find((el) => el.date === dateStore.giveDateInDateType[i])) {
           resultArr[i] = true;
         }
         else {
@@ -289,9 +229,11 @@ export const useProductStore = defineStore('products', {
     },
 
     isMealTimeFilled() {
+      const dateStore = useDateStore();
+
       const resultArr = []; 
-      for (let i = 0; i < this.giveDateInDateType.length; i++) {
-        const foundDateId = this.listsOfDaysMenu.findIndex((el) => el.date === this.giveDateInDateType[i]);
+      for (let i = 0; i < dateStore.giveDateInDateType.length; i++) {
+        const foundDateId = this.listsOfDaysMenu.findIndex((el) => el.date === dateStore.giveDateInDateType[i]);
         const subArray = [];
         if (foundDateId !== -1) {
           const mealTimeSwitch = ["breakfast", "lunch", "dinner"];

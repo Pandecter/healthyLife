@@ -52,7 +52,7 @@
                 />
               </v-card-title>
               <v-card-subtitle class="mt-4">
-                {{ productStore.giveCurrentDate[indexOfDay] }}
+                {{ dateStore.giveCurrentDate[indexOfDay] }}
               </v-card-subtitle>
             </div>
             <v-card-actions>
@@ -77,6 +77,7 @@
 <script>
 import { useProductStore } from '@/store/productStore' 
 import { useStatsStore } from '@/store/statsStore'
+import { useDateStore } from '@/store/dateStore'
 import WeekChangerComponent from '@/components/parts/WeekChanger.vue'
 import MenuComponent from '@/components/parts/MenuComponent.vue'
 import ExpandedPanel from '@/components/parts/ExpansionPanel.vue'
@@ -92,6 +93,7 @@ export default {
     return {
       productStore: useProductStore(),
       statsStore: useStatsStore(),
+      dateStore: useDateStore(),
       days: ["Понедельник", "Вторник", 
              "Среда", "Четверг", 
              "Пятница", "Суббота", "Воскресенье"],

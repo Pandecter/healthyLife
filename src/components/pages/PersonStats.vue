@@ -93,6 +93,7 @@
 import { usePersonStore } from '@/store/personStore'
 import { useProductStore } from '@/store/productStore'
 import { useStatsStore } from '@/store/statsStore'
+import { useDateStore } from '@/store/dateStore'
 import { Line } from 'vue-chartjs'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend} from 'chart.js'
 import MyAppBar from '@/components/parts/MyAppBar.vue'
@@ -112,6 +113,7 @@ export default {
       personStore: usePersonStore(),
       statsStore: useStatsStore(),
       productStore: useProductStore(),
+      dateStore: useDateStore(),
       startDate: null,
       endDate: null,
       showErrorCard: false, //переменная, которая отвечает за показ карточки с ошибками
@@ -120,8 +122,8 @@ export default {
   },
 
   mounted() {
-    this.startDate = this.productStore.giveDateInDateType[0];
-    this.endDate = this.productStore.giveDateInDateType[6];
+    this.startDate = this.dateStore.giveDateInDateType[0];
+    this.endDate = this.dateStore.giveDateInDateType[6];
   },
 
   methods: {

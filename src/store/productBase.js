@@ -58,16 +58,6 @@ export const useProductBase = defineStore('productBase', {
     },
 
     returnShowedArray() { //вывод списка с учетом фильтров/поиска
-      // if (this.searchedProduct !== null) {
-      //   const result = this.shownArrayOfProducts.find((el) => el.name === this.searchedProduct);
-      //   const arr = [];
-      //   arr.push(result)
-      //   return arr;
-      // }
-      // else {
-      //   return this.shownArrayOfProducts;
-      // }
-      
       const field = ['calories', 'proteins', 'fats', 'carbs']
       let returnedArr = this.shownArrayOfProducts.map(product => { return {...product }});
       for (let i = 0; i < returnedArr.length; i++) { //проходим по всему массиву данных
