@@ -81,49 +81,7 @@
             v-else 
             class="ma-8 text-h5 d-flex flex-column"
           > 
-            <div class="d-flex justify-center mt-4 mb-4">
-              <p class="text-decoration-underline">
-                Нарушения
-              </p>
-            </div>
-            <div v-if="areThereAnyMistakes">
-              <v-table class="bg-red-lighten-4">
-                <thead>
-                  <th>
-                    День
-                  </th>
-                  <th>
-                    Превышение
-                  </th>
-                </thead>
-                <tbody>
-                  <tr 
-                    v-for="excess in statsStore.returnExcess"
-                    :key="excess"
-                    color="error"
-                  >
-                    <td>
-                      {{ excess.date }}
-                    </td>
-                    <td>
-                      {{ excess.value }} кКал
-                    </td>
-                  </tr>
-                </tbody>
-              </v-table>
-            </div>
-            <div 
-              v-else 
-              class="d-flex justify-center bg-green-lighten-4"
-            >
-              Никаких нарушений найдено не было
-            </div>
-            <div class="d-flex justify-center mt-12 mb-4 text-decoration-underline">
-              Статистика за промежуток
-            </div>
-            <div>
-              <person-stat-table />
-            </div>
+            <ExtendedInfo />
           </div>
         </div>
       </div>
@@ -137,16 +95,16 @@ import { useProductStore } from '@/store/productStore'
 import { useStatsStore } from '@/store/statsStore'
 import { Line } from 'vue-chartjs'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend} from 'chart.js'
-import PersonStatTable from '@/components/parts/PersonStatisticTable.vue'
 import MyAppBar from '@/components/parts/MyAppBar.vue'
+import ExtendedInfo from '@/components/parts/PersonExtendedInfo.vue'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
 export default {
   components: { 
     LineChart: Line,
-    PersonStatTable,
-    MyAppBar
+    MyAppBar,
+    ExtendedInfo
   },
   
   data() {
@@ -158,12 +116,6 @@ export default {
       endDate: null,
       showErrorCard: false, //переменная, которая отвечает за показ карточки с ошибками
       showSuccessCard: false //отвечает за отображение графика
-    }
-  },
-
-  computed: {
-    areThereAnyMistakes() {
-      return !(this.statsStore.returnExcess.length === 0);
     }
   },
 
