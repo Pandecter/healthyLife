@@ -149,7 +149,7 @@
                   class="d-flex justify-center align-center"
                 >
                   <v-card 
-                    width="130vh"
+                    width="65vw"
                     height="95vh"
                   >
                     <div class="d-flex justify-space-between mt-12 ml-16 mr-16">

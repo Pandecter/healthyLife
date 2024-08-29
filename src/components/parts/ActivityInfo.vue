@@ -1,5 +1,5 @@
 <template>
-  <v-card max-width="140vh">
+  <v-card max-width="50vw">
     <div class="d-flex justify-center">
       <v-card-title>
         Как определить уровень активности?

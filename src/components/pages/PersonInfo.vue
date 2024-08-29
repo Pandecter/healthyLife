@@ -7,7 +7,7 @@
       <v-card 
         class="mt-16 mb-8 elevation-8" 
         variant="elevated" 
-        width="100vh"
+        width="48vw"
         height="90vh"
       >
         <div 

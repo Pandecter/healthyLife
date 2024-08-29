@@ -1,6 +1,6 @@
 <template>
   <v-card
-    width="130vh"
+    width="60vw"
     height="90vh"
   >
     <div class="d-flex flex-column align-center mt-8">

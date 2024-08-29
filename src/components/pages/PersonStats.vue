@@ -45,7 +45,7 @@
           v-if="showErrorCard"
           color="error"
           class="d-flex justify-center"
-          width="80vh"
+          width="50vw"
         >
           <v-card-title>
             {{ statsStore.message }}
@@ -55,7 +55,7 @@
           <v-card 
             color="success"
             class="d-flex justify-center"
-            width="160vh"
+            width="70vw"
           >
             <v-card-title>
               {{ statsStore.message }}
