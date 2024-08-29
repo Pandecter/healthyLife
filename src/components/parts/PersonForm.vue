@@ -113,12 +113,7 @@ export default {
     },
 
     showInfo() { //отвечает за блокировку кнопки
-      if (this.formIsValid && (this.personStore.gender !== null && this.personStore.choosedActivity !== null)) {
-        return true;
-      }
-      else {
-        return false;
-      }
+      return this.formIsValid && (this.personStore.gender !== null && this.personStore.choosedActivity !== null);
     },
   },
 

@@ -163,12 +163,7 @@ export default {
 
   computed: {
     areThereAnyMistakes() {
-      if (this.statsStore.returnExcess.length === 0) {
-        return false;
-      }
-      else {
-        return true;
-      }
+      return !(this.statsStore.returnExcess.length === 0);
     }
   },
 

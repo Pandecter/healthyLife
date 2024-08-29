@@ -49,7 +49,6 @@ export const useProductBase = defineStore('productBase', {
   },
   getters: {
     returnProductNamesInBase() { //выводит список продуктов в autocomplete с учетом фильтров
-      //const PRODUCT_STORE = useProductStore();
       const ARR_OF_NAMES = [];
 
       for (let i = 0; i < this.shownArrayOfProducts.length; i++) {

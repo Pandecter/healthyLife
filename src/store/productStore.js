@@ -272,8 +272,6 @@ export const useProductStore = defineStore('products', {
       this.modalFilterRanges.fatsRange = [...RESULT_ARR[2]];
       this.modalFilterRanges.carbsRange = [...RESULT_ARR[3]];
 
-      //console.log(RESULT_ARR)
-
       return RESULT_ARR;
     },
     

@@ -176,12 +176,7 @@ export default {
 
   computed: {
     blockSliders() {
-      if (this.productBase.searchedProduct !== null) {
-        return true;
-      }
-      else {
-        return false;
-      }
+      return this.productBase.searchedProduct !== null;
     },
 
     returnColor() {

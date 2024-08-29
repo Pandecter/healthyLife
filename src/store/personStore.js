@@ -58,12 +58,7 @@ export const usePersonStore = defineStore('person', {
 
   getters: {
     isInfoIsNotFull() { //отвечает за отображение данных на странице статистики
-      if (this.arrOfValues.length === 5) {
-        return false;
-      }
-      else {
-        return true;
-      }
+      return !(this.arrOfValues.length === 5)
     }
   }
 })

@@ -332,21 +332,11 @@ export default {
     },
 
     isButtonAvailable() { //отвечает за блокировку/разблокировку кнопки
-      if (this.isFormValid && this.currentProductName != null) {
-        return false;
-      }
-      else {
-        return true;
-      }
+      return !(this.isFormValid && this.currentProductName != null);
     },
 
     blockSliders() {
-      if (this.currentProductName!== null) {
-        return true;
-      }
-      else {
-        return false;
-      }
+      return this.currentProductName!== null;
     },
   },
 
