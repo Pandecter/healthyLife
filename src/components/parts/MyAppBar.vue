@@ -9,7 +9,7 @@
     <v-btn 
       icon="mdi-keyboard-backspace"
       title="Вернуться на главную"
-      @click="goToMainPage()"
+      @click="goToMainPage"
     />
     <v-app-bar-title>
       {{ stringVal }}

@@ -61,7 +61,7 @@
               title="Удалить данные о себе"
               class="ma-4"
               color="error"
-              @click="initDeleteInfo()"
+              @click="initDeleteInfo"
             >
               Удалить
             </v-btn>

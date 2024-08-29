@@ -10,13 +10,13 @@
       <div class="d-flex justify-center mt-8">
         <v-btn 
           class="mr-2" 
-          @click="previousWeek()"
+          @click="previousWeek"
         >
           Предыдущая
         </v-btn>
         <v-btn 
           class="ml-2" 
-          @click="nextWeek()"
+          @click="nextWeek"
         >
           Следующая
         </v-btn>

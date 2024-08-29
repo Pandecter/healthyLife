@@ -71,7 +71,7 @@
     <div class="d-flex justify-center mt-4">
       <v-btn
         :disabled="!showInfo"
-        @click="initCaloriesCalculation()"
+        @click="initCaloriesCalculation"
       >
         Подтвердить
       </v-btn>

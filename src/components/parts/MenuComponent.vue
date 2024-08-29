@@ -8,7 +8,7 @@
         <v-btn 
           variant="text"
           width="150"
-          @click="goToStatsPage()"
+          @click="goToStatsPage"
         >
           Статистика
         </v-btn>
@@ -17,7 +17,7 @@
         <v-btn 
           variant="text"
           width="150"
-          @click="goToBasePage()"
+          @click="goToBasePage"
         >
           База данных
         </v-btn>

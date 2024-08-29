@@ -17,7 +17,7 @@
       <v-btn 
         icon="mdi-account"
         title="Ввести данные"
-        @click="goToPersonPage()"
+        @click="goToPersonPage"
       />
     </v-app-bar>
     <v-main>
@@ -253,7 +253,7 @@
                     <div class="d-flex justify-center mt-8">
                       <v-btn 
                         :disabled="isButtonAvailable"
-                        @click="addToProductStore()"
+                        @click="addToProductStore"
                       > 
                         Добавить продукт 
                       </v-btn>
