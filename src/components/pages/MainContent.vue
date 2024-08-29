@@ -80,7 +80,6 @@
                         title="Вы внесли данные за этот прием пищи!"
                       />
                     </v-expansion-panel-title>
-
                     <v-expansion-panel-text>
                       <div 
                         v-if="productStore.showInfo[indexOfDay][indexOfTime] === null"
@@ -148,117 +147,12 @@
                   v-model="isOverlayActive"
                   class="d-flex justify-center align-center"
                 >
-                  <v-card 
-                    width="65vw"
-                    height="95vh"
-                  >
-                    <div class="d-flex justify-space-between mt-12 ml-16 mr-16">
-                      <p class="text-h6 mt-2">
-                        Ваш продукт:
-                      </p>
-                      <div class="w-50">
-                        <v-autocomplete 
-                          v-model="currentProductName"
-                          label="Введите наименование продукта" 
-                          :items="productStore.returnProductNames"
-                          no-data-text="По данному запросу нет результатов"
-                        />
-                      </div> 
-                    </div> 
-                    <div class="d-flex justify-space-between mt-8 ml-16 mr-16">
-                      <p class="text-h6 mt-2">
-                        Количество продукта:
-                      </p>
-                      <div class="w-50">
-                        <v-form v-model="isFormValid">
-                          <v-text-field
-                            v-model="currentCountValue"
-                            :rules="returnProductMassRule" 
-                            label="Введите количество в граммах"
-                          />
-                        </v-form>
-                      </div>
-                    </div>
-                    <div class="d-flex justify-space-between mt-8 ml-16 mr-16">
-                      <p class="text-h6 mt-2">
-                        Фильтры:
-                      </p>
-                    </div>
-                    <div class="d-flex justify-space-around mt-4">
-                      <p>Калории</p>
-                      <p>Белки</p>
-                      <p>Жиры</p>
-                      <p>Углеводы</p>
-                    </div>
-                    <range-slider-component
-                      :value="productStore.modalFilterRanges"
-                      :min-max-val="productStore.findMinMaxRange"
-                      :disabled-val="blockSliders"
-                      max-width-val="150px"
-                      @change-value="changeValInit"
-                    />
-                    <div 
-                      v-if="isButtonAvailable"
-                      class="d-flex justify-center align-center h-25 mt-2"
-                    >
-                      <p 
-                        class="text-h6 font-weight-light"
-                      > 
-                        Здесь будут отображены данные о продукте
-                      </p>
-                    </div>
-                    <div 
-                      v-else
-                      class="h-25 mt-2"
-                    >
-                      <div class="d-flex justify-center pb-8">
-                        <p class="text-h6">
-                          Информация о выбранном продукте 
-                        </p>
-                      </div>
-                      <hr>
-                      <v-table>
-                        <thead>
-                          <tr>
-                            <th class="text-left">
-                              Название продукта
-                            </th>
-                            <th class="text-left">
-                              Калории
-                            </th>
-                            <th class="text-left">
-                              Белки
-                            </th>
-                            <th class="text-left">
-                              Жиры
-                            </th>
-                            <th class="text-left">
-                              Углеводы
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td 
-                              v-for="stat in showInfoAboutProduct"
-                              :key="stat.name"
-                            >
-                              {{ stat }}
-                            </td>
-                          </tr>
-                        </tbody>
-                      </v-table>
-                      <hr>
-                    </div>                         
-                    <div class="d-flex justify-center mt-8">
-                      <v-btn 
-                        :disabled="isButtonAvailable"
-                        @click="addToProductStore"
-                      > 
-                        Добавить продукт 
-                      </v-btn>
-                    </div> 
-                  </v-card>
+                  <food-card-component
+                    :cur-day="currentDay"
+                    :cur-meal-time="currentMealTime"
+                    :arr-of-days="days"
+                    @switch-overlay="isOverlayActive = false"
+                  />
                 </v-overlay>
               </div>  
             </v-expand-transition>
@@ -272,16 +166,15 @@
 <script>
 import { useProductStore } from '@/store/productStore' 
 import { useStatsStore } from '@/store/statsStore'
-import validationRules from '@/shared/rules/index.js'
-import RangeSliderComponent from '@/components/parts/RangeSlider.vue'
 import WeekChangerComponent from '@/components/parts/WeekChanger.vue'
 import MenuComponent from '@/components/parts/MenuComponent.vue'
+import FoodCardComponent from '@/components/parts/AddFoodToTimeCard.vue'
 
 export default {
   components: {
-    RangeSliderComponent,
     WeekChangerComponent,
-    MenuComponent
+    MenuComponent,
+    FoodCardComponent
   },
   
   data() {
@@ -297,47 +190,9 @@ export default {
       listOfStats: ["Наименование", "Калорийность", "Белки",
       "Жиры", "Углеводы", "Удаление"],
       isExpandable: [false, false, false, false, false, false, false], //позволяет открывать/закрывать вкладки
-      currentCountValue: null, // количество продукта в граммах
-      currentProductName: null, //наименование продукта,
-      isFormValid: false,
       isOverlayActive: false, //активация/деактивация оверлея // переменная, которая нужна для корректной блокировки кнопки,
       drawer: false, //отвечает за открытие/закрытие меню наверху слева
     }
-  },
-
-  computed: {
-    returnProductMassRule() {
-      return validationRules.inputCountRules;
-    },
-
-    actualProductCounter() { //высчитывает количество "состава" с учетом количества продукта
-      const STATS = ["calories", "proteins", "fats", "carbs"];
-      const PRODUCT = {...this.productStore.foodStorage.find((el) => el.name === this.currentProductName) };
-      for (let i = 0; i < STATS.length; i++) {
-        const CHOICE = STATS[i];
-        PRODUCT[CHOICE] = PRODUCT[CHOICE].replace(/,/g, '.');
-        PRODUCT[CHOICE] = Number(PRODUCT[CHOICE].replace(/[^0-9.]+/g,""));
-        PRODUCT[CHOICE] = (PRODUCT[CHOICE] * (this.currentCountValue / 100)).toFixed(2);
-      }
-      return PRODUCT;
-    },
-    
-    showInfoAboutProduct() { //вывод информации о продукте
-      let info = this.actualProductCounter;
-      info.calories = info.calories + " Ккал";
-      info.proteins = info.proteins + " г";
-      info.fats = info.fats + " г";
-      info.carbs = info.carbs + " г";
-      return info;
-    },
-
-    isButtonAvailable() { //отвечает за блокировку/разблокировку кнопки
-      return !(this.isFormValid && this.currentProductName != null);
-    },
-
-    blockSliders() {
-      return this.currentProductName!== null;
-    },
   },
 
   methods: {
@@ -351,19 +206,9 @@ export default {
       this.isOverlayActive = true;
     },
 
-    addToProductStore() {//необходимо для корректного добавления продуктов и закрытия оверлея
-      this.productStore.addToProductList(this.currentDay, this.currentMealTime, this.showInfoAboutProduct, this.days);
-      this.isOverlayActive = false;
-    },
-
     goToPersonPage() {
       this.isExpandable.fill(false);
       this.$router.push('/person_info');
-    },
-
-    changeValInit(data, string) {
-      this.productStore.modalFilterRanges[string][0] = data[0];
-      this.productStore.modalFilterRanges[string][1] = data[1]
     },
   }
 }
